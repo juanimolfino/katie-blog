@@ -15,10 +15,10 @@ export function Hero() {
       const heroHeight = heroRef.current.offsetHeight;
       const progress = Math.min(scrollY / (heroHeight * 0.5), 1);
       
-      // Parallax effect on background
-      const bgElement = heroRef.current.querySelector('.hero-bg') as HTMLElement;
+      // Parallax effect on background - only translateY, no scale to prevent overflow
+      const bgElement = heroRef.current.querySelector('.hero-bg img') as HTMLElement;
       if (bgElement) {
-        bgElement.style.transform = `translateY(${scrollY * 0.3}px) scale(${1 + progress * 0.1})`;
+        bgElement.style.transform = `translateY(${scrollY * 0.3}px)`;
       }
       
       // Fade out content on scroll
@@ -38,11 +38,11 @@ export function Hero() {
       className="relative h-screen min-h-[600px] overflow-hidden"
     >
       {/* Background Image */}
-      <div className="hero-bg absolute inset-0 w-full h-full">
+      <div className="hero-bg absolute inset-0 w-full h-full overflow-hidden">
         <img
           src="/images/hero-bg.jpg"
           alt="Travel adventure"
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover scale-110"
         />
         {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent" />
