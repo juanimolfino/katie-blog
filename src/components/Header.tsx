@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { navigation } from '@/data';
+import type { NavItem } from '@/types';
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -17,16 +18,16 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  useEffect(() => {
+  const handleNavClick = useCallback(() => {
     setIsMobileMenuOpen(false);
-  }, [location]);
+  }, []);
 
-  const isActive = (href: string) => {
+  const isActive = useCallback((href: string) => {
     if (href === '/') {
       return location.pathname === '/';
     }
     return location.pathname.startsWith(href);
-  };
+  }, [location.pathname]);
 
   return (
     <header
@@ -38,44 +39,59 @@ export function Header() {
     >
       <div className="section-padding">
         <div className="flex items-center justify-between h-20">
-          {/* Logo */}
+          {/* Logo - Cambia entre blanco y negro según scroll */}
           <Link
             to="/"
-            className="flex items-center gap-2 font-display text-2xl font-medium text-black transition-transform duration-300"
+            className="flex items-center gap-3 transition-transform duration-300"
           >
-            <svg 
-              viewBox="0 0 32 32" 
-              fill="none" 
-              className="w-8 h-8 text-ocean"
-              stroke="currentColor"
-              strokeWidth="2"
+            {/* Logo imagen: blanco cuando NO hay scroll, negro cuando SÍ */}
+            <img
+              src={isScrolled ? "/images/Updblacklogo.png" : "/images/Up3logowhite.png"}
+              alt="What Katie Seas"
+              className="h-12 w-auto transition-opacity duration-300"
+            />
+
+            {/* Texto: blanco cuando NO hay scroll, negro cuando SÍ */}
+            <span 
+              className={`font-logo text-3xl font-medium transition-colors duration-300 ${
+                isScrolled ? 'text-black' : 'text-white'
+              }`}
             >
-              <path d="M16 3C10 8 4 12 4 19C4 25 9.5 29 16 29C22.5 29 28 25 28 19C28 12 22 8 16 3Z" />
-              <circle cx="16" cy="18" r="3" fill="currentColor" stroke="none" />
-              <path d="M16 8C13 11 11 13 11 16" strokeLinecap="round" />
-              <path d="M16 8C19 11 21 13 21 16" strokeLinecap="round" />
-            </svg>
-            <span>What Katie Seas</span>
+              What Katie Seas
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-8">
-            {navigation.map((item) => (
+            {navigation.map((item: NavItem) => (
               <Link
                 key={item.href}
                 to={item.href}
-                className={`nav-link ${
-                  isActive(item.href) ? 'text-ocean after:w-full' : ''
+                className={`relative font-body text-base font-normal tracking-wide transition-colors duration-300 pb-1 ${
+                  isActive(item.href)
+                    ? isScrolled
+                      ? 'text-ocean'
+                      : 'text-white'
+                    : isScrolled
+                      ? 'text-black hover:text-ocean'
+                      : 'text-white/80 hover:text-white'
                 }`}
               >
                 {item.label}
+                <span
+                  className={`absolute bottom-0 left-1/2 -translate-x-1/2 h-px bg-ocean transition-all duration-200 ${
+                    isActive(item.href) ? 'w-full' : 'w-0 group-hover:w-full'
+                  }`}
+                />
               </Link>
             ))}
           </nav>
 
           {/* Mobile Menu Button */}
           <button
-            className="lg:hidden p-2 hover:text-ocean transition-colors"
+            className={`lg:hidden p-2 transition-colors duration-300 ${
+              isScrolled ? 'text-black hover:text-ocean' : 'text-white hover:text-white/80'
+            }`}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle menu"
           >
@@ -90,19 +106,24 @@ export function Header() {
 
       {/* Mobile Menu */}
       <div
-        className={`lg:hidden fixed inset-0 top-20 bg-white/98 backdrop-blur-lg transition-all duration-300 ${
+        className={`lg:hidden fixed inset-0 top-20 transition-all duration-300 ${
           isMobileMenuOpen
             ? 'opacity-100 pointer-events-auto'
             : 'opacity-0 pointer-events-none'
-        }`}
+        } ${isScrolled ? 'bg-white/98' : 'bg-black/95'}`}
       >
         <nav className="flex flex-col items-center justify-center h-full gap-8">
-          {navigation.map((item) => (
+          {navigation.map((item: NavItem) => (
             <Link
               key={item.href}
               to={item.href}
-              className={`font-display text-3xl font-light transition-all duration-300 hover:text-ocean ${
-                isActive(item.href) ? 'text-ocean' : ''
+              onClick={handleNavClick}
+              className={`font-display text-3xl font-light transition-all duration-300 ${
+                isActive(item.href)
+                  ? 'text-ocean'
+                  : isScrolled
+                    ? 'text-black hover:text-ocean'
+                    : 'text-white hover:text-white/80'
               }`}
             >
               {item.label}

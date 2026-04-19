@@ -1,3 +1,4 @@
+import { CurrentLocation } from '@/components/sections/CurrentLocation';
 import {
   Hero,
   AboutSection,
@@ -12,6 +13,7 @@ export function Home() {
       <AboutSection />
       <RecentPosts />
       <DestinationsSection />
+      <CurrentLocation />
     </>
   );
 }

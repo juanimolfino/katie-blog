@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],
-  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
       colors: {
@@ -46,16 +46,17 @@ module.exports = {
         },
       },
       fontFamily: {
-        display: ['"Cormorant Garamond"', 'serif'],
-        body: ['Roboto', 'sans-serif'],
+        display: ['"Plus Jakarta Sans"', "sans-serif"],
+        body: ['"Source Serif 4"', "serif"],
+        logo: ['"Cormorant Garamond"', "serif"],
       },
       fontSize: {
-        'display-1': ['72px', { lineHeight: '1.2', fontWeight: '300' }],
-        'display-2': ['50px', { lineHeight: '1.2', fontWeight: '300' }],
-        'display-3': ['40px', { lineHeight: '1.3', fontWeight: '300' }],
-        'display-4': ['30px', { lineHeight: '1.3', fontWeight: '300' }],
-        'display-5': ['24px', { lineHeight: '1.3', fontWeight: '300' }],
-        'display-6': ['20px', { lineHeight: '1.3', fontWeight: '300' }],
+        "display-1": ["72px", { lineHeight: "1.2", fontWeight: "300" }],
+        "display-2": ["50px", { lineHeight: "1.2", fontWeight: "300" }],
+        "display-3": ["40px", { lineHeight: "1.3", fontWeight: "300" }],
+        "display-4": ["30px", { lineHeight: "1.3", fontWeight: "300" }],
+        "display-5": ["24px", { lineHeight: "1.3", fontWeight: "300" }],
+        "display-6": ["20px", { lineHeight: "1.3", fontWeight: "300" }],
       },
       borderRadius: {
         xl: "calc(var(--radius) + 4px)",
@@ -106,7 +107,7 @@ module.exports = {
           "0%, 100%": { opacity: "0.7", transform: "scale(1)" },
           "50%": { opacity: "1", transform: "scale(1.1)" },
         },
-        "float": {
+        float: {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-10px)" },
         },
@@ -121,13 +122,16 @@ module.exports = {
         "caret-blink": "caret-blink 1.25s ease-out infinite",
         "fade-in-up": "fade-in-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards",
         "fade-in": "fade-in 0.5s ease-out forwards",
-        "scale-in": "scale-in 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards",
-        "slide-in-left": "slide-in-left 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards",
-        "slide-in-right": "slide-in-right 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards",
+        "scale-in":
+          "scale-in 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards",
+        "slide-in-left":
+          "slide-in-left 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards",
+        "slide-in-right":
+          "slide-in-right 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards",
         "pulse-glow": "pulse-glow 2s ease-in-out infinite",
-        "float": "float 3s ease-in-out infinite",
+        float: "float 3s ease-in-out infinite",
       },
     },
   },
   plugins: [require("tailwindcss-animate")],
-}
+};

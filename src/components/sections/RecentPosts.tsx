@@ -26,7 +26,7 @@ export function RecentPosts() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="py-24 lg:py-32 bg-white">
+    <section ref={sectionRef} className="py-24 lg:pb-32 lg:pt-0 bg-white">
       <div className="section-padding">
         {/* Header */}
         <div className="mb-12">

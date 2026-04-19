@@ -35,7 +35,7 @@ export function DestinationsSection() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="py-24 lg:py-32 bg-cream">
+    <section ref={sectionRef} className="py-24 lg:py-32 bg-gray-100">
       <div className="section-padding">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12">
@@ -46,7 +46,7 @@ export function DestinationsSection() {
                 : 'opacity-0 translate-y-8'
             }`}
           >
-            Best Places to Visit
+            Destinations
           </h2>
           
           <Link

@@ -25,12 +25,13 @@ export function AboutSection() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="py-24 lg:py-32 bg-white overflow-hidden">
+    <section ref={sectionRef} className="py-24 lg:py-0 bg-white overflow-hidden">
       <div className="section-padding">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        {/* OPCIÓN 3: Grid 40/60 (texto más chico, foto más grande) */}
+        <div className="grid lg:grid-cols-[40%_60%] gap-8 lg:gap-12 items-center">
           {/* Content - Left side */}
           <div
-            className={`order-2 lg:order-1 transition-all duration-1000 ${
+            className={`order-2 lg:order-1 transition-all duration-1000 mr-0 md:mr-0 lg:mr-28 ${
               isVisible
                 ? 'opacity-100 translate-x-0'
                 : 'opacity-0 -translate-x-20'
@@ -71,16 +72,18 @@ export function AboutSection() {
             </Link>
           </div>
 
-          {/* Images - Right side with overlay */}
+          {/* Images - Right side */}
+          {/* OPCIÓN 2: Margen negativo derecho para extenderse más */}
           <div
-            className={`order-1 lg:order-2 relative transition-all duration-1000 delay-200 ${
+            className={`order-1 lg:order-2 relative lg:-mr-20 transition-all duration-1000 delay-200 ${
               isVisible
                 ? 'opacity-100 translate-x-0'
                 : 'opacity-0 translate-x-20'
             }`}
           >
             {/* Main large image */}
-            <div className="relative aspect-[3/4] lg:aspect-[4/5] overflow-hidden">
+            {/* OPCIÓN 1: Aspect ratio más ancho */}
+            <div className="relative aspect-[3/4] lg:aspect-[3/4] overflow-hidden">
               <img
                 src="/images/about-katie.jpg"
                 alt={siteConfig.author.name}
@@ -89,13 +92,13 @@ export function AboutSection() {
             </div>
             
             {/* Overlapping small image */}
-            <div className="absolute -bottom-8 -left-8 lg:-left-16 w-48 lg:w-64 aspect-[4/3] overflow-hidden shadow-xl">
+            {/* <div className="absolute -bottom-8 -left-8 lg:-left-16 w-48 lg:w-64 aspect-[4/3] overflow-hidden shadow-xl">
               <img
                 src="/images/about-katie-small.jpg"
                 alt={`${siteConfig.author.name} on a boat`}
                 className="w-full h-full object-cover"
               />
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
