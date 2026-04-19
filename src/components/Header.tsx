@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Search } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { navigation } from '@/data';
 
 export function Header() {
@@ -17,7 +17,6 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile menu when route changes
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [location]);
@@ -33,7 +32,7 @@ export function Header() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? 'bg-cream/95 backdrop-blur-md border-b border-black/10'
+          ? 'bg-white/95 backdrop-blur-md shadow-sm'
           : 'bg-transparent'
       }`}
     >
@@ -42,11 +41,21 @@ export function Header() {
           {/* Logo */}
           <Link
             to="/"
-            className={`font-display text-2xl font-medium transition-transform duration-300 ${
-              isScrolled ? 'scale-90' : 'scale-100'
-            }`}
+            className="flex items-center gap-2 font-display text-2xl font-medium text-black transition-transform duration-300"
           >
-            Travel Blog
+            <svg 
+              viewBox="0 0 32 32" 
+              fill="none" 
+              className="w-8 h-8 text-ocean"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M16 3C10 8 4 12 4 19C4 25 9.5 29 16 29C22.5 29 28 25 28 19C28 12 22 8 16 3Z" />
+              <circle cx="16" cy="18" r="3" fill="currentColor" stroke="none" />
+              <path d="M16 8C13 11 11 13 11 16" strokeLinecap="round" />
+              <path d="M16 8C19 11 21 13 21 16" strokeLinecap="round" />
+            </svg>
+            <span>What Katie Seas</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -56,7 +65,7 @@ export function Header() {
                 key={item.href}
                 to={item.href}
                 className={`nav-link ${
-                  isActive(item.href) ? 'text-terracotta after:w-full' : ''
+                  isActive(item.href) ? 'text-ocean after:w-full' : ''
                 }`}
               >
                 {item.label}
@@ -64,50 +73,37 @@ export function Header() {
             ))}
           </nav>
 
-          {/* Search & Mobile Menu */}
-          <div className="flex items-center gap-4">
-            <button
-              className="p-2 hover:text-terracotta transition-colors"
-              aria-label="Search"
-            >
-              <Search className="w-5 h-5" />
-            </button>
-
-            {/* Mobile Menu Button */}
-            <button
-              className="lg:hidden p-2 hover:text-terracotta transition-colors"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              aria-label="Toggle menu"
-            >
-              {isMobileMenuOpen ? (
-                <X className="w-6 h-6" />
-              ) : (
-                <Menu className="w-6 h-6" />
-              )}
-            </button>
-          </div>
+          {/* Mobile Menu Button */}
+          <button
+            className="lg:hidden p-2 hover:text-ocean transition-colors"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            {isMobileMenuOpen ? (
+              <X className="w-6 h-6" />
+            ) : (
+              <Menu className="w-6 h-6" />
+            )}
+          </button>
         </div>
       </div>
 
       {/* Mobile Menu */}
       <div
-        className={`lg:hidden fixed inset-0 top-20 bg-cream/98 backdrop-blur-lg transition-all duration-300 ${
+        className={`lg:hidden fixed inset-0 top-20 bg-white/98 backdrop-blur-lg transition-all duration-300 ${
           isMobileMenuOpen
             ? 'opacity-100 pointer-events-auto'
             : 'opacity-0 pointer-events-none'
         }`}
       >
         <nav className="flex flex-col items-center justify-center h-full gap-8">
-          {navigation.map((item, index) => (
+          {navigation.map((item) => (
             <Link
               key={item.href}
               to={item.href}
-              className={`font-display text-3xl font-light transition-all duration-300 hover:text-terracotta ${
-                isActive(item.href) ? 'text-terracotta' : ''
+              className={`font-display text-3xl font-light transition-all duration-300 hover:text-ocean ${
+                isActive(item.href) ? 'text-ocean' : ''
               }`}
-              style={{
-                animationDelay: `${index * 100}ms`,
-              }}
             >
               {item.label}
             </Link>

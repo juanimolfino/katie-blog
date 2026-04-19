@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Mail, ArrowRight } from 'lucide-react';
+import { Mail } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { siteConfig, partners } from '@/data';
 
@@ -28,24 +28,24 @@ export function About() {
   return (
     <div className="pt-20">
       {/* Hero Section */}
-      <section className="py-24 lg:py-32 bg-cream">
+      <section className="py-24 lg:py-32 bg-white">
         <div className="section-padding">
           <div className="max-w-4xl mx-auto text-center">
             <span className="font-body text-sm font-medium tracking-[2px] uppercase text-black/50 mb-6 block">
               about me
             </span>
             <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-light mb-8">
-              Hey there, my name is {siteConfig.author.name} and I am one of the top bloggers out there!
+              Hey there, my name is {siteConfig.author.name}
             </h1>
             <p className="font-body text-lg leading-relaxed text-black/70 max-w-2xl mx-auto">
-              {siteConfig.author.bio}
+              {siteConfig.description}
             </p>
           </div>
         </div>
       </section>
 
       {/* Image Section */}
-      <section ref={sectionRef} className="py-24 lg:py-32 bg-cream">
+      <section ref={sectionRef} className="py-24 lg:py-32 bg-white">
         <div className="section-padding">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             {/* Image */}
@@ -62,7 +62,7 @@ export function About() {
                   alt={siteConfig.author.name}
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute -bottom-4 -right-4 w-full h-full bg-terracotta/10 -z-10" />
+                <div className="absolute -bottom-4 -right-4 w-full h-full bg-ocean/10 -z-10" />
               </div>
             </div>
 
@@ -74,26 +74,26 @@ export function About() {
                   : 'opacity-0 translate-x-20'
               }`}
             >
-              <span className="font-display text-xl italic text-terracotta mb-4 block">
-                travel advice blogger
+              <span className="font-display text-xl italic text-ocean mb-4 block">
+                dive instructor & ocean explorer
               </span>
               
               <p className="font-body text-base leading-relaxed text-black/70 mb-8">
-                Over the past 10 years, I've been sharing my travel experiences, tips, and recommendations 
-                with a growing community of adventure seekers. My goal is to inspire people to explore 
-                the world, step out of their comfort zones, and create unforgettable memories.
+                Over the past few years, I've been sharing my diving experiences, travel tips, and ocean stories 
+                with a growing community of ocean lovers. My goal is to inspire people to explore 
+                the underwater world, respect our oceans, and create unforgettable memories.
               </p>
 
               <p className="font-body text-base leading-relaxed text-black/70 mb-8">
-                From solo backpacking trips through Southeast Asia to luxury escapes in the Maldives, 
-                I cover a wide range of travel styles and budgets. Whether you're a seasoned traveler 
-                or planning your first trip, you'll find valuable insights and inspiration here.
+                From the Great Barrier Reef to the remote islands of Raja Ampat, 
+                I cover a wide range of diving destinations and experiences. Whether you're a seasoned diver 
+                or just starting out, you'll find valuable insights and inspiration here.
               </p>
 
               {/* Subscribe CTA */}
               <Link
                 to="/contact"
-                className="btn-primary inline-flex items-center gap-3 group mb-12"
+                className="btn-ocean inline-flex items-center gap-3 group mb-12"
               >
                 <Mail className="w-5 h-5" />
                 <span>Subscribe</span>
@@ -105,10 +105,10 @@ export function About() {
                   Want to work with me?
                 </span>
                 <a
-                  href="mailto:contact@travelblog.com"
-                  className="font-display text-2xl text-terracotta hover:underline"
+                  href="mailto:hello@whatkatieseas.com"
+                  className="font-display text-2xl text-ocean hover:underline"
                 >
-                  contact@travelblog.com
+                  hello@whatkatieseas.com
                 </a>
               </div>
             </div>
@@ -116,43 +116,21 @@ export function About() {
         </div>
       </section>
 
-      {/* As Seen In */}
-      <section className="py-16 bg-cream border-y border-black/5">
+      {/* Partners */}
+      <section className="py-16 bg-white border-y border-black/5">
         <div className="section-padding">
           <h3 className="font-display text-2xl md:text-3xl font-light text-center mb-12">
-            As seen in:
+            Partners & Certifications:
           </h3>
           <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16">
-            {partners.map((partner) => (
+            {partners.map((partner: { name: string; logo: string }) => (
               <span
                 key={partner.name}
                 className="font-display text-lg md:text-xl font-medium text-black/30 tracking-wider"
               >
-                {partner.name.toUpperCase()}
+                {partner.logo}
               </span>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Work With Me CTA */}
-      <section className="py-24 lg:py-32 bg-cream">
-        <div className="section-padding">
-          <div className="max-w-2xl mx-auto text-center">
-            <h2 className="font-display text-4xl md:text-5xl font-light mb-6">
-              Work with me
-            </h2>
-            <p className="font-body text-base leading-relaxed text-black/70 mb-8">
-              I'm always open to collaborations, sponsored content, and partnerships 
-              with brands that align with my values and resonate with my audience.
-            </p>
-            <Link
-              to="/contact"
-              className="btn-primary inline-flex items-center gap-3 group"
-            >
-              <span>Get in touch</span>
-              <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-2" />
-            </Link>
           </div>
         </div>
       </section>

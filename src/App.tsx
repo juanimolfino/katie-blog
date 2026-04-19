@@ -9,7 +9,9 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="about" element={<About />} />
+          <Route path="blog" element={<Home />} />
           <Route path="destinations" element={<Destinations />} />
+          <Route path="gallery" element={<Home />} />
           <Route path="videos" element={<Videos />} />
           <Route path="contact" element={<Contact />} />
           {/* Catch all route - redirect to home */}

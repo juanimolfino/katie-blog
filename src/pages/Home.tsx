@@ -1,25 +1,17 @@
 import {
   Hero,
   AboutSection,
-  AsSeenIn,
-  VideosSection,
+  RecentPosts,
   DestinationsSection,
-  Newsletter,
-  CurrentLocation,
-  InstagramFeed,
-} from '@/components/sections';
+} from '../components/sections'
 
 export function Home() {
   return (
     <>
       <Hero />
       <AboutSection />
-      <AsSeenIn />
-      <VideosSection />
+      <RecentPosts />
       <DestinationsSection />
-      <Newsletter />
-      <CurrentLocation />
-      <InstagramFeed />
     </>
   );
 }

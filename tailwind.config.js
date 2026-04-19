@@ -13,6 +13,9 @@ module.exports = {
         cream: "#f6f1e4",
         terracotta: "#c1886c",
         "terracotta-light": "#d1987c",
+        ocean: "#006994",
+        "ocean-light": "#0085b5",
+        "ocean-dark": "#004d6b",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",

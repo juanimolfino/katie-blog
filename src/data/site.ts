@@ -1,67 +1,50 @@
-import type { SiteConfig, CurrentLocation, Partner, NavItem } from '@/types';
+import type { SiteConfig, CurrentLocation, NavItem } from '@/types';
 
 export const siteConfig: SiteConfig = {
-  name: "Travel Blogger & Influencer",
-  tagline: "Let's explore the world together, one destination at a time.",
-  description: "Join me on my adventures around the world. Discover travel tips, destination guides, and inspiring stories from my journeys.",
-  url: "https://travelblogger.com",
+  name: "What Katie Seas",
+  tagline: "Chasing the Ocean, One Dive at a Time",
+  description: "I'm Katie - a dive instructor traveling the world, sharing real stories from life underwater and beyond.",
+  url: "https://whatkatieseas.com",
   author: {
-    id: "eva",
-    name: "Eva",
-    bio: "I'm a travel blogger and influencer with a passion for exploring new places and sharing my experiences. Over the past 10 years, I've visited more than 50 countries and documented my adventures through photography, videos, and stories.",
-    avatar: "/images/about-eva.jpg",
+    id: "katie",
+    name: "Katie",
+    bio: "I'm Katie - a dive instructor and skipper currently living on Heron Island on the Great Barrier Reef. For the past few years, I've been traveling the world, working in the ocean, and building a life centered around saltwater, adventure, and exploration.",
+    avatar: "/images/about-katie.jpg",
     social: {
-      instagram: "https://instagram.com/evatravels",
-      youtube: "https://youtube.com/evatravels",
-      twitter: "https://twitter.com/evatravels",
-      facebook: "https://facebook.com/evatravels",
+      instagram: "https://instagram.com/whatkatieseas",
+      youtube: "https://youtube.com/whatkatieseas",
     },
   },
   social: {
-    instagram: "https://instagram.com/evatravels",
-    youtube: "https://youtube.com/evatravels",
-    twitter: "https://twitter.com/evatravels",
-    facebook: "https://facebook.com/evatravels",
-    pinterest: "https://pinterest.com/evatravels",
+    instagram: "https://instagram.com/whatkatieseas",
+    youtube: "https://youtube.com/whatkatieseas",
   },
   seo: {
-    title: "Travel Blogger & Influencer | Explore the World with Eva",
-    description: "Join me on my adventures around the world. Discover travel tips, destination guides, and inspiring stories from my journeys.",
-    ogImage: "/images/og-image.jpg",
+    title: "What Katie Seas | Dive Instructor & Ocean Explorer",
+    description: "A dive instructor traveling the world, sharing real stories from life underwater and beyond. Explore dive destinations, travel tips, and ocean adventures.",
+    ogImage: "/images/about-katie.jpg",
   },
 };
 
 export const navigation: NavItem[] = [
   { label: "Home", href: "/" },
-  { label: "About me", href: "/about" },
-  { label: "Destination", href: "/destinations" },
-  { label: "Videos", href: "/videos" },
-  { label: "Work with me", href: "/contact" },
+  { label: "About", href: "/about" },
+  { label: "Blog", href: "/blog" },
+  { label: "Destinations", href: "/destinations" },
+  { label: "Gallery", href: "/gallery" },
 ];
 
 export const currentLocation: CurrentLocation = {
-  city: "Jasper National Park",
-  country: "Canada",
-  image: "/images/location-jasper.jpg",
-  coordinates: {
-    lat: 52.8734,
-    lng: -118.0814,
-  },
+  city: "Heron Island",
+  country: "Great Barrier Reef, Australia",
+  image: "/images/about-katie.jpg",
   nextStops: [
-    "Niagara Falls",
-    "Quebec City",
-    "Prince Edward Island",
-    "Vancouver Island",
+    "Raja Ampat, Indonesia",
+    "Similan Islands, Thailand",
+    "Galápagos Islands",
+    "Maldives",
   ],
 };
-
-export const partners: Partner[] = [
-  { name: "National Geographic", logo: "/images/partners/natgeo.svg", url: "#" },
-  { name: "Lonely Planet", logo: "/images/partners/lonelyplanet.svg", url: "#" },
-  { name: "Condé Nast Traveler", logo: "/images/partners/conde.svg", url: "#" },
-  { name: "Travel + Leisure", logo: "/images/partners/travelleisure.svg", url: "#" },
-  { name: "BBC Travel", logo: "/images/partners/bbc.svg", url: "#" },
-];
 
 export const categories = [
   { id: "all", slug: "all", name: "View All" },
@@ -69,6 +52,7 @@ export const categories = [
   { id: "americas", slug: "americas", name: "The Americas" },
   { id: "asia", slug: "asia", name: "Asia" },
   { id: "africa", slug: "africa", name: "Africa" },
+  { id: "oceania", slug: "oceania", name: "Oceania" },
 ];
 
 export const continents = [

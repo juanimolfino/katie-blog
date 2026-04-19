@@ -1,12 +1,44 @@
 import { useEffect, useRef, useState } from 'react';
 import { Play } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { getFeaturedVideos } from '@/data';
+
+// Videos estáticos
+const videos = [
+  {
+    id: "1",
+    slug: "australia-diving",
+    title: "Australia's Most Beautiful Dive Sites",
+    description: "Discover the best diving spots along the Great Barrier Reef.",
+    thumbnail: "/images/destinations/gbr.jpg",
+    duration: "12:34",
+    category: { id: "oceania", slug: "oceania", name: "Oceania" },
+    publishedAt: "2024-03-10",
+  },
+  {
+    id: "2",
+    slug: "raja-ampat-adventure",
+    title: "My Solo Trip to Raja Ampat - Paradise Found",
+    description: "Join me on my solo adventure through the most biodiverse marine ecosystem.",
+    thumbnail: "/images/destinations/raja-ampat.jpg",
+    duration: "18:45",
+    category: { id: "asia", slug: "asia", name: "Asia" },
+    publishedAt: "2024-02-20",
+  },
+  {
+    id: "3",
+    slug: "galapagos-diving",
+    title: "Galápagos Diving Experience of a Lifetime",
+    description: "Swimming with hammerhead sharks and marine iguanas.",
+    thumbnail: "/images/destinations/galapagos.jpg",
+    duration: "15:20",
+    category: { id: "americas", slug: "americas", name: "The Americas" },
+    publishedAt: "2024-01-25",
+  },
+];
 
 export function VideosSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
-  const videos = getFeaturedVideos();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -27,7 +59,7 @@ export function VideosSection() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="py-24 lg:py-32 bg-cream">
+    <section ref={sectionRef} className="py-24 lg:py-32 bg-white">
       <div className="section-padding">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12">
@@ -47,7 +79,7 @@ export function VideosSection() {
           
           <Link
             to="/videos"
-            className={`btn-primary mt-6 md:mt-0 inline-flex items-center gap-3 group self-start transition-all duration-700 delay-200 ${
+            className={`btn-ocean mt-6 md:mt-0 inline-flex items-center gap-3 group self-start transition-all duration-700 delay-200 ${
               isVisible
                 ? 'opacity-100 translate-x-0'
                 : 'opacity-0 translate-x-8'
@@ -60,7 +92,7 @@ export function VideosSection() {
 
         {/* Videos Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {videos.map((video, index) => (
+          {videos.map((video: { id: string; slug: string; title: string; thumbnail: string; duration: string }, index: number) => (
             <Link
               key={video.id}
               to={`/videos/${video.slug}`}
@@ -98,7 +130,7 @@ export function VideosSection() {
               </div>
               
               {/* Title */}
-              <h3 className="font-display text-xl font-light mt-4 group-hover:text-terracotta transition-colors">
+              <h3 className="font-display text-xl font-light mt-4 group-hover:text-ocean transition-colors">
                 {video.title}
               </h3>
             </Link>

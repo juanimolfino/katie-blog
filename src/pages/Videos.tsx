@@ -1,6 +1,68 @@
 import { useState, useEffect, useRef } from 'react';
 import { Play } from 'lucide-react';
-import { videos } from '@/data';
+
+const videos = [
+  {
+    id: "1",
+    slug: "australia-diving",
+    title: "Australia's Most Beautiful Dive Sites",
+    description: "Discover the best diving spots along the Great Barrier Reef.",
+    thumbnail: "/images/destinations/gbr.jpg",
+    duration: "12:34",
+    category: "Oceania",
+    publishedAt: "2024-03-10",
+  },
+  {
+    id: "2",
+    slug: "raja-ampat-adventure",
+    title: "My Solo Trip to Raja Ampat - Paradise Found",
+    description: "Join me on my solo adventure through the most biodiverse marine ecosystem.",
+    thumbnail: "/images/destinations/raja-ampat.jpg",
+    duration: "18:45",
+    category: "Asia",
+    publishedAt: "2024-02-20",
+  },
+  {
+    id: "3",
+    slug: "galapagos-diving",
+    title: "Galápagos Diving Experience of a Lifetime",
+    description: "Swimming with hammerhead sharks and marine iguanas.",
+    thumbnail: "/images/destinations/galapagos.jpg",
+    duration: "15:20",
+    category: "Americas",
+    publishedAt: "2024-01-25",
+  },
+  {
+    id: "4",
+    slug: "maldives-paradise",
+    title: "Maldives - The Perfect Dive Getaway",
+    description: "Experience the ultimate diving vacation in the Maldives.",
+    thumbnail: "/images/destinations/maldives.jpg",
+    duration: "14:10",
+    category: "Asia",
+    publishedAt: "2024-01-10",
+  },
+  {
+    id: "5",
+    slug: "similan-islands",
+    title: "Similan Islands - Thailand's Best Kept Secret",
+    description: "Exploring the stunning Similan Islands.",
+    thumbnail: "/images/destinations/similan.jpg",
+    duration: "20:15",
+    category: "Asia",
+    publishedAt: "2023-12-20",
+  },
+  {
+    id: "6",
+    slug: "red-sea-diving",
+    title: "Red Sea Adventures - Egypt's Underwater Treasures",
+    description: "Diving the world-famous Red Sea.",
+    thumbnail: "/images/destinations/red-sea.jpg",
+    duration: "16:30",
+    category: "Africa",
+    publishedAt: "2023-12-05",
+  },
+];
 
 export function Videos() {
   const [playingVideo, setPlayingVideo] = useState<string | null>(null);
@@ -28,7 +90,7 @@ export function Videos() {
   return (
     <div className="pt-20">
       {/* Hero */}
-      <section className="py-24 lg:py-32 bg-cream">
+      <section className="py-24 lg:py-32 bg-white">
         <div className="section-padding">
           <div className="max-w-4xl mx-auto text-center">
             <span className="font-body text-sm font-medium tracking-[2px] uppercase text-black/50 mb-6 block">
@@ -42,10 +104,10 @@ export function Videos() {
       </section>
 
       {/* Videos Grid */}
-      <section ref={sectionRef} className="py-24 lg:py-32 bg-cream">
+      <section ref={sectionRef} className="py-24 lg:py-32 bg-white">
         <div className="section-padding">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {videos.map((video, index) => (
+            {videos.map((video: { id: string; slug: string; title: string; thumbnail: string; duration: string; description: string; category: string; publishedAt: string }, index: number) => (
               <div
                 key={video.id}
                 className={`group transition-all duration-700 ${
@@ -97,19 +159,14 @@ export function Videos() {
                 {/* Info */}
                 <div className="mt-4">
                   <span className="font-body text-xs tracking-wider uppercase text-black/50 mb-2 block">
-                    {video.category.name}
+                    {video.category}
                   </span>
-                  <h3 className="font-display text-xl font-light group-hover:text-terracotta transition-colors">
+                  <h3 className="font-display text-xl font-light group-hover:text-ocean transition-colors">
                     {video.title}
                   </h3>
                   <p className="font-body text-sm text-black/60 mt-2 line-clamp-2">
                     {video.description}
                   </p>
-                  {video.views && (
-                    <p className="font-body text-xs text-black/40 mt-2">
-                      {video.views.toLocaleString()} views
-                    </p>
-                  )}
                 </div>
               </div>
             ))}
@@ -118,20 +175,20 @@ export function Videos() {
       </section>
 
       {/* Subscribe CTA */}
-      <section className="py-24 lg:py-32 bg-cream border-t border-black/5">
+      <section className="py-24 lg:py-32 bg-white border-t border-black/5">
         <div className="section-padding">
           <div className="max-w-2xl mx-auto text-center">
             <h2 className="font-display text-3xl md:text-4xl font-light mb-6">
               Subscribe to my channel
             </h2>
             <p className="font-body text-base text-black/70 mb-8">
-              Get notified when I upload new travel videos and adventures.
+              Get notified when I upload new diving videos and ocean adventures.
             </p>
             <a
               href="https://youtube.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-primary inline-flex items-center gap-3"
+              className="btn-ocean inline-flex items-center gap-3"
             >
               <Play className="w-5 h-5" />
               <span>Subscribe on YouTube</span>

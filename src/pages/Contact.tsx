@@ -35,7 +35,6 @@ export function Contact() {
     e.preventDefault();
     if (formData.name && formData.email && formData.message) {
       setIsSubmitted(true);
-      // Here you would typically send the form data to your API
       setTimeout(() => {
         setFormData({ name: '', email: '', subject: '', message: '' });
         setIsSubmitted(false);
@@ -53,7 +52,7 @@ export function Contact() {
   return (
     <div className="pt-20">
       {/* Hero */}
-      <section className="py-24 lg:py-32 bg-cream">
+      <section className="py-24 lg:py-32 bg-white">
         <div className="section-padding">
           <div className="max-w-4xl mx-auto text-center">
             <span className="font-body text-sm font-medium tracking-[2px] uppercase text-black/50 mb-6 block">
@@ -71,7 +70,7 @@ export function Contact() {
       </section>
 
       {/* Contact Form */}
-      <section ref={sectionRef} className="py-24 lg:py-32 bg-cream">
+      <section ref={sectionRef} className="py-24 lg:py-32 bg-white">
         <div className="section-padding">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20">
             {/* Form */}
@@ -99,7 +98,7 @@ export function Contact() {
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 bg-white border border-black/10 font-body text-base focus:outline-none focus:border-terracotta transition-colors"
+                      className="w-full px-4 py-3 bg-white border border-black/10 font-body text-base focus:outline-none focus:border-ocean transition-colors"
                       placeholder="Your name"
                     />
                   </div>
@@ -115,7 +114,7 @@ export function Contact() {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 bg-white border border-black/10 font-body text-base focus:outline-none focus:border-terracotta transition-colors"
+                      className="w-full px-4 py-3 bg-white border border-black/10 font-body text-base focus:outline-none focus:border-ocean transition-colors"
                       placeholder="your@email.com"
                     />
                   </div>
@@ -130,7 +129,7 @@ export function Contact() {
                       name="subject"
                       value={formData.subject}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 bg-white border border-black/10 font-body text-base focus:outline-none focus:border-terracotta transition-colors"
+                      className="w-full px-4 py-3 bg-white border border-black/10 font-body text-base focus:outline-none focus:border-ocean transition-colors"
                       placeholder="What's this about?"
                     />
                   </div>
@@ -146,14 +145,14 @@ export function Contact() {
                       onChange={handleChange}
                       required
                       rows={6}
-                      className="w-full px-4 py-3 bg-white border border-black/10 font-body text-base focus:outline-none focus:border-terracotta transition-colors resize-none"
+                      className="w-full px-4 py-3 bg-white border border-black/10 font-body text-base focus:outline-none focus:border-ocean transition-colors resize-none"
                       placeholder="Tell me about your project..."
                     />
                   </div>
 
                   <button
                     type="submit"
-                    className="btn-primary w-full justify-center"
+                    className="btn-ocean w-full justify-center"
                   >
                     <Send className="w-5 h-5" />
                     <span>SUBMIT</span>
@@ -184,7 +183,7 @@ export function Contact() {
                 {/* Bio */}
                 <div>
                   <p className="font-body text-base leading-relaxed text-black/70">
-                    Over the past 10 years, I've built a community of travel enthusiasts 
+                    Over the past few years, I've built a community of ocean enthusiasts 
                     who trust my recommendations and value my authentic perspective. 
                     Let's work together to create content that inspires and engages.
                   </p>
@@ -193,28 +192,28 @@ export function Contact() {
                 {/* Contact Info */}
                 <div className="space-y-4">
                   <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 bg-terracotta/10 flex items-center justify-center">
-                      <Mail className="w-5 h-5 text-terracotta" />
+                    <div className="w-10 h-10 bg-ocean/10 flex items-center justify-center">
+                      <Mail className="w-5 h-5 text-ocean" />
                     </div>
                     <div>
                       <span className="font-body text-sm text-black/50 block">Email</span>
                       <a
-                        href="mailto:contact@travelblog.com"
-                        className="font-body text-base hover:text-terracotta transition-colors"
+                        href="mailto:hello@whatkatieseas.com"
+                        className="font-body text-base hover:text-ocean transition-colors"
                       >
-                        contact@travelblog.com
+                        hello@whatkatieseas.com
                       </a>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 bg-terracotta/10 flex items-center justify-center">
-                      <MapPin className="w-5 h-5 text-terracotta" />
+                    <div className="w-10 h-10 bg-ocean/10 flex items-center justify-center">
+                      <MapPin className="w-5 h-5 text-ocean" />
                     </div>
                     <div>
                       <span className="font-body text-sm text-black/50 block">Location</span>
                       <span className="font-body text-base">
-                        Currently in {siteConfig.author.name}'s home base
+                        Currently on Heron Island, Great Barrier Reef
                       </span>
                     </div>
                   </div>
@@ -229,7 +228,7 @@ export function Contact() {
                         href={siteConfig.social.instagram}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-10 h-10 bg-black/5 flex items-center justify-center hover:bg-terracotta hover:text-white transition-colors"
+                        className="w-10 h-10 bg-black/5 flex items-center justify-center hover:bg-ocean hover:text-white transition-colors"
                       >
                         <Instagram className="w-5 h-5" />
                       </a>
@@ -239,7 +238,7 @@ export function Contact() {
                         href={siteConfig.social.youtube}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-10 h-10 bg-black/5 flex items-center justify-center hover:bg-terracotta hover:text-white transition-colors"
+                        className="w-10 h-10 bg-black/5 flex items-center justify-center hover:bg-ocean hover:text-white transition-colors"
                       >
                         <Youtube className="w-5 h-5" />
                       </a>
@@ -247,11 +246,11 @@ export function Contact() {
                   </div>
                 </div>
 
-                {/* As Seen In */}
+                {/* Partners */}
                 <div className="pt-8 border-t border-black/10">
-                  <span className="font-body text-sm text-black/50 mb-4 block">As seen in</span>
+                  <span className="font-body text-sm text-black/50 mb-4 block">Partners</span>
                   <div className="flex flex-wrap gap-4">
-                    {partners.slice(0, 3).map((partner) => (
+                    {partners.slice(0, 3).map((partner: { name: string; logo: string }) => (
                       <span
                         key={partner.name}
                         className="font-display text-sm font-medium text-black/30"
