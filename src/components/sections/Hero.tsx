@@ -11,12 +11,24 @@ export function Hero() {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+    const checkDevice = () => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      if (width < 768) {
+        // 📱 teléfonos
+        setIsMobile(true);
+      } else if (width < 1024 && height > width) {
+        // 📲 tablets en vertical
+        setIsMobile(true);
+      } else {
+        // 💻 desktop o tablet horizontal
+        setIsMobile(false);
+      }
     };
 
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
+    checkDevice();
+    window.addEventListener('resize', checkDevice);
 
     const handleScroll = () => {
       if (!heroRef.current || !contentRef.current) return;
@@ -32,8 +44,8 @@ export function Hero() {
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     return () => {
+      window.removeEventListener('resize', checkDevice);
       window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', checkMobile);
     };
   }, []);
 
@@ -52,7 +64,7 @@ export function Hero() {
           style={{
             width: '100vw',
             height: '100vh',
-            transform: 'translate(-50%, -50%) scale(1.3)', // 🔥 clave
+            transform: 'translate(-50%, -50%) scale(1.3)',
           }}
           allow="autoplay; encrypted-media"
           frameBorder="0"
