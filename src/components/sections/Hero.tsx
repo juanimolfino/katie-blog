@@ -1,11 +1,24 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { siteConfig } from '@/data';
+
+// 🎬 IDs DE YOUTUBE - Reemplazar con los de Katie
+const VIDEO_DESKTOP = "c9dRw1KIfDk";  // Video horizontal
+const VIDEO_MOBILE = "y-B9ReggOfM"; // YouTube Short (vertical)
 
 export function Hero() {
   const heroRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    // Detectar si es mobile
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
     const handleScroll = () => {
       if (!heroRef.current || !contentRef.current) return;
       
@@ -20,8 +33,14 @@ export function Hero() {
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', checkMobile);
+    };
   }, []);
+
+  const videoId = isMobile ? VIDEO_MOBILE : VIDEO_DESKTOP;
 
   return (
     <section
@@ -31,7 +50,7 @@ export function Hero() {
       {/* YouTube Video Background */}
       <div className="absolute inset-0 w-full h-full overflow-hidden bg-black">
         <iframe
-          src="https://www.youtube.com/embed/TY-BdeeivkM?autoplay=1&mute=1&loop=1&controls=0&playlist=TY-BdeeivkM&rel=0&modestbranding=1&playsinline=1&vq=hd1080"
+          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&controls=0&playlist=${videoId}&rel=0&modestbranding=1&playsinline=1`}
           className="absolute inset-0 w-full h-full object-cover pointer-events-none"
           style={{ 
             width: '100vw', 

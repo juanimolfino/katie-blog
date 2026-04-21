@@ -6,42 +6,49 @@ export function Footer() {
 
   return (
     <footer className="bg-ocean text-white">
+      
       {/* Main Footer */}
-      <div className="section-padding py-16">
-        <div className="grid md:grid-cols-3 gap-12 items-center">
+      <div className="section-padding py-20">
+        <div className="grid md:grid-cols-3 gap-12 items-center justify-items-center">
+          
           {/* Contact */}
-          <div className="text-center md:text-left">
-            <h3 className="font-display text-2xl md:text-3xl font-light mb-4">
+          <div className="text-center md:text-left space-y-4">
+            <h3 className="font-display text-xl md:text-2xl font-light">
               Get in Contact
             </h3>
-            <a
-              href="mailto:hello@whatkatieseas.com"
-              className="font-body text-white/80 hover:text-white transition-colors"
-            >
-              hello@whatkatieseas.com
-            </a>
+
+            <div className="flex flex-col gap-2">
+              <a
+                href="mailto:hello@whatkatieseas.com"
+                className="font-body text-white/70 hover:text-white transition-colors"
+              >
+                hello@whatkatieseas.com
+              </a>
+
+              {/* 👇 NUEVO LINK */}
+              <Link
+                to="/contact"
+                className="font-body text-sm text-white/60 hover:text-white transition-all duration-300 hover:translate-x-1"
+              >
+                Send a message →
+              </Link>
+            </div>
           </div>
 
           {/* Logo */}
-          <div className="flex flex-col items-center">
-            <Link to="/" className="flex items-center gap-2 mb-4">
-              <svg 
-                viewBox="0 0 32 32" 
-                fill="none" 
-                className="w-12 h-12 text-white/90"
-                stroke="currentColor"
-                strokeWidth="1.5"
-              >
-                <path d="M16 3C10 8 4 12 4 19C4 25 9.5 29 16 29C22.5 29 28 25 28 19C28 12 22 8 16 3Z" />
-                <circle cx="16" cy="18" r="3" fill="currentColor" stroke="none" />
-                <path d="M16 8C13 11 11 13 11 16" strokeLinecap="round" />
-                <path d="M16 8C19 11 21 13 21 16" strokeLinecap="round" />
-                <path d="M12 24C14 26 18 26 20 24" strokeLinecap="round" />
-                <circle cx="12" cy="16" r="1" fill="currentColor" stroke="none" />
-                <circle cx="20" cy="16" r="1" fill="currentColor" stroke="none" />
-              </svg>
+          <div className="flex flex-col items-center text-center">
+            <Link to="/" className="flex flex-col items-center gap-3 group">
+              
+              <img
+                src="/images/logo_con_nombre.png"
+                alt="What Katie Seas"
+                className="h-30 w-auto transition-transform duration-300 group-hover:scale-105"
+              />
+
+              {/* <span className="font-display text-2xl md:text-3xl font-light tracking-wide">
+                What Katie Seas
+              </span> */}
             </Link>
-            <span className="font-display text-lg">What Katie Seas</span>
           </div>
 
           {/* Social */}
@@ -78,6 +85,7 @@ export function Footer() {
               )}
             </div>
           </div>
+
         </div>
       </div>
 
@@ -85,6 +93,7 @@ export function Footer() {
       <div className="border-t border-white/10">
         <div className="section-padding py-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            
             <nav className="flex flex-wrap justify-center gap-6">
               {navigation.map((item) => (
                 <Link
@@ -96,9 +105,11 @@ export function Footer() {
                 </Link>
               ))}
             </nav>
+
             <p className="font-body text-sm text-white/50 text-center">
-              &copy; {currentYear} What Katie Seas. All rights reserved.
+              &copy; {currentYear} What Katie Seas
             </p>
+
           </div>
         </div>
       </div>

@@ -145,6 +145,10 @@ export interface CurrentLocation {
   nextStops: string[];
 }
 
+export interface NextStop {
+  country: string;
+}
+
 // Partner/As Seen In Type
 export interface Partner {
   name: string;

@@ -26,12 +26,12 @@ export function RecentPosts() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="py-24 lg:pb-32 lg:pt-0 bg-white">
+    <section ref={sectionRef} className="py-24 lg:pb-32 lg:pt-10 bg-gray-100">
       <div className="section-padding">
         {/* Header */}
         <div className="mb-12">
           <h2
-            className={`font-display text-5xl md:text-6xl lg:text-7xl font-light transition-all duration-700 ${
+            className={`font-display text-5xl md:text-6xl lg:text-7xl font-light transition-all duration-700 text-terracotta/80 ${
               isVisible
                 ? 'opacity-100 translate-y-0'
                 : 'opacity-0 translate-y-8'

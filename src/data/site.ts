@@ -1,4 +1,4 @@
-import type { SiteConfig, CurrentLocation, NavItem } from '@/types';
+import type { SiteConfig, CurrentLocation, NavItem, NextStop } from '@/types';
 
 export const siteConfig: SiteConfig = {
   name: "What Katie Seas",
@@ -45,6 +45,11 @@ export const currentLocation: CurrentLocation = {
     "Maldives",
   ],
 };
+
+export const nextStops:NextStop[] = [
+  { country: "Argentina" },
+  { country: "Costa rica" },
+];
 
 export const categories = [
   { id: "all", slug: "all", name: "View All" },
