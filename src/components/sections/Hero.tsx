@@ -2,15 +2,13 @@ import { useEffect, useRef, useState } from 'react';
 import { siteConfig } from '@/data';
 
 // 🎬 IDs DE YOUTUBE
-const VIDEO_DESKTOP = "c9dRw1KIfDk";  // horizontal (16:9)
-const VIDEO_MOBILE = "y-B9ReggOfM";   // vertical (9:16)
+const VIDEO_DESKTOP = "c9dRw1KIfDk";
+const VIDEO_MOBILE = "y-B9ReggOfM";
 
 export function Hero() {
   const heroRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-
   const [isMobile, setIsMobile] = useState(false);
-  const [videoStyle, setVideoStyle] = useState<React.CSSProperties>({});
 
   useEffect(() => {
     const checkMobile = () => {
@@ -20,38 +18,6 @@ export function Hero() {
     checkMobile();
     window.addEventListener('resize', checkMobile);
 
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  // 🔥 CALCULO DINÁMICO (tipo object-cover)
-  useEffect(() => {
-    const updateVideoSize = () => {
-      const windowRatio = window.innerWidth / window.innerHeight;
-      const videoRatio = isMobile ? 9 / 16 : 16 / 9;
-
-      if (windowRatio > videoRatio) {
-        // pantalla más ancha → cubrir ancho
-        setVideoStyle({
-          width: '100vw',
-          height: `${100 / videoRatio}vw`,
-        });
-      } else {
-        // pantalla más alta → cubrir alto
-        setVideoStyle({
-          width: `${100 * videoRatio}vh`,
-          height: '100vh',
-        });
-      }
-    };
-
-    updateVideoSize();
-    window.addEventListener('resize', updateVideoSize);
-
-    return () => window.removeEventListener('resize', updateVideoSize);
-  }, [isMobile]);
-
-  // Scroll animation (igual que tenías)
-  useEffect(() => {
     const handleScroll = () => {
       if (!heroRef.current || !contentRef.current) return;
 
@@ -64,7 +30,11 @@ export function Hero() {
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', checkMobile);
+    };
   }, []);
 
   const videoId = isMobile ? VIDEO_MOBILE : VIDEO_DESKTOP;
@@ -80,8 +50,9 @@ export function Hero() {
           src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&controls=0&playlist=${videoId}&rel=0&modestbranding=1&playsinline=1`}
           className="absolute top-1/2 left-1/2 pointer-events-none"
           style={{
-            ...videoStyle,
-            transform: 'translate(-50%, -50%)',
+            width: '100vw',
+            height: '100vh',
+            transform: 'translate(-50%, -50%) scale(1.3)', // 🔥 clave
           }}
           allow="autoplay; encrypted-media"
           frameBorder="0"
