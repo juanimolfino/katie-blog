@@ -19,7 +19,7 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // 🔥 SCROLL LOCK (SOLUCIÓN PRO)
+  // Scroll lock
   useEffect(() => {
     if (isMobileMenuOpen) {
       document.body.style.overflow = 'hidden';
@@ -45,95 +45,98 @@ export function Header() {
   );
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50">
-      
-      {/* Background */}
-      <div
-        className={`absolute inset-0 transition-colors duration-300 ${
-          isMobileMenuOpen
-            ? 'bg-black'
-            : isScrolled
-              ? 'bg-white/95 backdrop-blur-md shadow-sm'
-              : 'bg-transparent'
-        }`}
-      />
+    <>
+      {/* HEADER */}
+      <header className="fixed top-0 left-0 right-0 z-50">
+        
+        {/* Background */}
+        <div
+          className={`absolute inset-0 transition-colors duration-300 ${
+            isMobileMenuOpen
+              ? 'bg-black'
+              : isScrolled
+                ? 'bg-white/95 backdrop-blur-md shadow-sm'
+                : 'bg-transparent'
+          }`}
+        />
 
-      {/* CONTENT */}
-      <div className="relative section-padding">
-        <div className="flex items-center justify-between h-20">
-          
-          {/* Logo */}
-          <Link
-            to="/"
-            className="flex items-center gap-3 transition-transform duration-300"
-          >
-            <img
-              src={
-                isScrolled || isMobileMenuOpen
-                  ? '/images/Updblacklogo.png'
-                  : '/images/Up3logowhite.png'
-              }
-              alt="What Katie Seas"
-              className="h-12 w-auto"
-            />
-
-            <span
-              className={`font-logo text-3xl font-medium transition-colors duration-300 ${
-                isScrolled || isMobileMenuOpen
-                  ? 'text-black'
-                  : 'text-white'
-              }`}
+        {/* CONTENT */}
+        <div className="relative section-padding">
+          <div className="flex items-center justify-between h-20">
+            
+            {/* Logo */}
+            <Link
+              to="/"
+              className="flex items-center gap-3 transition-transform duration-300"
             >
-              What Katie Seas
-            </span>
-          </Link>
+              <img
+                src={
+                  isScrolled || isMobileMenuOpen
+                    ? '/images/Updblacklogo.png'
+                    : '/images/Up3logowhite.png'
+                }
+                alt="What Katie Seas"
+                className="h-12 w-auto"
+              />
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-8">
-            {navigation.map((item: NavItem) => (
-              <Link
-                key={item.href}
-                to={item.href}
-                className={`relative font-body text-base tracking-wide transition-colors duration-300 pb-1 ${
-                  isActive(item.href)
-                    ? isScrolled
-                      ? 'text-ocean'
-                      : 'text-white'
-                    : isScrolled
-                      ? 'text-black hover:text-ocean'
-                      : 'text-white/80 hover:text-white'
+              <span
+                className={`font-logo text-3xl font-medium transition-colors duration-300 ${
+                  isScrolled || isMobileMenuOpen
+                    ? 'text-black'
+                    : 'text-white'
                 }`}
               >
-                {item.label}
-                <span
-                  className={`absolute bottom-0 left-1/2 -translate-x-1/2 h-px bg-ocean transition-all duration-200 ${
-                    isActive(item.href)
-                      ? 'w-full'
-                      : 'w-0 group-hover:w-full'
-                  }`}
-                />
-              </Link>
-            ))}
-          </nav>
+                What Katie Seas
+              </span>
+            </Link>
 
-          {/* Mobile Button */}
-          <button
-            className={`lg:hidden p-2 relative z-50 transition-colors duration-300 ${
-              isScrolled || isMobileMenuOpen
-                ? 'text-black hover:text-ocean'
-                : 'text-white hover:text-white/80'
-            }`}
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            {isMobileMenuOpen ? (
-              <X className="w-6 h-6" />
-            ) : (
-              <Menu className="w-6 h-6" />
-            )}
-          </button>
+            {/* Desktop Navigation */}
+            <nav className="hidden lg:flex items-center gap-8">
+              {navigation.map((item: NavItem) => (
+                <Link
+                  key={item.href}
+                  to={item.href}
+                  className={`relative font-body text-base tracking-wide transition-colors duration-300 pb-1 ${
+                    isActive(item.href)
+                      ? isScrolled
+                        ? 'text-ocean'
+                        : 'text-white'
+                      : isScrolled
+                        ? 'text-black hover:text-ocean'
+                        : 'text-white/80 hover:text-white'
+                  }`}
+                >
+                  {item.label}
+                  <span
+                    className={`absolute bottom-0 left-1/2 -translate-x-1/2 h-px bg-ocean transition-all duration-200 ${
+                      isActive(item.href)
+                        ? 'w-full'
+                        : 'w-0 group-hover:w-full'
+                    }`}
+                  />
+                </Link>
+              ))}
+            </nav>
+          </div>
         </div>
-      </div>
+      </header>
+
+      {/* 🔥 BOTÓN FIXED (SIEMPRE VISIBLE) */}
+      <button
+        className={`lg:hidden fixed top-6 right-6 z-[60] p-2 transition-colors duration-300 ${
+          isScrolled || isMobileMenuOpen
+            ? 'text-black'
+            : 'text-white'
+        }`}
+        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        aria-label="Toggle menu"
+      >
+        {isMobileMenuOpen ? (
+          <X className="w-7 h-7" />
+        ) : (
+          <Menu className="w-7 h-7" />
+        )}
+      </button>
 
       {/* 🔥 Mobile Menu FULLSCREEN */}
       <div
@@ -162,6 +165,6 @@ export function Header() {
           ))}
         </nav>
       </div>
-    </header>
+    </>
   );
 }
