@@ -5,7 +5,7 @@ import {
   DestinationsSection,
 } from '../components/sections'
 
-import { NextStops } from '@/components/sections/nextStops';
+import { NextStops } from '@/components/sections/Next';
 
 export function Home() {
   return (
