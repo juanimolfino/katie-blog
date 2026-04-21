@@ -9,7 +9,7 @@ export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
 
-  // Scroll detect
+  // Detect scroll
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 100);
@@ -19,7 +19,7 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Scroll lock
+  // Scroll lock limpio
   useEffect(() => {
     if (isMobileMenuOpen) {
       document.body.style.overflow = 'hidden';
@@ -90,7 +90,7 @@ export function Header() {
               </span>
             </Link>
 
-            {/* Desktop Navigation */}
+            {/* Desktop Nav */}
             <nav className="hidden lg:flex items-center gap-8">
               {navigation.map((item: NavItem) => (
                 <Link
@@ -124,9 +124,11 @@ export function Header() {
       {/* 🔥 BOTÓN FIXED (SIEMPRE VISIBLE) */}
       <button
         className={`lg:hidden fixed top-6 right-6 z-[60] p-2 transition-colors duration-300 ${
-          isScrolled || isMobileMenuOpen
-            ? 'text-black'
-            : 'text-white'
+          isMobileMenuOpen
+            ? 'text-white'
+            : isScrolled
+              ? 'text-black hover:text-ocean'
+              : 'text-white hover:text-white/80'
         }`}
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         aria-label="Toggle menu"
