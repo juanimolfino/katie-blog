@@ -18,7 +18,7 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // 🔒 Scroll lock (correcto)
+  // 🔒 Scroll lock
   useEffect(() => {
     if (isMobileMenuOpen) {
       const scrollY = window.scrollY;
@@ -31,7 +31,6 @@ export function Header() {
         document.body.style.position = '';
         document.body.style.top = '';
         document.body.style.width = '';
-
         window.scrollTo(0, scrollY);
       };
     }
@@ -52,12 +51,14 @@ export function Header() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
       
-      {/* ✅ BACKGROUND LAYER (fix glitch violeta) */}
+      {/* Background */}
       <div
         className={`absolute inset-0 transition-colors duration-300 ${
-          isScrolled
-            ? 'bg-white/95 backdrop-blur-md shadow-sm'
-            : 'bg-transparent'
+          isMobileMenuOpen
+            ? 'bg-black' // 🔥 fuerza fondo cuando menú abierto
+            : isScrolled
+              ? 'bg-white/95 backdrop-blur-md shadow-sm'
+              : 'bg-transparent'
         }`}
       />
 
@@ -72,7 +73,7 @@ export function Header() {
           >
             <img
               src={
-                isScrolled
+                isScrolled || isMobileMenuOpen
                   ? '/images/Updblacklogo.png'
                   : '/images/Up3logowhite.png'
               }
@@ -82,7 +83,7 @@ export function Header() {
 
             <span
               className={`font-logo text-3xl font-medium transition-colors duration-300 ${
-                isScrolled ? 'text-black' : 'text-white'
+                isScrolled || isMobileMenuOpen ? 'text-black' : 'text-white'
               }`}
             >
               What Katie Seas
@@ -119,8 +120,8 @@ export function Header() {
 
           {/* Mobile Button */}
           <button
-            className={`lg:hidden p-2 transition-colors duration-300 ${
-              isScrolled
+            className={`lg:hidden p-2 relative z-50 transition-colors duration-300 ${
+              isScrolled || isMobileMenuOpen
                 ? 'text-black hover:text-ocean'
                 : 'text-white hover:text-white/80'
             }`}
@@ -136,9 +137,9 @@ export function Header() {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* 🔥 Mobile Menu FULLSCREEN */}
       <div
-        className={`lg:hidden fixed inset-0 top-20 transition-opacity duration-300 ${
+        className={`lg:hidden fixed inset-0 z-40 transition-opacity duration-300 ${
           isMobileMenuOpen
             ? 'opacity-100 pointer-events-auto'
             : 'opacity-0 pointer-events-none'
