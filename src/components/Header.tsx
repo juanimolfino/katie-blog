@@ -9,6 +9,7 @@ export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
 
+  // Scroll detect
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 100);
@@ -18,22 +19,17 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // 🔒 Scroll lock
+  // 🔥 SCROLL LOCK (SOLUCIÓN PRO)
   useEffect(() => {
     if (isMobileMenuOpen) {
-      const scrollY = window.scrollY;
-
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = '100%';
-
-      return () => {
-        document.body.style.position = '';
-        document.body.style.top = '';
-        document.body.style.width = '';
-        window.scrollTo(0, scrollY);
-      };
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
     }
+
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [isMobileMenuOpen]);
 
   const handleNavClick = useCallback(() => {
@@ -55,7 +51,7 @@ export function Header() {
       <div
         className={`absolute inset-0 transition-colors duration-300 ${
           isMobileMenuOpen
-            ? 'bg-black' // 🔥 fuerza fondo cuando menú abierto
+            ? 'bg-black'
             : isScrolled
               ? 'bg-white/95 backdrop-blur-md shadow-sm'
               : 'bg-transparent'
@@ -83,7 +79,9 @@ export function Header() {
 
             <span
               className={`font-logo text-3xl font-medium transition-colors duration-300 ${
-                isScrolled || isMobileMenuOpen ? 'text-black' : 'text-white'
+                isScrolled || isMobileMenuOpen
+                  ? 'text-black'
+                  : 'text-white'
               }`}
             >
               What Katie Seas
