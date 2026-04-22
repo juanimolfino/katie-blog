@@ -149,7 +149,7 @@ export function Header() {
           isMobileMenuOpen
             ? 'opacity-100 pointer-events-auto'
             : 'opacity-0 pointer-events-none'
-        } ${isScrolled ? 'bg-white/98' : 'bg-black/95'}`}
+        } ${isMobileMenuOpen ? 'bg-black/95' : isScrolled ? 'bg-white/98' : 'bg-black/95'}`}
       >
         <nav className="flex flex-col items-center justify-center h-full gap-8">
           {navigation.map((item: NavItem) => (
@@ -161,7 +161,7 @@ export function Header() {
                 isActive(item.href)
                   ? 'text-ocean'
                   : isScrolled
-                    ? 'text-black hover:text-ocean'
+                    ? 'text-white hover:text-ocean'
                     : 'text-white hover:text-white/80'
               }`}
             >
