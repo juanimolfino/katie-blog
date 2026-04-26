@@ -1,73 +1,293 @@
-# React + TypeScript + Vite
+# What Katie Seas
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Editorial travel and diving blog for Katie, built as a modern frontend that will evolve into a real publishing platform.
 
-Currently, two official plugins are available:
+## Project Overview
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+`What Katie Seas` is a personal brand and content site centered on:
 
-## React Compiler
+- travel
+- diving
+- ocean life
+- wildlife
+- photography and video
+- lived experiences from around the world
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+The current version is a frontend-driven website with static content and placeholder areas still being replaced. The long-term goal is to grow this into a professional, searchable, SEO-ready blog with dynamic post pages, structured categories, an admin workflow for Katie, and future monetization paths.
 
-## Expanding the ESLint configuration
+For the product vision and brand direction, see [docs/project-brief.md](docs/project-brief.md).
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Current State
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Today the project includes:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- `Home`
+- `About`
+- `Destinations`
+- `Videos`
+- `Contact`
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Some routes such as `Blog` and `Gallery` are still placeholders or mapped to existing pages while the real content system is being defined.
+
+Important current realities:
+
+- content is mostly static and lives in source files
+- many images are already local assets in `public/images`
+- some page sections still contain placeholder copy or placeholder overlays
+- the contact form is UI-only and does not submit to a backend
+- the site is in the transition from concept site to real editorial product
+
+## Product Goals
+
+Short term:
+
+- replace placeholder text, photos, and video with real Katie content
+- strengthen the editorial feel of the site
+- define blog structure, categories, and page patterns
+
+Medium term:
+
+- add dynamic blog templates
+- introduce search and filtering
+- clarify the relationship between `Blog`, `Destinations`, and `Gallery`
+
+Long term:
+
+- move to an admin-managed publishing workflow
+- improve SEO, accessibility, and production readiness
+- prepare the site for ads, affiliates, and partnerships
+- evolve from a static site into an application with authentication, database-backed content, and admin workflows
+- leave room for future e-commerce capabilities
+
+## Tech Stack
+
+- `React 19`
+- `TypeScript`
+- `Vite`
+- `React Router`
+- `Tailwind CSS`
+- `Radix UI` primitives and utility components
+- `Lucide React` icons
+
+## Future Architecture Direction
+
+Even when implementing small frontend tasks, the project should be approached as a future app, not only as a static marketing site.
+
+This means we should prefer decisions that will make it easier to migrate toward:
+
+- authenticated access for Katie
+- an admin interface or editorial dashboard
+- a database-backed content model
+- create/edit/delete workflows for posts and content
+- structured categories, tags, destinations, and media relationships
+- future monetization features
+- possible future e-commerce features
+
+Supabase is a strong likely path for this project because it can cover:
+
+- authentication
+- database
+- storage
+- row-level security
+- simple app/backend workflows
+
+Implementation guideline:
+
+- when possible, shape components and content structures so they can later move from hardcoded data to database records with minimal rewriting
+- avoid page-specific hacks that would make a future app migration harder
+- prefer content models that can map cleanly to tables, slugs, categories, and media fields
+
+## Getting Started
+
+### Requirements
+
+- `Node.js 20+` recommended
+- `npm`
+
+### Install
+
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Run locally
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run dev
 ```
+
+### Build
+
+```bash
+npm run build
+```
+
+### Lint
+
+```bash
+npm run lint
+```
+
+### Preview production build
+
+```bash
+npm run preview
+```
+
+## Project Structure
+
+```txt
+.
+├── public/                 Static assets such as images and video
+├── src/
+│   ├── components/         Layout, UI primitives, and homepage sections
+│   ├── data/               Static site config, posts, destinations, categories
+│   ├── hooks/              Shared hooks
+│   ├── lib/                Utility helpers
+│   ├── pages/              Route-level pages
+│   ├── types/              Shared TypeScript types
+│   ├── App.tsx             Main router
+│   ├── index.css           Global styles and design tokens
+│   └── main.tsx            App entrypoint
+└── docs/
+    └── project-brief.md    Product, brand, and roadmap context
+```
+
+## Asset Organization
+
+Static assets in `public/images` should be grouped by page or functional area instead of staying loose at the top level.
+
+Current folders:
+
+- `public/images/about/`
+- `public/images/brand/`
+- `public/images/home/`
+- `public/images/destinations/`
+- `public/images/videos/`
+- `public/images/instagram/`
+
+Recommended rule:
+
+- If an image belongs to one page only, store it in that page folder
+- If an image is part of the brand system, store it in `brand`
+- If an image may be reused across many pages later, put it in the most stable shared folder only when that reuse is real
+
+Recommended naming:
+
+- use lowercase
+- use hyphens
+- keep the page prefix when it helps searchability
+- prefer descriptive names over generic numbered files
+
+Examples:
+
+- `public/images/about/about-hero.jpg`
+- `public/images/about/about-first-steps-1.jpeg`
+- `public/images/home/newsletter-bg.jpg`
+- `public/images/brand/logo-con-nombre.png`
+
+Avoid when possible:
+
+- loose files directly inside `public/images/`
+- names like `final-final-2.jpg`
+- names that hide where the asset belongs
+
+Practical workflow:
+
+1. Katie chooses or exports the real asset
+2. Save it in the matching page folder
+3. Use a clear descriptive filename
+4. Replace the route in the component immediately so the repo stays tidy
+
+## Key Files
+
+- [src/App.tsx](src/App.tsx): application routes
+- [src/data/site.ts](src/data/site.ts): site branding, navigation, author metadata
+- [src/data/content.ts](src/data/content.ts): current mock posts and destinations
+- [src/pages/About.tsx](src/pages/About.tsx): long-form editorial biography page
+- [src/components/sections/Hero.tsx](src/components/sections/Hero.tsx): homepage hero
+- [src/index.css](src/index.css): global styles, fonts, color tokens, utility classes
+- [tailwind.config.js](tailwind.config.js): theme extensions for color, typography, and animation
+
+## Routing Snapshot
+
+Current routes in the app:
+
+- `/` -> Home
+- `/about` -> About
+- `/blog` -> currently points to Home
+- `/destinations` -> Destinations
+- `/gallery` -> currently points to Home
+- `/videos` -> Videos
+- `/contact` -> Contact
+
+This is an intentional in-progress state, not a finished information architecture.
+
+## Content Model Today
+
+Content is currently stored directly in code:
+
+- site-level metadata in `src/data/site.ts`
+- mock blog posts in `src/data/content.ts`
+- mock destinations in `src/data/content.ts`
+- page-specific editorial content directly inside some page files, especially `src/pages/About.tsx`
+
+That means changes right now often happen in two places:
+
+1. structured content files in `src/data`
+2. hardcoded page-level content inside route components
+
+## Design Direction
+
+The current visual system is based on:
+
+- serif-heavy editorial body typography
+- clean sans-serif display type
+- ocean blues, terracotta accents, and cream backgrounds
+- large photography and image-led storytelling
+- minimalist spacing with subtle motion
+
+The intended tone is:
+
+- modern
+- subtle
+- fresh
+- oceanic
+- natural
+- polished
+
+## Known Gaps
+
+The following are still to be built or refined:
+
+- real blog archive page
+- dynamic blog post pages
+- real gallery experience
+- search and filtering UX
+- CMS or admin workflow
+- SEO metadata strategy
+- backend-connected contact workflow
+- production hardening and security review
+
+## Working Notes
+
+When contributing to this repo, prefer:
+
+- real content over placeholders
+- reusable content structures over one-off hacks
+- editorial clarity over decorative complexity
+- changes that make a future CMS migration easier
+
+Keep the brand grounded in ocean, travel, nature, and authenticity.
+
+Current collaboration context:
+
+- Juani is working with Katie directly on content, missing images, and text corrections
+- the `About` page is currently in an active refinement pass
+- while a page is being refined, keep changes scoped and avoid unnecessary structural churn
+- future implementation choices should assume the site will later become a real app with auth, database, and admin tooling
+
+## Documentation
+
+- Product and brand context: [docs/project-brief.md](docs/project-brief.md)
+- Technical setup and repo orientation: this `README.md`

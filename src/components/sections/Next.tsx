@@ -44,7 +44,7 @@ export function NextStops() {
             </h2>
             <div className="group relative rounded-3xl overflow-hidden shadow-xl">
               <img
-                src="/images/next_destinations.jpg"
+                src="/images/home/next_destinations.jpg"
                 alt="Next destinations"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />

@@ -75,8 +75,8 @@ export function Header() {
               <img
                 src={
                   isScrolled || isMobileMenuOpen
-                    ? '/images/Updblacklogo.png'
-                    : '/images/Up3logowhite.png'
+                    ? '/images/brand/Updblacklogo.png'
+                    : '/images/brand/Up3logowhite.png'
                 }
                 alt="What Katie Seas"
                 className="h-12 w-auto"

@@ -40,7 +40,7 @@ export function Footer() {
             <Link to="/" className="flex flex-col items-center gap-3 group">
               
               <img
-                src="/images/logo_con_nombre.png"
+                src="/images/brand/logo_con_nombre.png"
                 alt="What Katie Seas"
                 className="h-30 w-auto transition-transform duration-300 group-hover:scale-105"
               />

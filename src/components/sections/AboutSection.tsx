@@ -85,7 +85,7 @@ export function AboutSection() {
             {/* OPCIÓN 1: Aspect ratio más ancho */}
             <div className="relative aspect-[3/4] lg:aspect-[3/4] overflow-hidden">
               <img
-                src="/images/about-katie.jpg"
+                src="/images/about/about-katie.jpg"
                 alt={siteConfig.author.name}
                 className="w-full h-full object-cover"
               />
@@ -94,7 +94,7 @@ export function AboutSection() {
             {/* Overlapping small image */}
             {/* <div className="absolute -bottom-8 -left-8 lg:-left-16 w-48 lg:w-64 aspect-[4/3] overflow-hidden shadow-xl">
               <img
-                src="/images/about-katie-small.jpg"
+                src="/images/about/about-katie-small.jpg"
                 alt={`${siteConfig.author.name} on a boat`}
                 className="w-full h-full object-cover"
               />

@@ -9,7 +9,7 @@ export const siteConfig: SiteConfig = {
     id: "katie",
     name: "Katie",
     bio: "I'm Katie - a dive instructor and skipper currently living on Heron Island on the Great Barrier Reef. For the past few years, I've been traveling the world, working in the ocean, and building a life centered around saltwater, adventure, and exploration.",
-    avatar: "/images/about-katie.jpg",
+    avatar: "/images/about/about-katie.jpg",
     social: {
       instagram: "https://instagram.com/whatkatieseas",
       youtube: "https://youtube.com/whatkatieseas",
@@ -22,7 +22,7 @@ export const siteConfig: SiteConfig = {
   seo: {
     title: "What Katie Seas | Dive Instructor & Ocean Explorer",
     description: "A dive instructor traveling the world, sharing real stories from life underwater and beyond. Explore dive destinations, travel tips, and ocean adventures.",
-    ogImage: "/images/about-katie.jpg",
+    ogImage: "/images/about/about-katie.jpg",
   },
 };
 
@@ -37,7 +37,7 @@ export const navigation: NavItem[] = [
 export const currentLocation: CurrentLocation = {
   city: "Heron Island",
   country: "Great Barrier Reef, Australia",
-  image: "/images/about-katie.jpg",
+  image: "/images/about/about-katie.jpg",
   nextStops: [
     "Raja Ampat, Indonesia",
     "Similan Islands, Thailand",

@@ -45,7 +45,7 @@ export function Newsletter() {
       {/* Background Image */}
       <div className="absolute inset-0">
         <img
-          src="/images/newsletter-bg.jpg"
+          src="/images/home/newsletter-bg.jpg"
           alt="Newsletter background"
           className="w-full h-full object-cover"
         />
