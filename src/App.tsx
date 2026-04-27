@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Layout } from '@/components/Layout';
-import { Home, About, Destinations, Videos, Contact } from '@/pages';
+import { Home, About, Blog, BlogPostPage, Destinations, Videos, Contact } from '@/pages';
 
 function App() {
   return (
@@ -9,7 +9,8 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="about" element={<About />} />
-          <Route path="blog" element={<Home />} />
+          <Route path="blog" element={<Blog />} />
+          <Route path="blog/:slug" element={<BlogPostPage />} />
           <Route path="destinations" element={<Destinations />} />
           <Route path="gallery" element={<Home />} />
           <Route path="videos" element={<Videos />} />

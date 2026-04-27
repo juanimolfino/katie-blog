@@ -31,7 +31,7 @@ const videos = [
     description: "Swimming with hammerhead sharks and marine iguanas.",
     thumbnail: "/images/destinations/galapagos.jpg",
     duration: "15:20",
-    category: { id: "americas", slug: "americas", name: "The Americas" },
+    category: { id: "south-america", slug: "south-america", name: "South America" },
     publishedAt: "2024-01-25",
   },
 ];

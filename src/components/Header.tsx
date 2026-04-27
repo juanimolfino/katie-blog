@@ -8,6 +8,11 @@ export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const forceLightHeader =
+    location.pathname === '/blog' ||
+    location.pathname.startsWith('/blog/') ||
+    location.pathname === '/destinations' ||
+    location.pathname.startsWith('/destinations/');
 
   // Detect scroll
   useEffect(() => {
@@ -15,9 +20,10 @@ export function Header() {
       setIsScrolled(window.scrollY > 100);
     };
 
+    handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [location.pathname]);
 
   // 🔥 SCROLL LOCK REAL (mobile safe)
   useEffect(() => {
@@ -57,7 +63,7 @@ export function Header() {
           className={`absolute inset-0 transition-colors duration-300 ${
             isMobileMenuOpen
               ? 'bg-black'
-              : isScrolled
+              : forceLightHeader || isScrolled
                 ? 'bg-white/95 backdrop-blur-md shadow-sm'
                 : 'bg-transparent'
           }`}
@@ -74,7 +80,7 @@ export function Header() {
             >
               <img
                 src={
-                  isScrolled || isMobileMenuOpen
+                  forceLightHeader || isScrolled || isMobileMenuOpen
                     ? '/images/brand/Updblacklogo.png'
                     : '/images/brand/Up3logowhite.png'
                 }
@@ -84,7 +90,7 @@ export function Header() {
 
               <span
                 className={`font-logo text-3xl font-medium transition-colors duration-300 ${
-                  isScrolled || isMobileMenuOpen
+                  forceLightHeader || isScrolled || isMobileMenuOpen
                     ? 'text-black'
                     : 'text-white'
                 }`}
@@ -101,10 +107,10 @@ export function Header() {
                   to={item.href}
                   className={`relative font-body text-base tracking-wide transition-colors duration-300 pb-1 ${
                     isActive(item.href)
-                      ? isScrolled
+                      ? forceLightHeader || isScrolled
                         ? 'text-ocean'
                         : 'text-white'
-                      : isScrolled
+                      : forceLightHeader || isScrolled
                         ? 'text-black hover:text-ocean'
                         : 'text-white/80 hover:text-white'
                   }`}
@@ -129,7 +135,7 @@ export function Header() {
         className={`lg:hidden fixed top-6 right-6 z-[60] p-2 transition-colors duration-300 ${
           isMobileMenuOpen
             ? 'text-white'
-            : isScrolled
+            : forceLightHeader || isScrolled
               ? 'text-black hover:text-ocean'
               : 'text-white hover:text-white/80'
         }`}
@@ -149,7 +155,7 @@ export function Header() {
           isMobileMenuOpen
             ? 'opacity-100 pointer-events-auto'
             : 'opacity-0 pointer-events-none'
-        } ${isMobileMenuOpen ? 'bg-black/95' : isScrolled ? 'bg-white/98' : 'bg-black/95'}`}
+        } ${isMobileMenuOpen ? 'bg-black/95' : forceLightHeader || isScrolled ? 'bg-white/98' : 'bg-black/95'}`}
       >
         <nav className="flex flex-col items-center justify-center h-full gap-8">
           {navigation.map((item: NavItem) => (
@@ -160,8 +166,8 @@ export function Header() {
               className={`font-display text-3xl font-light transition-colors duration-300 ${
                 isActive(item.href)
                   ? 'text-ocean'
-                  : isScrolled
-                    ? 'text-white hover:text-ocean'
+                  : forceLightHeader || isScrolled
+                    ? 'text-black hover:text-ocean'
                     : 'text-white hover:text-white/80'
               }`}
             >

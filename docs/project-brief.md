@@ -91,6 +91,8 @@ Operational note:
 
 - Juani is currently working with Katie in real time on content refinement
 - the active focus right now is completing the `About` page with final text and missing real images
+- the static blog archive, reusable static post template, and destinations browsing structure have been created
+- `Destinations` should stay minimal and ocean/editorial in feel, using a world map with recognizable continent shapes
 - while this phase is active, the best support is small, precise changes that help close the page cleanly
 
 ## 6. Site Structure
@@ -138,6 +140,7 @@ Not the priority yet:
 - Improve the content quality across current pages
 - Replace placeholder text and placeholder media
 - Make the site feel coherent and polished
+- Finish the static site so Katie can review copy, images, layout, and editorial flow
 
 ### Stage 2: Category Logic and Dynamic Blog Templates
 
@@ -145,6 +148,7 @@ Not the priority yet:
 - Create reusable blog post templates
 - Create dynamic blog post pages
 - Build filtered archive pages
+- Keep the static post model aligned with the future admin/database model
 
 ### Stage 3: Move From Static Content to Admin-Managed Content
 
@@ -153,6 +157,8 @@ Not the priority yet:
 - Support category assignment and structured metadata
 - Enable search and filtering for users
 - Begin the transition from site to app
+- Build a guided post editor where Katie creates content through structured blocks
+- Give Katie limited design choices so she has creative control without breaking the visual system
 
 ### Stage 4: Professionalization
 
@@ -223,6 +229,8 @@ Implementation mindset for current work:
 - Prefer reusable schemas and clear content shapes over deeply hardcoded page logic
 - Keep slugs, categories, metadata, and media relationships easy to map to future tables
 - Avoid choices that make the future app migration unnecessarily painful
+- Use the post model documented in `docs/post-model-guide.md` as the source of truth for current static post examples and future app migration
+- Treat documentation as project memory: when a meaningful decision is made, update the relevant docs in the same work session
 
 Asset organization rule:
 
@@ -241,6 +249,7 @@ When making product or design decisions, prefer:
 - Reusable content models when they help future CMS migration
 - Searchability and categorization as first-class concerns for the blog
 - Decisions that keep the future Supabase/app migration straightforward
+- Updating context docs whenever scope, taxonomy, architecture, workflow, or product decisions change
 
 When context is ambiguous, optimize for:
 
@@ -255,4 +264,5 @@ When context is ambiguous, optimize for:
 - Relationship between `Blog` and `Destinations`
 - How `Gallery` should behave in phase 1 vs later phases
 - Which CMS or admin approach best fits Katie's workflow
+- Exact block types and design controls Katie should have in the future post editor
 - Monetization placements that fit the brand without hurting the reading experience

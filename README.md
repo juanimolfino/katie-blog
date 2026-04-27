@@ -23,11 +23,13 @@ Today the project includes:
 
 - `Home`
 - `About`
+- `Blog`
+- dynamic blog post pages
 - `Destinations`
 - `Videos`
 - `Contact`
 
-Some routes such as `Blog` and `Gallery` are still placeholders or mapped to existing pages while the real content system is being defined.
+`Gallery` is still mapped to an existing page while the real gallery experience is being defined.
 
 Important current realities:
 
@@ -44,11 +46,12 @@ Short term:
 - replace placeholder text, photos, and video with real Katie content
 - strengthen the editorial feel of the site
 - define blog structure, categories, and page patterns
+- finish the static version before moving into app/admin mode
 
 Medium term:
 
-- add dynamic blog templates
-- introduce search and filtering
+- refine dynamic blog templates
+- refine search and filtering
 - clarify the relationship between `Blog`, `Destinations`, and `Gallery`
 
 Long term:
@@ -150,7 +153,8 @@ npm run preview
 │   ├── index.css           Global styles and design tokens
 │   └── main.tsx            App entrypoint
 └── docs/
-    └── project-brief.md    Product, brand, and roadmap context
+    ├── project-brief.md    Product, brand, and roadmap context
+    └── post-model-guide.md Post fields, metadata, and editorial guidance
 ```
 
 ## Asset Organization
@@ -205,6 +209,9 @@ Practical workflow:
 - [src/data/site.ts](src/data/site.ts): site branding, navigation, author metadata
 - [src/data/content.ts](src/data/content.ts): current mock posts and destinations
 - [src/pages/About.tsx](src/pages/About.tsx): long-form editorial biography page
+- [src/pages/Blog.tsx](src/pages/Blog.tsx): static blog archive with category browsing and search
+- [src/pages/BlogPostPage.tsx](src/pages/BlogPostPage.tsx): reusable static post template driven by post metadata
+- [src/pages/Destinations.tsx](src/pages/Destinations.tsx): geographic browsing by continent, country, and destination keyword
 - [src/components/sections/Hero.tsx](src/components/sections/Hero.tsx): homepage hero
 - [src/index.css](src/index.css): global styles, fonts, color tokens, utility classes
 - [tailwind.config.js](tailwind.config.js): theme extensions for color, typography, and animation
@@ -215,7 +222,8 @@ Current routes in the app:
 
 - `/` -> Home
 - `/about` -> About
-- `/blog` -> currently points to Home
+- `/blog` -> Blog
+- `/blog/:slug` -> BlogPostPage
 - `/destinations` -> Destinations
 - `/gallery` -> currently points to Home
 - `/videos` -> Videos
@@ -260,10 +268,9 @@ The intended tone is:
 
 The following are still to be built or refined:
 
-- real blog archive page
-- dynamic blog post pages
+- final Katie-approved copy and image selection
 - real gallery experience
-- search and filtering UX
+- search and filtering UX polish
 - CMS or admin workflow
 - SEO metadata strategy
 - backend-connected contact workflow
@@ -284,10 +291,14 @@ Current collaboration context:
 
 - Juani is working with Katie directly on content, missing images, and text corrections
 - the `About` page is currently in an active refinement pass
+- the static `Blog`, `BlogPostPage`, and `Destinations` foundations are in place
+- after the static site is approved with Katie, the next major phase is app/admin mode
 - while a page is being refined, keep changes scoped and avoid unnecessary structural churn
 - future implementation choices should assume the site will later become a real app with auth, database, and admin tooling
+- whenever product, architecture, taxonomy, or workflow decisions are made, update `README.md`, `docs/project-brief.md`, `docs/post-model-guide.md`, or `info.md` as needed so context survives future chat loss
 
 ## Documentation
 
 - Product and brand context: [docs/project-brief.md](docs/project-brief.md)
+- Post metadata and editorial structure: [docs/post-model-guide.md](docs/post-model-guide.md)
 - Technical setup and repo orientation: this `README.md`

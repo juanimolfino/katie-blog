@@ -53,17 +53,21 @@ export const nextStops:NextStop[] = [
 
 export const categories = [
   { id: "all", slug: "all", name: "View All" },
-  { id: "europe", slug: "europe", name: "Europe" },
-  { id: "americas", slug: "americas", name: "The Americas" },
   { id: "asia", slug: "asia", name: "Asia" },
-  { id: "africa", slug: "africa", name: "Africa" },
+  { id: "europe", slug: "europe", name: "Europe" },
   { id: "oceania", slug: "oceania", name: "Oceania" },
+  { id: "north-america", slug: "north-america", name: "North America" },
+  { id: "central-america", slug: "central-america", name: "Central America" },
+  { id: "south-america", slug: "south-america", name: "South America" },
+  { id: "africa", slug: "africa", name: "Africa" },
 ];
 
 export const continents = [
-  { id: "europe", name: "Europe", slug: "europe" },
-  { id: "americas", name: "The Americas", slug: "americas" },
   { id: "asia", name: "Asia", slug: "asia" },
-  { id: "africa", name: "Africa", slug: "africa" },
+  { id: "europe", name: "Europe", slug: "europe" },
   { id: "oceania", name: "Oceania", slug: "oceania" },
+  { id: "north-america", name: "North America", slug: "north-america" },
+  { id: "central-america", name: "Central America", slug: "central-america" },
+  { id: "south-america", name: "South America", slug: "south-america" },
+  { id: "africa", name: "Africa", slug: "africa" },
 ] as const;

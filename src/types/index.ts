@@ -1,17 +1,49 @@
+export type BlogCategorySlug =
+  | 'travel'
+  | 'diving'
+  | 'encounters'
+  | 'guides'
+  | 'dive-instructor-life';
+
+export interface PostImage {
+  src: string;
+  alt: string;
+  caption?: string;
+}
+
+export interface PostQuote {
+  text: string;
+  attribution?: string;
+}
+
+export interface PostSection {
+  id: string;
+  title?: string;
+  paragraphs: string[];
+  images?: PostImage[];
+  quote?: PostQuote;
+}
+
 // Blog Post Type - Escalable para CMS
 export interface BlogPost {
   id: string;
   slug: string;
   title: string;
+  subtitle: string;
   excerpt: string;
-  content: string;
   coverImage: string;
-  category: Category;
+  categories: BlogCategorySlug[];
   tags: string[];
   author: Author;
   publishedAt: string;
   updatedAt?: string;
   readTime: number;
+  destination?: string;
+  country?: string;
+  continent?: Continent;
+  intro: string[];
+  sections: PostSection[];
+  relatedPostSlugs?: string[];
   featured?: boolean;
   meta?: {
     title?: string;
@@ -61,7 +93,14 @@ export interface Category {
 }
 
 // Continent Type
-export type Continent = 'europe' | 'americas' | 'asia' | 'africa' | 'oceania';
+export type Continent =
+  | 'asia'
+  | 'europe'
+  | 'oceania'
+  | 'north-america'
+  | 'central-america'
+  | 'south-america'
+  | 'africa';
 
 // Author Type
 export interface Author {
