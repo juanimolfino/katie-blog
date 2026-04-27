@@ -12,7 +12,8 @@ export function Header() {
     location.pathname === '/blog' ||
     location.pathname.startsWith('/blog/') ||
     location.pathname === '/destinations' ||
-    location.pathname.startsWith('/destinations/');
+    location.pathname.startsWith('/destinations/') ||
+    location.pathname === '/gallery';
 
   // Detect scroll
   useEffect(() => {
@@ -80,7 +81,9 @@ export function Header() {
             >
               <img
                 src={
-                  forceLightHeader || isScrolled || isMobileMenuOpen
+                  isMobileMenuOpen
+                    ? '/images/brand/Up3logowhite.png'
+                    : forceLightHeader || isScrolled
                     ? '/images/brand/Updblacklogo.png'
                     : '/images/brand/Up3logowhite.png'
                 }
@@ -90,7 +93,9 @@ export function Header() {
 
               <span
                 className={`font-logo text-3xl font-medium transition-colors duration-300 ${
-                  forceLightHeader || isScrolled || isMobileMenuOpen
+                  isMobileMenuOpen
+                    ? 'text-white'
+                    : forceLightHeader || isScrolled
                     ? 'text-black'
                     : 'text-white'
                 }`}
@@ -164,11 +169,15 @@ export function Header() {
               to={item.href}
               onClick={handleNavClick}
               className={`font-display text-3xl font-light transition-colors duration-300 ${
-                isActive(item.href)
-                  ? 'text-ocean'
-                  : forceLightHeader || isScrolled
-                    ? 'text-black hover:text-ocean'
-                    : 'text-white hover:text-white/80'
+                isMobileMenuOpen
+                  ? isActive(item.href)
+                    ? 'text-sky-200'
+                    : 'text-white hover:text-sky-200'
+                  : isActive(item.href)
+                    ? 'text-ocean'
+                    : forceLightHeader || isScrolled
+                      ? 'text-black hover:text-ocean'
+                      : 'text-white hover:text-white/80'
               }`}
             >
               {item.label}

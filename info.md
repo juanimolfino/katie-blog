@@ -13,6 +13,25 @@ Current product phase:
 Destinations taxonomy:
   Use English continent groups: Asia, Europe, Oceania, North America, Central America, South America, and Africa.
 
+Destinations map:
+  The interactive world map uses d3-geo and topojson-client with https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json. Countries are mapped by numeric ISO IDs into the project's continent slugs. Avoid react-simple-maps because it introduced a React 19 peer conflict and vulnerable d3-zoom chain.
+
+Gallery:
+  The static Gallery page uses a slim hero, continent filters, a masonry-style image grid, and a click-to-open lightbox carousel. Placeholder images can use local assets, but the long-term plan is Katie-owned uploaded photos. Pinterest should be treated as a traffic/distribution channel rather than the source of images embedded on the site.
+
+Image card style:
+  For image-led cards, avoid always-visible title/location text below the image. Reveal metadata on hover/focus with a dark ocean overlay and light blue accent text, so the photo stays visually clean by default.
+
+About image captions:
+  About page photos support per-image hover captions in src/pages/About.tsx. Use these for personal context such as age, place, memory, or a short story from Katie, without adding permanent text below the image.
+  In the "What You'll Find Here" block, the horizontal image should use the full available content width, and the list should feel more editorial than plain line-separated bullets.
+
+Global navigation helpers:
+  All pages include a floating bottom-right back-to-top button via src/components/ScrollToTopButton.tsx. The mobile fullscreen menu uses a black overlay, so its logo and navigation labels must stay white/light for contrast.
+
+Home hero video:
+  The homepage hero uses Katie's selected YouTube background videos: desktop c9dRw1KIfDk and mobile y-B9ReggOfM. It keeps /images/home/hero-bg.jpg underneath as a visual fallback while the embed loads or if the embed cannot render.
+
 Components (40+):
   accordion, alert-dialog, alert, aspect-ratio, avatar, badge, breadcrumb,
   button-group, button, calendar, card, carousel, chart, checkbox, collapsible,

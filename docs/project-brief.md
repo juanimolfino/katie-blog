@@ -91,8 +91,11 @@ Operational note:
 
 - Juani is currently working with Katie in real time on content refinement
 - the active focus right now is completing the `About` page with final text and missing real images
-- the static blog archive, reusable static post template, and destinations browsing structure have been created
+- the static blog archive, reusable static post template, destinations browsing structure, and gallery foundation have been created
 - `Destinations` should stay minimal and ocean/editorial in feel, using a world map with recognizable continent shapes
+- `Gallery` should be image-led, simple, and filterable by continent; the long-term source should be Katie-owned uploads, with Pinterest used primarily to drive traffic back to the site
+- Global page UX should include a floating bottom-right back-to-top button on long pages.
+- Mobile navigation uses a dark fullscreen overlay, so menu text and branding should remain white/light for legibility.
 - while this phase is active, the best support is small, precise changes that help close the page cleanly
 
 ## 6. Site Structure
@@ -184,6 +187,7 @@ Design guidance:
 - Minimal but not empty
 - Visual storytelling is central
 - Large, confident imagery
+- Image cards should avoid permanent text beneath the image when the image is the main object; reveal title/location metadata on hover/focus with a dark ocean-toned overlay and light blue accent text
 - Clean typography
 - Strong spacing and rhythm
 - Real content should lead the design

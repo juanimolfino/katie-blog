@@ -59,19 +59,21 @@ export function RecentPosts() {
               }}
             >
               {/* Image */}
-              <div className="aspect-[4/3] overflow-hidden mb-4 bg-gray-100">
+              <div className="relative aspect-[4/3] overflow-hidden mb-4 bg-gray-100">
                 <img
                   src={post.coverImage}
                   alt={post.title}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
+                <div className="absolute inset-0 bg-ocean-dark/0 transition-colors duration-300 group-hover:bg-ocean-dark/58" />
+                <div className="absolute inset-x-0 bottom-0 translate-y-3 p-5 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                  <h3 className="font-display text-2xl text-white">
+                    {post.title}
+                  </h3>
+                </div>
               </div>
               
               {/* Content */}
-              <h3 className="font-body text-lg font-medium text-black mb-1 group-hover:text-ocean transition-colors">
-                {post.title}
-              </h3>
-              
               <p className="font-body text-sm text-black/50 mb-3">
                 {new Date(post.publishedAt).toLocaleDateString('en-US', {
                   year: 'numeric',

@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { siteConfig } from '@/data';
 
-// 🎬 IDs DE YOUTUBE
-const VIDEO_DESKTOP = "c9dRw1KIfDk";
-const VIDEO_MOBILE = "y-B9ReggOfM";
+const VIDEO_DESKTOP = 'c9dRw1KIfDk';
+const VIDEO_MOBILE = 'y-B9ReggOfM';
+const HERO_FALLBACK_IMAGE = '/images/home/hero-bg.jpg';
 
 export function Hero() {
   const heroRef = useRef<HTMLDivElement>(null);
@@ -14,9 +14,6 @@ export function Hero() {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
-
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
 
     const handleScroll = () => {
       if (!heroRef.current || !contentRef.current) return;
@@ -29,11 +26,13 @@ export function Hero() {
       contentRef.current.style.transform = `translateY(${-scrollY * 0.2}px)`;
     };
 
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', checkMobile);
+      window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
@@ -46,13 +45,18 @@ export function Hero() {
     >
       {/* 🎥 VIDEO BACKGROUND */}
       <div className="absolute inset-0 overflow-hidden bg-black">
+        <img
+          src={HERO_FALLBACK_IMAGE}
+          alt="Ocean surface and clear blue water"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
         <iframe
           src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&controls=0&playlist=${videoId}&rel=0&modestbranding=1&playsinline=1`}
           className="absolute top-1/2 left-1/2 pointer-events-none"
           style={{
             width: '100vw',
             height: '100vh',
-            transform: 'translate(-50%, -50%) scale(1.3)', // 🔥 clave
+            transform: 'translate(-50%, -50%) scale(1.3)',
           }}
           allow="autoplay; encrypted-media"
           frameBorder="0"

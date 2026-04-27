@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Layout } from '@/components/Layout';
-import { Home, About, Blog, BlogPostPage, Destinations, Videos, Contact } from '@/pages';
+import { Home, About, Blog, BlogPostPage, Destinations, Gallery, Videos, Contact } from '@/pages';
 
 function App() {
   return (
@@ -12,7 +12,7 @@ function App() {
           <Route path="blog" element={<Blog />} />
           <Route path="blog/:slug" element={<BlogPostPage />} />
           <Route path="destinations" element={<Destinations />} />
-          <Route path="gallery" element={<Home />} />
+          <Route path="gallery" element={<Gallery />} />
           <Route path="videos" element={<Videos />} />
           <Route path="contact" element={<Contact />} />
           {/* Catch all route - redirect to home */}

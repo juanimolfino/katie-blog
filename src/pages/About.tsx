@@ -13,7 +13,7 @@ interface SectionData {
   title: string;
   titleAccent?: string; // italic part
   paragraphs: string[];
-  images?: { src: string; alt: string }[];
+  images?: { src: string; alt: string; caption?: string }[];
 }
 
 const sections: SectionData[] = [
@@ -29,8 +29,16 @@ const sections: SectionData[] = [
       'Every trip followed the same rhythm: fins on, mask on, diving down again and again. I spent hours swimming, free diving, and chasing every fish I could find. The ocean wasn’t just something we visited—it became where I felt most at home.',
     ],
     images: [
-      { src: '/images/about/about-kid-katie-1.jpeg', alt: 'Katie snorkeling as a child' },
-      { src: '/images/about/about-kid-katie-2.jpeg', alt: 'Katie exploring coral reef' },
+      {
+        src: '/images/about/about-kid-katie-1.jpeg',
+        alt: 'Katie snorkeling as a child',
+        caption: 'One of my earliest ocean memories, already curious about everything below the surface.',
+      },
+      {
+        src: '/images/about/about-kid-katie-2.jpeg',
+        alt: 'Katie exploring coral reef',
+        caption: 'Family trips taught me to look closer, swim farther, and follow the fish.',
+      },
     ],
   },
   {
@@ -40,8 +48,16 @@ const sections: SectionData[] = [
       'I got my Open Water certification when I was 13, thanks to a gentle push from my dad. At the time, I didn’t realize that this small step would quietly chart the course of my life.',
     ],
     images: [
-      { src: '/images/about/about-first-steps-1.jpeg', alt: 'Katie getting certified' },
-      { src: '/images/about/about-first-steps-2.jpeg', alt: 'Katie first dive' },
+      {
+        src: '/images/about/about-first-steps-1.jpeg',
+        alt: 'Katie getting certified',
+        caption: 'Getting certified was the first real step toward a life shaped by diving.',
+      },
+      {
+        src: '/images/about/about-first-steps-2.jpeg',
+        alt: 'Katie first dive',
+        caption: 'I did not know it yet, but this was the beginning of everything.',
+      },
     ],
   },
   {
@@ -63,8 +79,16 @@ const sections: SectionData[] = [
       'And this is only the beginning.',
     ],
     images: [
-      { src: '/images/about/about-leap-to-unknown-1.jpeg', alt: 'Katie in Tenerife' },
-      { src: '/images/about/about-leap-to-unknown-2.jpeg', alt: 'Katie as skipper' },
+      {
+        src: '/images/about/about-leap-to-unknown-1.jpeg',
+        alt: 'Katie in Tenerife',
+        caption: 'Tenerife was the leap: new island, new language, new version of myself.',
+      },
+      {
+        src: '/images/about/about-leap-to-unknown-2.jpeg',
+        alt: 'Katie as skipper',
+        caption: 'Years later, the boats became part of the story too.',
+      },
     ],
   },
   {
@@ -76,8 +100,16 @@ const sections: SectionData[] = [
       'This is where the story continues - above and below the surface.',
     ],
     images: [
-      { src: '/images/about/about-called-by-ocean-1.JPG', alt: 'Katie diving' },
-      { src: '/images/about/about-called-by-ocean-2.JPG', alt: 'Katie underwater' },
+      {
+        src: '/images/about/about-called-by-ocean-1.JPG',
+        alt: 'Katie diving',
+        caption: 'The ocean kept calling, and every dive made the answer clearer.',
+      },
+      {
+        src: '/images/about/about-called-by-ocean-2.JPG',
+        alt: 'Katie underwater',
+        caption: 'Below the surface is still where I feel the most at home.',
+      },
     ],
   },
   {
@@ -88,8 +120,16 @@ const sections: SectionData[] = [
       'I’m currently traveling through Ecuador, Argentina, and Costa Rica—exploring, diving, reconnecting with family/friends and searching for wherever feels like home next.',
     ],
     images: [
-      { src: '/images/about/about-where-i-am-now-1.png', alt: 'Katie traveling' },
-      { src: '/images/about/about-where-i-am-now-2.jpg', alt: 'Katie exploring' },
+      {
+        src: '/images/about/about-where-i-am-now-1.png',
+        alt: 'Katie traveling',
+        caption: 'This chapter is about moving again, listening again, and staying open.',
+      },
+      {
+        src: '/images/about/about-where-i-am-now-2.jpg',
+        alt: 'Katie exploring',
+        caption: 'Still searching for the places that feel like home next.',
+      },
     ],
   },
   {
@@ -101,8 +141,16 @@ const sections: SectionData[] = [
       'And together, we’re the team behind this space. I hope you enjoy the blog and find something in it for yourself. If you’ve ever thought about traveling, exploring, or leaving your comfort zone to pursue something more, take the risk—the world is full of experiences and memories that are truly invaluable.',
     ],
     images: [
-      { src: '/images/about/about-the-team-1.jpg', alt: 'Katie and Juani' },
-      { src: '/images/about/about-the-team-2.jpeg', alt: 'The team' },
+      {
+        src: '/images/about/about-the-team-1.jpg',
+        alt: 'Katie and Juani',
+        caption: 'The blog is my story, but building it has been a team effort.',
+      },
+      {
+        src: '/images/about/about-the-team-2.jpeg',
+        alt: 'The team',
+        caption: 'Behind the scenes, there is always a little planning, diving, and dreaming.',
+      },
     ],
   },
 ];
@@ -225,13 +273,23 @@ export function About() {
                 {section.images.map((img, i) => (
                   <div
                     key={i}
-                    className="relative aspect-[4/3] overflow-hidden bg-gray-100"
+                    className="group relative aspect-[4/3] overflow-hidden bg-gray-100"
                   >
                     <img
                       src={img.src}
                       alt={img.alt}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
+                    {img.caption && (
+                      <>
+                        <div className="absolute inset-0 bg-ocean-dark/0 transition-colors duration-300 group-hover:bg-ocean-dark/58 group-focus-within:bg-ocean-dark/58" />
+                        <div className="absolute inset-x-0 bottom-0 translate-y-3 p-5 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100">
+                          <p className="font-body text-sm md:text-base leading-relaxed text-white">
+                            {img.caption}
+                          </p>
+                        </div>
+                      </>
+                    )}
                   </div>
                 ))}
               </div>
@@ -261,11 +319,18 @@ export function About() {
               <h2 className="font-display text-2xl md:text-3xl font-bold text-black mb-6">
                 What You&apos;ll <span className="italic font-bold">find here</span>
               </h2>
-              <ul className="space-y-2">
+              <ul className="grid gap-3">
                 {whatYoullFind.map((item, i) => (
-                  <li key={i} className="font-body text-base text-black/80 flex items-start gap-2">
-                    <span className="text-ocean mt-1">—</span>
-                    <span>{item}</span>
+                  <li
+                    key={i}
+                    className="flex items-start gap-3 border border-black/8 bg-cream/70 px-4 py-3 transition-colors duration-300 hover:border-ocean/35 hover:bg-sky-50"
+                  >
+                    <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center bg-ocean font-body text-[11px] text-white">
+                      {i + 1}
+                    </span>
+                    <span className="font-body text-lg leading-relaxed text-black/82">
+                      {item}
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -279,7 +344,7 @@ export function About() {
             </div>
           </div>
 
-          <div className="relative aspect-[16/9] max-w-3xl overflow-hidden bg-gray-100">
+          <div className="relative aspect-[16/9] w-full overflow-hidden bg-gray-100">
             <img
               src="/images/about/about-what-find-1.jpeg"
               alt="Katie underwater adventure"

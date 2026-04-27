@@ -3,5 +3,6 @@ export { About } from './About';
 export { Blog } from './Blog';
 export { BlogPostPage } from './BlogPostPage';
 export { Destinations } from './Destinations';
+export { Gallery } from './Gallery';
 export { Videos } from './Videos';
 export { Contact } from './Contact';

@@ -114,7 +114,7 @@ export function VideosSection() {
                 />
                 
                 {/* Overlay */}
-                <div className="absolute inset-0 bg-black/20 transition-opacity duration-300 group-hover:bg-black/40" />
+                <div className="absolute inset-0 bg-ocean-dark/20 transition-colors duration-300 group-hover:bg-ocean-dark/58" />
                 
                 {/* Play Button */}
                 <div className="absolute inset-0 flex items-center justify-center">
@@ -127,12 +127,13 @@ export function VideosSection() {
                 <div className="absolute bottom-3 right-3 px-2 py-1 bg-black/70 text-white text-xs font-body">
                   {video.duration}
                 </div>
+
+                <div className="absolute inset-x-0 bottom-0 translate-y-3 p-5 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                  <h3 className="font-display text-2xl text-white">
+                    {video.title}
+                  </h3>
+                </div>
               </div>
-              
-              {/* Title */}
-              <h3 className="font-display text-xl font-light mt-4 group-hover:text-ocean transition-colors">
-                {video.title}
-              </h3>
             </Link>
           ))}
         </div>

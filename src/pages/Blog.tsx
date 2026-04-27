@@ -43,28 +43,29 @@ function buildSearchText(post: BlogPost) {
 function BlogPostCard({ post }: { post: BlogPost }) {
   return (
     <Link to={`/blog/${post.slug}`} className="group block">
-      <div className="aspect-[4/3] overflow-hidden bg-gray-100 mb-4">
+      <div className="relative aspect-[4/3] overflow-hidden bg-gray-100 mb-4">
         <img
           src={post.coverImage}
           alt={post.title}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
+        <div className="absolute inset-0 bg-ocean-dark/0 transition-colors duration-300 group-hover:bg-ocean-dark/58" />
+        <div className="absolute inset-x-0 bottom-0 translate-y-3 p-5 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+          <div className="flex flex-wrap gap-2 mb-3">
+            {post.categories.slice(0, 2).map((category) => (
+              <span
+                key={category}
+                className="font-body text-[11px] uppercase tracking-[0.15em] text-sky-200"
+              >
+                {blogCategoryLabels[category]}
+              </span>
+            ))}
+          </div>
+          <h3 className="font-display text-2xl text-white">
+            {post.title}
+          </h3>
+        </div>
       </div>
-
-      <div className="flex flex-wrap gap-2 mb-3">
-        {post.categories.slice(0, 2).map((category) => (
-          <span
-            key={category}
-            className="font-body text-[11px] uppercase tracking-[0.15em] text-ocean"
-          >
-            {blogCategoryLabels[category]}
-          </span>
-        ))}
-      </div>
-
-      <h3 className="font-display text-2xl text-black group-hover:text-ocean transition-colors mb-2">
-        {post.title}
-      </h3>
 
       <p className="font-body text-sm text-black/48 mb-3">
         {formatPostDate(post.publishedAt)}

@@ -26,10 +26,11 @@ Today the project includes:
 - `Blog`
 - dynamic blog post pages
 - `Destinations`
+- `Gallery`
 - `Videos`
 - `Contact`
 
-`Gallery` is still mapped to an existing page while the real gallery experience is being defined.
+`Gallery` now has a static first version with a hero image, continent filters, and an image-led gallery grid.
 
 Important current realities:
 
@@ -71,6 +72,7 @@ Long term:
 - `Tailwind CSS`
 - `Radix UI` primitives and utility components
 - `Lucide React` icons
+- `d3-geo` and `topojson-client` for the real interactive world map in `Destinations`
 
 ## Future Architecture Direction
 
@@ -208,11 +210,13 @@ Practical workflow:
 - [src/App.tsx](src/App.tsx): application routes
 - [src/data/site.ts](src/data/site.ts): site branding, navigation, author metadata
 - [src/data/content.ts](src/data/content.ts): current mock posts and destinations
-- [src/pages/About.tsx](src/pages/About.tsx): long-form editorial biography page
+- [src/pages/About.tsx](src/pages/About.tsx): long-form editorial biography page with optional hover captions on photos
 - [src/pages/Blog.tsx](src/pages/Blog.tsx): static blog archive with category browsing and search
 - [src/pages/BlogPostPage.tsx](src/pages/BlogPostPage.tsx): reusable static post template driven by post metadata
 - [src/pages/Destinations.tsx](src/pages/Destinations.tsx): geographic browsing by continent, country, and destination keyword
-- [src/components/sections/Hero.tsx](src/components/sections/Hero.tsx): homepage hero
+- [src/pages/Gallery.tsx](src/pages/Gallery.tsx): static photo gallery with continent filtering and lightbox carousel
+- [src/components/ScrollToTopButton.tsx](src/components/ScrollToTopButton.tsx): global floating button that smoothly returns visitors to the top of the page
+- [src/components/sections/Hero.tsx](src/components/sections/Hero.tsx): homepage hero with Katie-selected YouTube background videos and image fallback
 - [src/index.css](src/index.css): global styles, fonts, color tokens, utility classes
 - [tailwind.config.js](tailwind.config.js): theme extensions for color, typography, and animation
 
@@ -225,7 +229,7 @@ Current routes in the app:
 - `/blog` -> Blog
 - `/blog/:slug` -> BlogPostPage
 - `/destinations` -> Destinations
-- `/gallery` -> currently points to Home
+- `/gallery` -> Gallery
 - `/videos` -> Videos
 - `/contact` -> Contact
 
@@ -291,7 +295,9 @@ Current collaboration context:
 
 - Juani is working with Katie directly on content, missing images, and text corrections
 - the `About` page is currently in an active refinement pass
-- the static `Blog`, `BlogPostPage`, and `Destinations` foundations are in place
+- the static `Blog`, `BlogPostPage`, `Destinations`, and `Gallery` foundations are in place
+- `Destinations` uses `d3-geo` and `topojson-client` with `world-atlas` country geometry mapped into the project's continent slugs
+- `Gallery` should eventually use Katie-owned images uploaded into the app/storage; Pinterest is better treated as a traffic channel, not as the primary image source for the site
 - after the static site is approved with Katie, the next major phase is app/admin mode
 - while a page is being refined, keep changes scoped and avoid unnecessary structural churn
 - future implementation choices should assume the site will later become a real app with auth, database, and admin tooling

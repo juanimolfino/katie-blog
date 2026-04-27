@@ -1,17 +1,17 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Search } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { geoMercator, geoPath } from 'd3-geo';
+import { feature } from 'topojson-client';
 import { blogPosts, siteConfig } from '@/data';
 import type { BlogPost, Continent } from '@/types';
+import type { ExtendedFeature, GeoPermissibleObjects } from 'd3-geo';
+import type { GeometryCollection, Topology } from 'topojson-specification';
 
 type ContinentOption = {
   slug: Continent;
   name: string;
   shortName: string;
-  mapLabel: string;
-  x: number;
-  y: number;
-  shapeClassName: string;
 };
 
 const CONTINENTS: ContinentOption[] = [
@@ -19,73 +19,245 @@ const CONTINENTS: ContinentOption[] = [
     slug: 'asia',
     name: 'Asia',
     shortName: 'Asia',
-    mapLabel: 'Asia',
-    x: 600,
-    y: 165,
-    shapeClassName:
-      'M464 96l38-8 34 5 27-9 54 7 42 16 52 2 38 14 29 28 36 18 7 24-20 16-42 2-16 17-36 6-20 18-35-2-16 16-30-7-21 9-8 26-21 23-18-14 6-31-26-31-19-3-16-24-28-8-15-20-31-5-20-21 8-27-18-17 19-17z M549 232l25 17 12 31-16 34-25-11-10-35 14-36z M663 262l23 12 2 28-18 21-18-21 11-40z M716 199l22 10 14 22-15 18-25-10-1-24 5-16z M746 185l19 4 7 16-16 11-15-10 5-21z M782 178l17 7 4 14-14 9-14-10 7-20z',
   },
   {
     slug: 'europe',
     name: 'Europe',
     shortName: 'Europe',
-    mapLabel: 'Europe',
-    x: 405,
-    y: 130,
-    shapeClassName:
-      'M354 82l34-15 39 3 19 12 24-3 16 14-14 16 22 16-10 24-28-3-12 16-23-9-17 19-20-12-21 7-21-15 12-20-16-16 16-34z M326 110l17 7-3 18-20 5-12-13 18-17z M397 172l15 10 5 24-18 8-10-18 8-24z M431 166l20 14-5 17-20-5 5-26z',
   },
   {
     slug: 'oceania',
     name: 'Oceania',
     shortName: 'Oceania',
-    mapLabel: 'Oceania',
-    x: 698,
-    y: 343,
-    shapeClassName:
-      'M627 315l36-20 45 7 32 24 9 32-24 20-45 8-41-14-20-29 8-28z M738 393l17-12 17 9 1 18-18 13-18-9 1-19z M772 378l11 4 2 11-10 6-9-8 6-13z M607 287l25-7 20 12-8 16-29-1-8-20z M682 279l12 5 3 12-12 6-10-10 7-13z',
   },
   {
     slug: 'north-america',
     name: 'North America',
     shortName: 'North America',
-    mapLabel: 'North America',
-    x: 178,
-    y: 150,
-    shapeClassName:
-      'M44 122l31-20 45-8 23-20 53-9 42 12 34-12 33 8 20 25-18 28 25 21-3 32-33 16-24 30-38 3-17 24-25-7-30 13-31-12-17-29-31-9-5-32-28-12-7-33z M158 238l29 9 17 23-4 31-23 5-21-22-15-26 17-20z M310 41l40-18 42 4 18 22-15 34-33 20-37-7-27-22 12-33z M111 84l25-22 38-8 14-19 29 7-19 24-35 10-23 18-29-10z',
   },
   {
     slug: 'central-america',
     name: 'Central America',
     shortName: 'Central America',
-    mapLabel: 'Central America',
-    x: 254,
-    y: 272,
-    shapeClassName:
-      'M205 262l24-12 31 6 20 18 25 5 19 15-6 16-29-6-23-14-25-2-19-10-17-16z M319 254m-3 0a3 3 0 1 0 6 0a3 3 0 1 0-6 0 M334 263m-3 0a3 3 0 1 0 6 0a3 3 0 1 0-6 0 M348 275m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0 M301 242m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0',
   },
   {
     slug: 'south-america',
     name: 'South America',
     shortName: 'South America',
-    mapLabel: 'South America',
-    x: 298,
-    y: 342,
-    shapeClassName:
-      'M286 278l38 14 26 31 1 38-18 35-5 31-22 24-20-20-9-36-22-27-7-38-25-26 17-24 46-2z M273 414l13 9-7 15-13-7 7-17z',
   },
   {
     slug: 'africa',
     name: 'Africa',
     shortName: 'Africa',
-    mapLabel: 'Africa',
-    x: 430,
-    y: 282,
-    shapeClassName:
-      'M394 183l54-9 46 21 26 45-8 48 16 38-18 53-38 46-35-13-17-52-34-32-20-51 7-55 21-39z M531 344l20 24-6 34-24 18-11-29 21-47z',
   },
 ];
+
+const MAP_WIDTH = 840;
+const MAP_HEIGHT = 430;
+const WORLD_GEO_URL = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json';
+
+const COUNTRY_TO_CONTINENT: Record<string, Continent> = {
+  '004': 'asia',
+  '008': 'europe',
+  '012': 'africa',
+  '016': 'oceania',
+  '020': 'europe',
+  '024': 'africa',
+  '028': 'central-america',
+  '031': 'asia',
+  '032': 'south-america',
+  '036': 'oceania',
+  '040': 'europe',
+  '044': 'central-america',
+  '048': 'asia',
+  '050': 'asia',
+  '051': 'asia',
+  '052': 'central-america',
+  '056': 'europe',
+  '060': 'north-america',
+  '064': 'asia',
+  '068': 'south-america',
+  '070': 'europe',
+  '072': 'africa',
+  '076': 'south-america',
+  '084': 'central-america',
+  '090': 'oceania',
+  '096': 'asia',
+  '100': 'europe',
+  '104': 'asia',
+  '108': 'africa',
+  '112': 'europe',
+  '116': 'asia',
+  '120': 'africa',
+  '124': 'north-america',
+  '132': 'africa',
+  '136': 'central-america',
+  '140': 'africa',
+  '144': 'asia',
+  '148': 'africa',
+  '152': 'south-america',
+  '156': 'asia',
+  '158': 'asia',
+  '170': 'south-america',
+  '174': 'africa',
+  '178': 'africa',
+  '180': 'africa',
+  '188': 'central-america',
+  '191': 'europe',
+  '192': 'central-america',
+  '196': 'asia',
+  '203': 'europe',
+  '204': 'africa',
+  '208': 'europe',
+  '212': 'central-america',
+  '214': 'central-america',
+  '218': 'south-america',
+  '222': 'central-america',
+  '226': 'africa',
+  '231': 'africa',
+  '232': 'africa',
+  '233': 'europe',
+  '238': 'south-america',
+  '242': 'oceania',
+  '246': 'europe',
+  '250': 'europe',
+  '254': 'south-america',
+  '258': 'oceania',
+  '262': 'africa',
+  '266': 'africa',
+  '268': 'asia',
+  '270': 'africa',
+  '275': 'asia',
+  '276': 'europe',
+  '288': 'africa',
+  '300': 'europe',
+  '304': 'north-america',
+  '308': 'central-america',
+  '320': 'central-america',
+  '324': 'africa',
+  '328': 'south-america',
+  '332': 'central-america',
+  '340': 'central-america',
+  '344': 'asia',
+  '348': 'europe',
+  '352': 'europe',
+  '356': 'asia',
+  '360': 'asia',
+  '364': 'asia',
+  '368': 'asia',
+  '372': 'europe',
+  '376': 'asia',
+  '380': 'europe',
+  '384': 'africa',
+  '388': 'central-america',
+  '392': 'asia',
+  '398': 'asia',
+  '400': 'asia',
+  '404': 'africa',
+  '408': 'asia',
+  '410': 'asia',
+  '414': 'asia',
+  '417': 'asia',
+  '418': 'asia',
+  '422': 'asia',
+  '426': 'africa',
+  '428': 'europe',
+  '430': 'africa',
+  '434': 'africa',
+  '438': 'europe',
+  '440': 'europe',
+  '442': 'europe',
+  '450': 'africa',
+  '454': 'africa',
+  '458': 'asia',
+  '462': 'asia',
+  '466': 'africa',
+  '470': 'europe',
+  '478': 'africa',
+  '480': 'africa',
+  '484': 'central-america',
+  '496': 'asia',
+  '498': 'europe',
+  '499': 'europe',
+  '504': 'africa',
+  '508': 'africa',
+  '512': 'asia',
+  '516': 'africa',
+  '524': 'asia',
+  '528': 'europe',
+  '531': 'central-america',
+  '533': 'central-america',
+  '540': 'oceania',
+  '548': 'oceania',
+  '554': 'oceania',
+  '558': 'central-america',
+  '562': 'africa',
+  '566': 'africa',
+  '578': 'europe',
+  '586': 'asia',
+  '591': 'central-america',
+  '598': 'oceania',
+  '600': 'south-america',
+  '604': 'south-america',
+  '608': 'asia',
+  '616': 'europe',
+  '620': 'europe',
+  '624': 'africa',
+  '626': 'asia',
+  '630': 'central-america',
+  '634': 'asia',
+  '642': 'europe',
+  '643': 'asia',
+  '646': 'africa',
+  '682': 'asia',
+  '686': 'africa',
+  '688': 'europe',
+  '690': 'africa',
+  '694': 'africa',
+  '702': 'asia',
+  '703': 'europe',
+  '704': 'asia',
+  '705': 'europe',
+  '706': 'africa',
+  '710': 'africa',
+  '724': 'europe',
+  '728': 'africa',
+  '729': 'africa',
+  '740': 'south-america',
+  '748': 'africa',
+  '752': 'europe',
+  '756': 'europe',
+  '760': 'asia',
+  '762': 'asia',
+  '764': 'asia',
+  '768': 'africa',
+  '780': 'central-america',
+  '784': 'asia',
+  '788': 'africa',
+  '792': 'asia',
+  '795': 'asia',
+  '798': 'oceania',
+  '800': 'africa',
+  '804': 'europe',
+  '807': 'europe',
+  '818': 'africa',
+  '826': 'europe',
+  '834': 'africa',
+  '840': 'north-america',
+  '854': 'africa',
+  '858': 'south-america',
+  '860': 'asia',
+  '862': 'south-america',
+  '882': 'oceania',
+  '887': 'asia',
+  '894': 'africa',
+};
+
+type WorldTopology = Topology<{
+  countries: GeometryCollection<{ name?: string }>;
+}>;
+
+type MapGeography = ExtendedFeature;
 
 const CONTINENT_PAGE_SIZE = 6;
 const CONTINENT_INCREMENT = 3;
@@ -102,22 +274,23 @@ function formatPostDate(date: string) {
 function DestinationPostCard({ post }: { post: BlogPost }) {
   return (
     <Link to={`/blog/${post.slug}`} className="group block">
-      <div className="aspect-[4/3] overflow-hidden bg-gray-100 mb-4">
+      <div className="relative aspect-[4/3] overflow-hidden bg-gray-100 mb-4">
         <img
           src={post.coverImage}
           alt={post.title}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
+        <div className="absolute inset-0 bg-ocean-dark/0 transition-colors duration-300 group-hover:bg-ocean-dark/58" />
+        <div className="absolute inset-x-0 bottom-0 translate-y-3 p-5 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+          <div className="mb-2 flex flex-wrap gap-x-3 gap-y-2 font-body text-[11px] uppercase tracking-[0.16em] text-sky-200">
+            {post.destination && <span>{post.destination}</span>}
+            {post.country && <span>{post.country}</span>}
+          </div>
+          <h3 className="font-display text-2xl text-white">
+            {post.title}
+          </h3>
+        </div>
       </div>
-
-      <div className="mb-2 flex flex-wrap gap-x-3 gap-y-2 font-body text-[11px] uppercase tracking-[0.16em] text-ocean">
-        {post.destination && <span>{post.destination}</span>}
-        {post.country && <span>{post.country}</span>}
-      </div>
-
-      <h3 className="font-display text-2xl text-black group-hover:text-ocean transition-colors mb-2">
-        {post.title}
-      </h3>
 
       <p className="font-body text-sm text-black/48 mb-3">
         {formatPostDate(post.publishedAt)}
@@ -137,7 +310,40 @@ export function Destinations() {
   const [searchContinent, setSearchContinent] = useState<'all' | Continent>('all');
   const [searchCountry, setSearchCountry] = useState<'all' | string>('all');
   const [searchVisibleCount, setSearchVisibleCount] = useState(SEARCH_PAGE_SIZE);
+  const [mapGeographies, setMapGeographies] = useState<MapGeography[]>([]);
+  const [hoveredCountry, setHoveredCountry] = useState<string | null>(null);
+  const [pressedCountry, setPressedCountry] = useState<string | null>(null);
   const continentResultsRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function loadWorldMap() {
+      const response = await fetch(WORLD_GEO_URL, { signal: controller.signal });
+      const topology = (await response.json()) as WorldTopology;
+      const countryFeatures = feature(topology, topology.objects.countries);
+
+      if (countryFeatures.type === 'FeatureCollection') {
+        setMapGeographies(countryFeatures.features as MapGeography[]);
+      }
+    }
+
+    loadWorldMap().catch((error: unknown) => {
+      if (error instanceof Error && error.name === 'AbortError') return;
+      console.error('Unable to load world map', error);
+    });
+
+    return () => controller.abort();
+  }, []);
+
+  const mapPath = useMemo(() => {
+    const projection = geoMercator()
+      .scale(130)
+      .center([10, 20])
+      .translate([MAP_WIDTH / 2, MAP_HEIGHT / 2]);
+
+    return geoPath(projection);
+  }, []);
 
   const sortedPosts = useMemo(
     () =>
@@ -239,39 +445,60 @@ export function Destinations() {
           <div className="bg-ocean-dark rounded-sm overflow-hidden p-6 md:p-10">
             <div className="relative mx-auto max-w-5xl">
               <svg
-                viewBox="0 0 840 430"
+                viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`}
                 className="w-full h-auto"
                 role="img"
                 aria-label="Interactive world map by continent"
               >
-                <rect width="840" height="430" fill="transparent" />
-                {CONTINENTS.map((continent) => (
-                  <path
-                    key={continent.slug}
-                    d={continent.shapeClassName}
-                    fill={activeContinent === continent.slug ? '#7dd3fc' : 'rgba(255,255,255,0.24)'}
-                    stroke={activeContinent === continent.slug ? '#ffffff' : 'rgba(255,255,255,0.15)'}
-                    strokeWidth="2"
-                    className="cursor-pointer transition-colors duration-300"
-                    onClick={() => handleContinentSelect(continent.slug)}
-                  />
-                ))}
-              </svg>
+                <rect width={MAP_WIDTH} height={MAP_HEIGHT} fill="transparent" />
+                {mapGeographies.map((geo, index) => {
+                  const countryId = String(geo.id ?? '').padStart(3, '0');
+                  const continent = COUNTRY_TO_CONTINENT[countryId];
+                  const countryKey = countryId || geo.properties?.name || `country-${index}`;
+                  const isActive = continent === activeContinent;
+                  const isHovered = hoveredCountry === countryKey;
+                  const isPressed = pressedCountry === countryKey;
+                  const pathData = mapPath(geo as GeoPermissibleObjects);
 
-              {CONTINENTS.map((continent) => (
-                <button
-                  key={continent.slug}
-                  onClick={() => handleContinentSelect(continent.slug)}
-                  className={`absolute -translate-x-1/2 -translate-y-1/2 px-3 py-2 font-body text-xs md:text-sm uppercase tracking-[0.16em] transition-all duration-300 ${
-                    activeContinent === continent.slug
-                      ? 'text-white'
-                      : 'text-white/80 hover:text-white'
-                  }`}
-                  style={{ left: `${(continent.x / 840) * 100}%`, top: `${(continent.y / 430) * 100}%` }}
-                >
-                  {continent.mapLabel}
-                </button>
-              ))}
+                  if (!pathData) return null;
+
+                  const fill = continent
+                    ? isActive || isHovered || isPressed
+                      ? '#7dd3fc'
+                      : 'rgba(255,255,255,0.24)'
+                    : 'rgba(255,255,255,0.08)';
+
+                  return (
+                    <path
+                      key={countryKey}
+                      d={pathData}
+                      fill={fill}
+                      stroke={isActive || isHovered ? '#ffffff' : 'rgba(255,255,255,0.15)'}
+                      strokeWidth={0.6}
+                      onClick={() => {
+                        if (continent) handleContinentSelect(continent);
+                      }}
+                      onMouseEnter={() => {
+                        if (continent) setHoveredCountry(countryKey);
+                      }}
+                      onMouseLeave={() => {
+                        setHoveredCountry(null);
+                        setPressedCountry(null);
+                      }}
+                      onMouseDown={() => {
+                        if (continent) setPressedCountry(countryKey);
+                      }}
+                      onMouseUp={() => setPressedCountry(null)}
+                      style={{
+                        cursor: continent ? 'pointer' : 'default',
+                        outline: 'none',
+                        pointerEvents: continent ? 'auto' : 'none',
+                        transition: 'fill 300ms ease, stroke 300ms ease',
+                      }}
+                    />
+                  );
+                })}
+              </svg>
             </div>
           </div>
         </div>
