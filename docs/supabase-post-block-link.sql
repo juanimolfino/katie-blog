@@ -1,0 +1,9 @@
+-- What Katie Seas: allow link blocks in existing post_blocks table
+-- Run this only if docs/supabase-posts.sql was already run before link blocks existed.
+
+alter table public.post_blocks
+drop constraint if exists post_blocks_type_check;
+
+alter table public.post_blocks
+add constraint post_blocks_type_check
+check (type in ('heading', 'paragraph', 'image', 'quote', 'link'));

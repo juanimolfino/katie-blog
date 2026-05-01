@@ -13,7 +13,8 @@ export function Header() {
     location.pathname.startsWith('/blog/') ||
     location.pathname === '/destinations' ||
     location.pathname.startsWith('/destinations/') ||
-    location.pathname === '/gallery';
+    location.pathname === '/gallery' ||
+    location.pathname.startsWith('/admin');
 
   // Detect scroll
   useEffect(() => {

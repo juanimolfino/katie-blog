@@ -11,13 +11,15 @@ export const siteConfig: SiteConfig = {
     bio: "I'm Katie - a dive instructor and skipper currently living on Heron Island on the Great Barrier Reef. For the past few years, I've been traveling the world, working in the ocean, and building a life centered around saltwater, adventure, and exploration.",
     avatar: "/images/about/about-katie.jpg",
     social: {
-      instagram: "https://instagram.com/whatkatieseas",
-      youtube: "https://youtube.com/whatkatieseas",
+      instagram: "https://www.instagram.com/whatkatie.seas",
+      youtube: "https://www.youtube.com/@whatkatieseas",
+      pinterest: "https://www.pinterest.com/whatkatieseas",
     },
   },
   social: {
-    instagram: "https://instagram.com/whatkatieseas",
-    youtube: "https://youtube.com/whatkatieseas",
+    instagram: "https://www.instagram.com/whatkatie.seas",
+    youtube: "https://www.youtube.com/@whatkatieseas",
+    pinterest: "https://www.pinterest.com/whatkatieseas",
   },
   seo: {
     title: "What Katie Seas | Dive Instructor & Ocean Explorer",

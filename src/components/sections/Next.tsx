@@ -40,7 +40,7 @@ export function NextStops() {
                   : "opacity-0 translate-y-8"
               }`}
             >
-              Next Up
+              Up Next
             </h2>
             <div className="group relative rounded-3xl overflow-hidden shadow-xl">
               <img
@@ -62,14 +62,9 @@ export function NextStops() {
                 : "opacity-0 translate-x-20"
             }`}
           >
-            {/* Eyebrow */}
-            <span className="text-sm uppercase tracking-[0.25em] text-terracotta/80">
-              Up Next
-            </span>
-
             {/* Título */}
-            <h2 className="mt-4 font-display text-4xl lg:text-5xl text-black leading-tight">
-              Where we’re heading next
+            <h2 className="font-display text-4xl lg:text-5xl text-black leading-tight">
+              Places on the horizon
             </h2>
 
             {/* Descripción */}

@@ -29,12 +29,18 @@ Today the project includes:
 - `Gallery`
 - `Videos`
 - `Contact`
+- first-pass `/admin/login` and protected `/admin`
 
-`Gallery` now has a static first version with a hero image, continent filters, and an image-led gallery grid.
+`Blog`, `Destinations`, and `Gallery` now read published/visible content from Supabase instead of listing old static example items.
+Home recent posts also read from Supabase.
 
 Important current realities:
 
-- content is mostly static and lives in source files
+- public posts for `Blog` and `Destinations` now come from Supabase
+- home recent posts and home destinations now come from published Supabase posts
+- public gallery photos now come from Supabase `gallery_items`
+- public contact/social details are `whatkatieseas@gmail.com`, Instagram `whatkatie.seas`, YouTube `@whatkatieseas`, and Pinterest `whatkatieseas`
+- some non-post content is still static and lives in source files
 - many images are already local assets in `public/images`
 - some page sections still contain placeholder copy or placeholder overlays
 - the contact form is UI-only and does not submit to a backend
@@ -68,6 +74,7 @@ Long term:
 - `React 19`
 - `TypeScript`
 - `Vite`
+- `Supabase` for the first admin authentication integration
 - `React Router`
 - `Tailwind CSS`
 - `Radix UI` primitives and utility components
@@ -209,12 +216,30 @@ Practical workflow:
 
 - [src/App.tsx](src/App.tsx): application routes
 - [src/data/site.ts](src/data/site.ts): site branding, navigation, author metadata
-- [src/data/content.ts](src/data/content.ts): current mock posts and destinations
+- [src/data/content.ts](src/data/content.ts): legacy static post fallback plus current static destination support
 - [src/pages/About.tsx](src/pages/About.tsx): long-form editorial biography page with optional hover captions on photos
-- [src/pages/Blog.tsx](src/pages/Blog.tsx): static blog archive with category browsing and search
-- [src/pages/BlogPostPage.tsx](src/pages/BlogPostPage.tsx): reusable static post template driven by post metadata
-- [src/pages/Destinations.tsx](src/pages/Destinations.tsx): geographic browsing by continent, country, and destination keyword
-- [src/pages/Gallery.tsx](src/pages/Gallery.tsx): static photo gallery with continent filtering and lightbox carousel
+- [src/pages/Blog.tsx](src/pages/Blog.tsx): Supabase-backed blog archive showing only published database posts
+- [src/pages/BlogPostPage.tsx](src/pages/BlogPostPage.tsx): reusable post template that loads published Supabase posts first and falls back to static post data
+- [src/pages/Destinations.tsx](src/pages/Destinations.tsx): Supabase-backed geographic browsing by continent, country, and destination keyword
+- [src/pages/Gallery.tsx](src/pages/Gallery.tsx): Supabase-backed photo gallery with continent filtering and lightbox carousel
+- [src/pages/AdminLogin.tsx](src/pages/AdminLogin.tsx): first Supabase email/password login screen for Katie
+- [src/pages/AdminDashboard.tsx](src/pages/AdminDashboard.tsx): protected admin dashboard entry point
+- [src/pages/AdminPosts.tsx](src/pages/AdminPosts.tsx): first Supabase-backed post list with delete action
+- [src/pages/AdminPostForm.tsx](src/pages/AdminPostForm.tsx): first create/edit form for database-backed post metadata and content blocks
+- [src/pages/AdminGallery.tsx](src/pages/AdminGallery.tsx): Supabase-backed gallery manager for uploaded photos, captions, continent filters, order, and visibility
+- [src/pages/ProtectedAdminRoute.tsx](src/pages/ProtectedAdminRoute.tsx): session gate for admin routes
+- [src/lib/adminPosts.ts](src/lib/adminPosts.ts): Supabase CRUD helpers for the `posts` table
+- [src/lib/adminMedia.ts](src/lib/adminMedia.ts): Supabase Storage helper for uploading admin media files; JPG/PNG/WebP uploads are converted to optimized WebP derivatives before storage, targeting about 700 KB for covers and 600 KB for inline post images
+- [src/lib/galleryItems.ts](src/lib/galleryItems.ts): Supabase helpers for public and admin gallery item reads/writes
+- [src/lib/adminAccess.ts](src/lib/adminAccess.ts): frontend admin email allowlist using `VITE_ADMIN_EMAILS`
+- [src/lib/publicPosts.ts](src/lib/publicPosts.ts): public Supabase reader for published posts, archive cards, and ordered blocks
+- [src/lib/supabase.ts](src/lib/supabase.ts): browser Supabase client using `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`
+- [docs/supabase-posts.sql](docs/supabase-posts.sql): SQL to create the first admin `posts` and `post_blocks` tables and RLS policies
+- [docs/supabase-storage.sql](docs/supabase-storage.sql): SQL to create the public `media` bucket and authenticated upload policies
+- [docs/supabase-gallery.sql](docs/supabase-gallery.sql): SQL to create the `gallery_items` table and RLS policies
+- [docs/supabase-admin-security.sql](docs/supabase-admin-security.sql): SQL to add an admin email allowlist and replace broad authenticated write policies
+- [docs/admin-security-guide.md](docs/admin-security-guide.md): admin security notes, Supabase signup setting, and how to add/remove admins
+- [docs/supabase-post-block-link.sql](docs/supabase-post-block-link.sql): migration for existing databases to allow `link` content blocks
 - [src/components/ScrollToTopButton.tsx](src/components/ScrollToTopButton.tsx): global floating button that smoothly returns visitors to the top of the page
 - [src/components/sections/Hero.tsx](src/components/sections/Hero.tsx): homepage hero with Katie-selected YouTube background videos and image fallback
 - [src/index.css](src/index.css): global styles, fonts, color tokens, utility classes
@@ -232,6 +257,12 @@ Current routes in the app:
 - `/gallery` -> Gallery
 - `/videos` -> Videos
 - `/contact` -> Contact
+- `/admin/login` -> Supabase login
+- `/admin` -> protected admin dashboard
+- `/admin/posts` -> Supabase-backed post list
+- `/admin/posts/new` -> create post form
+- `/admin/posts/:id/edit` -> edit post form
+- `/admin/gallery` -> Supabase-backed gallery manager
 
 This is an intentional in-progress state, not a finished information architecture.
 
@@ -240,8 +271,8 @@ This is an intentional in-progress state, not a finished information architectur
 Content is currently stored directly in code:
 
 - site-level metadata in `src/data/site.ts`
-- mock blog posts in `src/data/content.ts`
-- mock destinations in `src/data/content.ts`
+- legacy static blog posts in `src/data/content.ts` for individual post fallback only
+- static destination support in `src/data/content.ts` where still needed outside database-backed listings
 - page-specific editorial content directly inside some page files, especially `src/pages/About.tsx`
 
 That means changes right now often happen in two places:

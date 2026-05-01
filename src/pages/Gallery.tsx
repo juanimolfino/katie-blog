@@ -1,17 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { fetchPublicGalleryItems, type GalleryItem } from '@/lib/galleryItems';
 import type { Continent } from '@/types';
 
 type GalleryFilter = 'all' | Continent;
-
-type GalleryImage = {
-  id: string;
-  title: string;
-  location: string;
-  continent: Continent;
-  image: string;
-  orientation: 'portrait' | 'landscape' | 'square';
-};
 
 const galleryFilters: { slug: GalleryFilter; label: string }[] = [
   { slug: 'all', label: 'All' },
@@ -24,119 +16,43 @@ const galleryFilters: { slug: GalleryFilter; label: string }[] = [
   { slug: 'africa', label: 'Africa' },
 ];
 
-const galleryImages: GalleryImage[] = [
-  {
-    id: 'raja-ampat-islands',
-    title: 'Blue Layers',
-    location: 'Raja Ampat, Indonesia',
-    continent: 'asia',
-    image: '/images/destinations/raja-ampat.jpg',
-    orientation: 'portrait',
-  },
-  {
-    id: 'great-barrier-reef',
-    title: 'Reef Light',
-    location: 'Great Barrier Reef, Australia',
-    continent: 'oceania',
-    image: '/images/destinations/gbr.jpg',
-    orientation: 'landscape',
-  },
-  {
-    id: 'galapagos-coast',
-    title: 'Volcanic Water',
-    location: 'Galapagos, Ecuador',
-    continent: 'south-america',
-    image: '/images/destinations/galapagos.jpg',
-    orientation: 'square',
-  },
-  {
-    id: 'tenerife-memory',
-    title: 'Island Start',
-    location: 'Tenerife, Spain',
-    continent: 'europe',
-    image: '/images/about/about-leap-to-unknown-1.jpeg',
-    orientation: 'portrait',
-  },
-  {
-    id: 'red-sea-blue',
-    title: 'Clear Blue',
-    location: 'Red Sea, Egypt',
-    continent: 'africa',
-    image: '/images/destinations/red-sea.jpg',
-    orientation: 'landscape',
-  },
-  {
-    id: 'maldives-shore',
-    title: 'Soft Current',
-    location: 'Maldives',
-    continent: 'asia',
-    image: '/images/destinations/maldives.jpg',
-    orientation: 'portrait',
-  },
-  {
-    id: 'similan-rock',
-    title: 'Granite Islands',
-    location: 'Similan Islands, Thailand',
-    continent: 'asia',
-    image: '/images/destinations/similan.jpg',
-    orientation: 'square',
-  },
-  {
-    id: 'costa-rica-next',
-    title: 'Green Coast',
-    location: 'Costa Rica',
-    continent: 'central-america',
-    image: '/images/home/next_destinations.jpg',
-    orientation: 'landscape',
-  },
-  {
-    id: 'new-york-light',
-    title: 'City Pause',
-    location: 'New York, United States',
-    continent: 'north-america',
-    image: '/images/destinations/new-york.jpg',
-    orientation: 'portrait',
-  },
-  {
-    id: 'bali-texture',
-    title: 'Island Texture',
-    location: 'Bali, Indonesia',
-    continent: 'asia',
-    image: '/images/destinations/bali.jpg',
-    orientation: 'landscape',
-  },
-  {
-    id: 'santorini-white',
-    title: 'White Edge',
-    location: 'Santorini, Greece',
-    continent: 'europe',
-    image: '/images/destinations/santorini.jpg',
-    orientation: 'square',
-  },
-  {
-    id: 'cape-town-sky',
-    title: 'Southern Edge',
-    location: 'Cape Town, South Africa',
-    continent: 'africa',
-    image: '/images/destinations/cape-town.jpg',
-    orientation: 'portrait',
-  },
-];
-
-const imageAspectClass: Record<GalleryImage['orientation'], string> = {
+const imageAspectClass: Record<GalleryItem['orientation'], string> = {
   portrait: 'aspect-[3/4]',
   landscape: 'aspect-[4/3]',
   square: 'aspect-square',
 };
 
 export function Gallery() {
+  const [galleryImages, setGalleryImages] = useState<GalleryItem[]>([]);
   const [activeFilter, setActiveFilter] = useState<GalleryFilter>('all');
   const [activeImageIndex, setActiveImageIndex] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    async function loadGallery() {
+      setIsLoading(true);
+      setErrorMessage('');
+
+      try {
+        const items = await fetchPublicGalleryItems();
+        setGalleryImages(items);
+      } catch (error) {
+        setErrorMessage(
+          error instanceof Error ? error.message : 'Unable to load gallery photos.'
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    void loadGallery();
+  }, []);
 
   const visibleImages = useMemo(() => {
     if (activeFilter === 'all') return galleryImages;
     return galleryImages.filter((image) => image.continent === activeFilter);
-  }, [activeFilter]);
+  }, [activeFilter, galleryImages]);
 
   const activeImage =
     activeImageIndex === null ? null : visibleImages[activeImageIndex] ?? null;
@@ -235,33 +151,48 @@ export function Gallery() {
             </div>
           </div>
 
-          <div className="columns-1 sm:columns-2 lg:columns-3 gap-5 [column-fill:_balance]">
-            {visibleImages.map((image, index) => (
-              <figure key={image.id} className="group mb-5 break-inside-avoid">
-                <button
-                  type="button"
-                  onClick={() => openImage(index)}
-                  className={`${imageAspectClass[image.orientation]} relative block w-full overflow-hidden bg-gray-100 text-left`}
-                  aria-label={`Open ${image.title}`}
-                >
-                  <img
-                    src={image.image}
-                    alt={`${image.title} in ${image.location}`}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-ocean-dark/0 transition-colors duration-300 group-hover:bg-ocean-dark/58 group-focus-within:bg-ocean-dark/58" />
-                  <div className="absolute inset-x-0 bottom-0 translate-y-3 p-5 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100">
-                    <span className="font-body text-xs uppercase tracking-[0.18em] text-sky-200 block mb-2">
-                      {image.location}
-                    </span>
-                    <h3 className="font-display text-2xl text-white">
-                      {image.title}
-                    </h3>
-                  </div>
-                </button>
-              </figure>
-            ))}
-          </div>
+          {errorMessage ? (
+            <div className="border border-red-200 bg-red-50 p-4 font-body text-sm text-red-700">
+              {errorMessage}
+            </div>
+          ) : isLoading ? (
+            <p className="font-body text-sm uppercase tracking-[0.18em] text-black/45">
+              Loading gallery...
+            </p>
+          ) : visibleImages.length > 0 ? (
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {visibleImages.map((image, index) => (
+                <figure key={image.id} className="group">
+                  <button
+                    type="button"
+                    onClick={() => openImage(index)}
+                    className={`${imageAspectClass[image.orientation]} relative isolate block w-full overflow-hidden bg-transparent text-left`}
+                    aria-label={`Open ${image.title}`}
+                  >
+                    <img
+                      src={image.image_url}
+                      alt={image.alt_text || `${image.title} in ${image.location}`}
+                      className="absolute inset-0 z-0 h-full w-full object-cover opacity-100 mix-blend-normal transition-none group-hover:opacity-100 group-hover:scale-100"
+                    />
+                    <div className="absolute inset-x-0 bottom-0 z-10 translate-y-3 p-5 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100">
+                      {image.location && (
+                        <span className="font-body text-xs uppercase tracking-[0.18em] text-sky-200 block mb-2 drop-shadow-[0_1px_8px_rgba(0,0,0,0.8)]">
+                          {image.location}
+                        </span>
+                      )}
+                      <h3 className="font-display text-2xl text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]">
+                        {image.title}
+                      </h3>
+                    </div>
+                  </button>
+                </figure>
+              ))}
+            </div>
+          ) : (
+            <p className="font-body text-base text-black/60">
+              No gallery photos are published yet.
+            </p>
+          )}
         </div>
       </section>
 
@@ -312,8 +243,8 @@ export function Gallery() {
           >
             <div className="min-h-0 w-full flex-1 flex items-center justify-center">
               <img
-                src={activeImage.image}
-                alt={`${activeImage.title} in ${activeImage.location}`}
+                src={activeImage.image_url}
+                alt={activeImage.alt_text || `${activeImage.title} in ${activeImage.location}`}
                 className="max-h-full max-w-full object-contain"
               />
             </div>
@@ -322,9 +253,11 @@ export function Gallery() {
               <h2 className="font-display text-2xl md:text-3xl">
                 {activeImage.title}
               </h2>
-              <p className="font-body text-sm md:text-base text-black/55 mt-1">
-                {activeImage.location}
-              </p>
+              {activeImage.location && (
+                <p className="font-body text-sm md:text-base text-black/55 mt-1">
+                  {activeImage.location}
+                </p>
+              )}
             </div>
           </div>
         </div>

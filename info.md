@@ -8,7 +8,24 @@ Project memory rule:
   Whenever product direction, architecture, taxonomy, workflow, post metadata, or admin/editor behavior is defined, update the relevant context files before closing the task. Use README.md for repo/current-state orientation, docs/project-brief.md for product and roadmap decisions, docs/post-model-guide.md for post metadata and editor structure, and info.md for short operational reminders.
 
 Current product phase:
-  The static site is being completed first. Blog, reusable static post pages, and Destinations are already in place. After Katie reviews and approves static copy, images, and layout, the project should move toward app/admin mode with login, create/edit/delete posts, and a guided block-based post editor with limited design controls.
+  The static site is being completed first, and the app/admin transition has started. Supabase Auth protects /admin, and the first posts CRUD screens are in place at /admin/posts, /admin/posts/new, and /admin/posts/:id/edit. The edit form supports first-pass content blocks for heading, paragraph, image, quote, and link, plus Save all, preview, duplicate block, and block move/delete controls. /admin/gallery manages uploaded gallery photos. Public /blog, /destinations, Home recent posts, and Home destinations now show published Supabase posts, and public /gallery shows only visible Supabase gallery items. Public /blog/:slug loads a published Supabase post first, then falls back to static post data only for legacy/static slugs.
+
+Supabase admin setup:
+  The browser client lives in src/lib/supabase.ts and reads VITE_SUPABASE_URL plus VITE_SUPABASE_ANON_KEY. Keep service role keys and user passwords out of the frontend and out of committed example files. Local public project config belongs in .env.local, using .env.example as the template.
+  The first posts schema is stored in docs/supabase-posts.sql and should be run in Supabase SQL Editor before testing post CRUD. Re-run it when post_blocks or public read policies change; it is written to be safe/idempotent for the current development phase. Public read policies allow anon users to read only published posts and blocks for published posts.
+  Admin access uses frontend VITE_ADMIN_EMAILS plus database/storage RLS hardening in docs/supabase-admin-security.sql. Run that SQL after posts/gallery/storage SQL. The real protection is Supabase RLS; the frontend allowlist is only UX. docs/admin-security-guide.md explains how to add/remove admins and which Supabase signup setting to disable.
+  Media uploads use a public Supabase Storage bucket named media. Run docs/supabase-storage.sql in SQL Editor before testing uploads. Authenticated users can upload/update/delete media; anyone can read media files. Run docs/supabase-gallery.sql to enable /admin/gallery and public /gallery database reads.
+  Admin uploads automatically optimize JPG/PNG/WebP images in the browser before upload and now target web-size files rather than only fixed dimensions. Non-GIF uploads are always converted to a WebP derivative before being stored, so Lightroom/camera originals are not saved directly. Covers/gallery images start at max width 1600 / ~0.78 WebP quality and iterate down toward about 900 KB, with a 1200px width floor. Inline block images start at max width 1400 / ~0.76 quality and target about 800 KB, with a 1100px width floor. The optimizer may reduce quality further to about 0.58-0.60 if the file remains too heavy. GIFs are uploaded as-is if under 10 MB. HEIC/iPhone photos should be exported as JPG first because browsers usually cannot decode them.
+
+Recommended next steps:
+  1. Run docs/supabase-admin-security.sql in Supabase and disable public signups before production.
+  2. Add gallery editor polish if Katie needs batch reordering or bulk visibility changes.
+  3. Add clearer draft/preview messaging in the post editor if Katie finds preview confusing.
+  4. Consider code-splitting admin routes later to reduce the production bundle warning.
+
+Recent polish decisions:
+  Dynamic Supabase blog posts should show related posts at the bottom, chosen from other published posts by shared categories, tags, and continent. Gallery hover should keep the image visually unchanged and reveal only title/location text over the photo. Home travel teaser copy uses "Up Next" as the main heading, without repeating it as an eyebrow. Admin list/edit surfaces should include clear back navigation to the dashboard or parent admin screen. Public contact details are whatkatieseas@gmail.com, Instagram https://www.instagram.com/whatkatie.seas, YouTube https://www.youtube.com/@whatkatieseas, and Pinterest https://www.pinterest.com/whatkatieseas.
+  Home Destinations should use a simple even grid of up to 6 published destination posts, all with the same 4:3 card ratio, instead of a large featured-card layout. This keeps the section more forgiving for Katie's uploaded post covers and avoids requiring special vertical crops.
 
 Destinations taxonomy:
   Use English continent groups: Asia, Europe, Oceania, North America, Central America, South America, and Africa.

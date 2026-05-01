@@ -113,6 +113,7 @@ export interface Author {
     youtube?: string;
     twitter?: string;
     facebook?: string;
+    pinterest?: string;
   };
 }
 

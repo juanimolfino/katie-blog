@@ -198,10 +198,10 @@ export function Contact() {
                     <div>
                       <span className="font-body text-sm text-black/50 block">Email</span>
                       <a
-                        href="mailto:hello@whatkatieseas.com"
+                        href="mailto:whatkatieseas@gmail.com"
                         className="font-body text-base hover:text-ocean transition-colors"
                       >
-                        hello@whatkatieseas.com
+                        whatkatieseas@gmail.com
                       </a>
                     </div>
                   </div>
@@ -241,6 +241,19 @@ export function Contact() {
                         className="w-10 h-10 bg-black/5 flex items-center justify-center hover:bg-ocean hover:text-white transition-colors"
                       >
                         <Youtube className="w-5 h-5" />
+                      </a>
+                    )}
+                    {siteConfig.social.pinterest && (
+                      <a
+                        href={siteConfig.social.pinterest}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-10 h-10 bg-black/5 flex items-center justify-center hover:bg-ocean hover:text-white transition-colors"
+                        aria-label="Pinterest"
+                      >
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.071 3.151 9.405 7.601 11.151-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.669.967-2.914 2.171-2.914 1.024 0 1.518.769 1.518 1.69 0 1.03-.655 2.569-.994 3.995-.283 1.195.599 2.169 1.777 2.169 2.132 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.739.098.119.112.223.083.344-.091.379-.293 1.195-.334 1.363-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.966 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.631-2.75-1.378l-.747 2.848c-.271 1.043-1.002 2.35-1.492 3.146A12.016 12.016 0 0 0 12.017 24c6.624 0 11.99-5.367 11.99-11.987C24.007 5.367 18.641.001 12.017.001z" />
+                        </svg>
                       </a>
                     )}
                   </div>

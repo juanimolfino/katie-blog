@@ -3,7 +3,8 @@ import { Search } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { geoMercator, geoPath } from 'd3-geo';
 import { feature } from 'topojson-client';
-import { blogPosts, siteConfig } from '@/data';
+import { siteConfig } from '@/data';
+import { fetchPublishedPosts } from '@/lib/publicPosts';
 import type { BlogPost, Continent } from '@/types';
 import type { ExtendedFeature, GeoPermissibleObjects } from 'd3-geo';
 import type { GeometryCollection, Topology } from 'topojson-specification';
@@ -313,6 +314,9 @@ export function Destinations() {
   const [mapGeographies, setMapGeographies] = useState<MapGeography[]>([]);
   const [hoveredCountry, setHoveredCountry] = useState<string | null>(null);
   const [pressedCountry, setPressedCountry] = useState<string | null>(null);
+  const [publishedPosts, setPublishedPosts] = useState<BlogPost[]>([]);
+  const [isLoadingPosts, setIsLoadingPosts] = useState(true);
+  const [postsErrorMessage, setPostsErrorMessage] = useState('');
   const continentResultsRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -336,6 +340,34 @@ export function Destinations() {
     return () => controller.abort();
   }, []);
 
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadPosts() {
+      setIsLoadingPosts(true);
+      setPostsErrorMessage('');
+
+      try {
+        const posts = await fetchPublishedPosts();
+        if (isMounted) setPublishedPosts(posts);
+      } catch (error) {
+        if (isMounted) {
+          setPostsErrorMessage(
+            error instanceof Error ? error.message : 'Unable to load published posts.'
+          );
+        }
+      } finally {
+        if (isMounted) setIsLoadingPosts(false);
+      }
+    }
+
+    void loadPosts();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   const mapPath = useMemo(() => {
     const projection = geoMercator()
       .scale(130)
@@ -347,10 +379,10 @@ export function Destinations() {
 
   const sortedPosts = useMemo(
     () =>
-      [...blogPosts].sort(
+      [...publishedPosts].sort(
         (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
       ),
-    []
+    [publishedPosts]
   );
 
   const postsByContinent = useMemo(
@@ -509,6 +541,12 @@ export function Destinations() {
         className="py-16 md:py-20 bg-white border-b border-black/5 scroll-mt-28"
       >
         <div className="max-w-6xl mx-auto px-6 md:px-8">
+          {postsErrorMessage && (
+            <div className="mb-8 border border-red-200 bg-red-50 p-4 font-body text-sm text-red-700">
+              {postsErrorMessage}
+            </div>
+          )}
+
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10">
             <div>
               <span className="font-body text-sm uppercase tracking-[0.18em] text-black/40 block mb-3">
@@ -529,7 +567,11 @@ export function Destinations() {
             )}
           </div>
 
-          {postsByContinent.length > 0 ? (
+          {isLoadingPosts ? (
+            <p className="font-body text-sm uppercase tracking-[0.18em] text-black/40">
+              Loading published posts...
+            </p>
+          ) : postsByContinent.length > 0 ? (
             <>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {visibleContinentPosts.map((post) => (
@@ -667,7 +709,11 @@ export function Destinations() {
             </p>
           </div>
 
-          {searchResults.length > 0 ? (
+          {isLoadingPosts ? (
+            <p className="font-body text-sm uppercase tracking-[0.18em] text-black/40">
+              Loading published posts...
+            </p>
+          ) : searchResults.length > 0 ? (
             <>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {visibleSearchResults.map((post) => (

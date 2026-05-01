@@ -2,7 +2,33 @@
 
 This document explains what information each blog post should have, why it matters, and how it will be used in the site.
 
-For now, posts can be created manually in static data. Later, this same structure should become the basis for Katie's dashboard and database-backed workflow.
+For now, posts can be created manually in static data, and the admin transition has started with Supabase Auth plus first-pass CRUD screens. The first database schema lives in `docs/supabase-posts.sql` and covers post metadata plus body blocks.
+
+The first block types are:
+
+- `heading`
+- `paragraph`
+- `image`
+- `quote`
+- `link`
+
+The admin editor supports saving metadata and blocks separately, plus a combined Save all action for existing posts. Blocks can be moved, duplicated, or deleted. Preview opens `/blog/:slug`, so a post must be published to be visible through the public Supabase read policy.
+
+`link` blocks are for a short callout that points to another internal route, another post, or an external URL. Internal links should use paths such as `/blog/example-post`, `/gallery`, or `/destinations`.
+
+Public rendering note:
+
+`/blog/:slug` now checks Supabase for a matching `published` post first. If one exists, it renders the ordered `post_blocks` with the existing editorial post layout. If no published Supabase post exists, the page falls back to the static data in `src/data/content.ts`.
+
+`/blog` and `/destinations` are now database-first and only list published Supabase posts. The static post data is no longer mixed into those public listing pages.
+
+Supabase posts should show related posts at the bottom of the public article page. Until an explicit related-post field exists in the admin, related posts are inferred from other published posts by shared categories, tags, and continent.
+
+Media note:
+
+Post cover images and image blocks can now use files uploaded from the admin UI. Uploads go to the public Supabase Storage `media` bucket and store the resulting public URL in the post metadata or block content.
+
+JPG, PNG, and WebP uploads are optimized in the browser before upload so Katie can choose high-quality originals without manually resizing them. Non-GIF images are always stored as optimized WebP derivatives, not as the original camera or Lightroom export. Cover images currently target about 700 KB, and inline image blocks target about 600 KB. The optimizer starts with high enough dimensions for crisp web display, then iteratively lowers WebP quality and width if needed. If a file is unsupported, too large after optimization, or cannot be decoded, the admin UI should show a red error directly under the image field.
 
 ## Purpose
 

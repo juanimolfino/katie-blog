@@ -92,6 +92,15 @@ Operational note:
 - Juani is currently working with Katie in real time on content refinement
 - the active focus right now is completing the `About` page with final text and missing real images
 - the static blog archive, reusable static post template, destinations browsing structure, and gallery foundation have been created
+- the first admin/auth slice has started with Supabase Auth: `/admin/login` signs in with email/password, `/admin` is protected, `/admin/posts` has first-pass create/edit/delete screens backed by Supabase `posts` plus `post_blocks` tables, `/admin/gallery` manages Supabase `gallery_items`, `/blog` and `/destinations` show only published Supabase posts, `/gallery` shows only visible Supabase gallery items, and `/blog/:slug` can render published Supabase posts before falling back to static data for legacy/static posts
+- Home recent posts read from published Supabase posts rather than the legacy static post list.
+- Home destinations also read from published Supabase posts with destination/country metadata, linking visitors to the related blog post.
+- Admin access has two layers: a frontend email allowlist through `VITE_ADMIN_EMAILS`, and a required Supabase RLS hardening script in `docs/supabase-admin-security.sql` that limits database/storage writes to emails in `public.admin_users`.
+- Supabase Storage is the chosen media direction; authenticated admin users can upload post cover images, post block images, and gallery images to the public `media` bucket
+- Admin image uploads should be optimized for web performance, not stored at original camera size. Non-GIF uploads are always converted to a WebP derivative before storage. Current targets are cover/gallery images around 900 KB and inline post images around 800 KB, using iterative WebP compression with sensible width/quality floors.
+- Published Supabase posts should show related posts at the bottom, selected from other published posts with shared categories, tags, and continent.
+- Public social/contact details are whatkatieseas@gmail.com, Instagram `whatkatie.seas`, YouTube `@whatkatieseas`, and Pinterest `whatkatieseas`.
+- Recommended next build steps: run the admin security SQL in Supabase, optionally polish gallery batch ordering, add preview/draft messaging, and review production auth settings.
 - `Destinations` should stay minimal and ocean/editorial in feel, using a world map with recognizable continent shapes
 - `Gallery` should be image-led, simple, and filterable by continent; the long-term source should be Katie-owned uploads, with Pinterest used primarily to drive traffic back to the site
 - Global page UX should include a floating bottom-right back-to-top button on long pages.
@@ -116,6 +125,9 @@ Current or planned sections:
 
 - `Gallery`
   A space for photos, visual storytelling, selected products, or future creative work.
+
+- `Admin`
+  A private workflow for Katie to log in and eventually create, edit, delete, draft, and publish content. Supabase is the chosen backend direction for authentication, database storage, and media storage unless a later requirement proves Express/custom API logic is necessary.
 
 Future sections may emerge as the editorial structure becomes clearer.
 

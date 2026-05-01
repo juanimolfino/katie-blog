@@ -1,20 +1,24 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { destinations, categories } from '@/data';
+import { categories } from '@/data';
+import { fetchPublishedPosts } from '@/lib/publicPosts';
+import type { BlogPost } from '@/types';
 
+const DESTINATION_CARD_LIMIT = 6;
 
 export function DestinationsSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [activeCategory, setActiveCategory] = useState('all');
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [isLoadingPosts, setIsLoadingPosts] = useState(true);
 
+  const destinationPosts = posts.filter((post) => post.destination || post.country);
   const filteredDestinations = activeCategory === 'all'
-    ? destinations
-    : destinations.filter(d => d.continent === activeCategory);
-
-  const featuredDestination = filteredDestinations.find(d => d.featured) || filteredDestinations[0];
-  const otherDestinations = filteredDestinations.filter(d => d.id !== featuredDestination?.id).slice(0, 4);
+    ? destinationPosts
+    : destinationPosts.filter((post) => post.continent === activeCategory);
+  const visibleDestinations = filteredDestinations.slice(0, DESTINATION_CARD_LIMIT);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -32,6 +36,30 @@ export function DestinationsSection() {
     }
 
     return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadPosts() {
+      setIsLoadingPosts(true);
+
+      try {
+        const publishedPosts = await fetchPublishedPosts();
+        if (isMounted) setPosts(publishedPosts);
+      } catch (error) {
+        console.error('Unable to load destination posts from Supabase', error);
+        if (isMounted) setPosts([]);
+      } finally {
+        if (isMounted) setIsLoadingPosts(false);
+      }
+    }
+
+    void loadPosts();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (
@@ -89,75 +117,49 @@ export function DestinationsSection() {
         </div>
 
         {/* Destinations Grid */}
-        <div className="grid lg:grid-cols-3 gap-6">
-          {/* Featured Destination */}
-          {featuredDestination && (
-            <Link
-              to={`/destinations/${featuredDestination.slug}`}
-              className={`lg:col-span-2 lg:row-span-2 group relative overflow-hidden transition-all duration-700 delay-300 ${
-                isVisible
-                  ? 'opacity-100 scale-100'
-                  : 'opacity-0 scale-95'
-              }`}
-            >
-              <div className="aspect-[4/3] lg:aspect-auto lg:h-full">
-                <img
-                  src={featuredDestination.coverImage}
-                  alt={featuredDestination.name}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-                
-                {/* Content */}
-                <div className="absolute bottom-0 left-0 right-0 p-6 lg:p-8">
-                  <span className="font-body text-xs tracking-wider uppercase text-white/70 mb-2 block">
-                    {featuredDestination.country}
-                  </span>
-                  <h3 className="font-display text-2xl lg:text-3xl text-white font-light">
-                    {featuredDestination.name}
-                  </h3>
-                </div>
-              </div>
-            </Link>
-          )}
-
-          {/* Other Destinations */}
-          {otherDestinations.map((destination, index) => (
+        {isLoadingPosts ? (
+          <p className="font-body text-sm uppercase tracking-[0.18em] text-black/45">
+            Loading destinations...
+          </p>
+        ) : visibleDestinations.length > 0 ? (
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {visibleDestinations.map((destination, index) => (
             <Link
               key={destination.id}
-              to={`/destinations/${destination.slug}`}
-              className={`group relative overflow-hidden transition-all duration-700 ${
+              to={`/blog/${destination.slug}`}
+              className={`group relative overflow-hidden bg-gray-100 transition-all duration-700 ${
                 isVisible
                   ? 'opacity-100 translate-y-0'
                   : 'opacity-0 translate-y-12'
               }`}
               style={{
-                transitionDelay: `${index * 100 + 400}ms`,
+                transitionDelay: `${index * 100 + 250}ms`,
               }}
             >
               <div className="aspect-[4/3]">
                 <img
                   src={destination.coverImage}
-                  alt={destination.name}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  alt={destination.title}
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity" />
-                
-                {/* Content */}
-                <div className="absolute bottom-0 left-0 right-0 p-4">
-                  <span className="font-body text-xs tracking-wider uppercase text-white/70 mb-1 block">
-                    {destination.country}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent opacity-85 transition-opacity group-hover:opacity-95" />
+                <div className="absolute bottom-0 left-0 right-0 p-5">
+                  <span className="mb-2 block font-body text-xs uppercase tracking-wider text-white/70">
+                    {[destination.destination, destination.country].filter(Boolean).join(', ')}
                   </span>
-                  <h3 className="font-display text-lg text-white font-light">
-                    {destination.name}
+                  <h3 className="font-display text-xl text-white font-light leading-tight">
+                    {destination.title}
                   </h3>
                 </div>
               </div>
             </Link>
           ))}
         </div>
+        ) : (
+          <p className="font-body text-base text-black/60">
+            Destination stories are coming soon.
+          </p>
+        )}
       </div>
     </section>
   );
