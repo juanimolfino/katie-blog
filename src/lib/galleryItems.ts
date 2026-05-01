@@ -92,3 +92,18 @@ export async function deleteGalleryItem(id: string) {
 
   if (error) throw error;
 }
+
+export async function updateGallerySortOrders(items: { id: string; sort_order: number }[]) {
+  const client = requireSupabase();
+
+  await Promise.all(
+    items.map(async (item) => {
+      const { error } = await client
+        .from('gallery_items')
+        .update({ sort_order: item.sort_order })
+        .eq('id', item.id);
+
+      if (error) throw error;
+    })
+  );
+}

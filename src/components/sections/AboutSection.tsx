@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { siteConfig } from '@/data';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
 
 export function AboutSection() {
+  const settings = useSiteSettings();
   const sectionRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -39,28 +40,25 @@ export function AboutSection() {
           >
             {/* Title */}
             <h2 className="font-display text-5xl md:text-6xl lg:text-7xl font-light mb-4">
-              About
-            </h2>
-            <h2 className="font-display text-5xl md:text-6xl lg:text-7xl font-light mb-6">
-              Me
+              {settings.homeAboutTitle}
             </h2>
 
             {/* Hello */}
             <p className="font-body text-lg font-medium text-black mb-4">
-              Hello There!
+              {settings.homeAboutGreeting}
             </p>
 
             {/* Bio paragraphs */}
             <p className="font-body text-base leading-relaxed text-black/70 mb-4">
-              I'm Katie — a dive instructor and skipper currently living on Heron Island on the Great Barrier Reef.
+              {settings.homeAboutParagraph1}
             </p>
 
             <p className="font-body text-base leading-relaxed text-black/70 mb-4">
-              For the past few years, I've been traveling the world, working in the ocean, and building a life centered around saltwater, adventure, and exploration. From remote islands to unforgettable underwater encounters, this blog is where I share the moments that have shaped me — the beauty, the chaos, and everything in between.
+              {settings.homeAboutParagraph2}
             </p>
 
             <p className="font-body text-base leading-relaxed text-black/70 mb-8">
-              The ocean has always felt like home, and this space is a reflection of that — a collection of stories, experiences, and lessons from a life lived beneath the surface.
+              {settings.homeAboutParagraph3}
             </p>
 
             {/* CTA Link */}
@@ -85,8 +83,8 @@ export function AboutSection() {
             {/* OPCIÓN 1: Aspect ratio más ancho */}
             <div className="relative aspect-[3/4] lg:aspect-[3/4] overflow-hidden">
               <img
-                src="/images/about/about-katie.jpg"
-                alt={siteConfig.author.name}
+                src={settings.homeAboutImage}
+                alt={settings.name}
                 className="w-full h-full object-cover"
               />
             </div>

@@ -73,12 +73,17 @@ export function AdminDashboard() {
             </p>
           </Link>
 
-          <div className="border border-black/10 bg-cream p-6 opacity-70">
-            <h2 className="mb-3 font-display text-2xl text-black">Site settings</h2>
+          <Link
+            to="/admin/settings"
+            className="group border border-black/10 bg-cream p-6 transition-colors hover:border-ocean/35 hover:bg-sky-50"
+          >
+            <h2 className="mb-3 font-display text-2xl text-black transition-colors group-hover:text-ocean">
+              Site settings
+            </h2>
             <p className="font-body text-sm leading-relaxed text-black/60">
-              Coming after the content workflow is stable.
+              Edit logo, site copy, email, and social links.
             </p>
-          </div>
+          </Link>
         </div>
       </section>
     </div>

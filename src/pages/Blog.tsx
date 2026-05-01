@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Search } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { blogCategoryLabels, siteConfig } from '@/data';
+import { blogCategoryLabels } from '@/data';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { fetchPublishedPosts } from '@/lib/publicPosts';
 import type { BlogCategorySlug, BlogPost } from '@/types';
 
@@ -80,6 +81,7 @@ function BlogPostCard({ post }: { post: BlogPost }) {
 }
 
 export function Blog() {
+  const settings = useSiteSettings();
   const [activeCategory, setActiveCategory] = useState<BlogCategorySlug>('travel');
   const [categoryVisibleCount, setCategoryVisibleCount] = useState(CATEGORY_PAGE_SIZE);
   const [searchQuery, setSearchQuery] = useState('');
@@ -151,10 +153,10 @@ export function Blog() {
       <section className="py-16 md:py-20 bg-ocean-dark text-white border-b border-white/10">
         <div className="max-w-5xl mx-auto px-6 md:px-8 text-center">
           <h1 className="font-logo text-5xl md:text-6xl lg:text-7xl leading-none mb-5">
-            {siteConfig.name}
+            {settings.name}
           </h1>
           <p className="font-body text-lg md:text-xl text-white/80 leading-relaxed max-w-2xl mx-auto">
-            {siteConfig.tagline}
+            {settings.tagline}
           </p>
         </div>
       </section>

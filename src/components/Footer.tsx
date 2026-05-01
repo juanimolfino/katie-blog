@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
-import { navigation, siteConfig } from '@/data';
+import { navigation } from '@/data';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
+  const settings = useSiteSettings();
 
   return (
     <footer className="bg-ocean text-white">
@@ -19,10 +21,10 @@ export function Footer() {
 
             <div className="flex flex-col gap-2">
               <a
-                href="mailto:whatkatieseas@gmail.com"
+                href={`mailto:${settings.email}`}
                 className="font-body text-white/70 hover:text-white transition-colors"
               >
-                whatkatieseas@gmail.com
+                {settings.email}
               </a>
 
               {/* 👇 NUEVO LINK */}
@@ -40,8 +42,8 @@ export function Footer() {
             <Link to="/" className="flex flex-col items-center gap-3 group">
               
               <img
-                src="/images/brand/logo_con_nombre.png"
-                alt="What Katie Seas"
+                src={settings.logoFooter}
+                alt={settings.name}
                 className="h-30 w-auto transition-transform duration-300 group-hover:scale-105"
               />
 
@@ -57,9 +59,9 @@ export function Footer() {
               Follow me
             </h3>
             <div className="flex justify-center md:justify-end gap-6">
-              {siteConfig.social.instagram && (
+              {settings.instagram && (
                 <a
-                  href={siteConfig.social.instagram}
+                  href={settings.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-white/70 hover:text-white transition-colors"
@@ -70,9 +72,9 @@ export function Footer() {
                   </svg>
                 </a>
               )}
-              {siteConfig.social.youtube && (
+              {settings.youtube && (
                 <a
-                  href={siteConfig.social.youtube}
+                  href={settings.youtube}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-white/70 hover:text-white transition-colors"
@@ -83,9 +85,9 @@ export function Footer() {
                   </svg>
                 </a>
               )}
-              {siteConfig.social.pinterest && (
+              {settings.pinterest && (
                 <a
-                  href={siteConfig.social.pinterest}
+                  href={settings.pinterest}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-white/70 hover:text-white transition-colors"
@@ -120,7 +122,7 @@ export function Footer() {
             </nav>
 
             <p className="font-body text-sm text-white/50 text-center">
-              &copy; {currentYear} What Katie Seas
+              &copy; {currentYear} {settings.name}
             </p>
 
           </div>

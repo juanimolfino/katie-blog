@@ -14,6 +14,7 @@ import {
   AdminPosts,
   AdminPostForm,
   AdminGallery,
+  AdminSettings,
   ProtectedAdminRoute,
 } from '@/pages';
 
@@ -37,6 +38,7 @@ function App() {
             <Route path="posts/new" element={<AdminPostForm />} />
             <Route path="posts/:id/edit" element={<AdminPostForm />} />
             <Route path="gallery" element={<AdminGallery />} />
+            <Route path="settings" element={<AdminSettings />} />
           </Route>
           {/* Catch all route - redirect to home */}
           <Route path="*" element={<Home />} />

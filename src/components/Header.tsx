@@ -2,9 +2,11 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { navigation } from '@/data';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
 import type { NavItem } from '@/types';
 
 export function Header() {
+  const settings = useSiteSettings();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
@@ -83,12 +85,12 @@ export function Header() {
               <img
                 src={
                   isMobileMenuOpen
-                    ? '/images/brand/Up3logowhite.png'
+                    ? settings.logoLight
                     : forceLightHeader || isScrolled
-                    ? '/images/brand/Updblacklogo.png'
-                    : '/images/brand/Up3logowhite.png'
+                    ? settings.logoDark
+                    : settings.logoLight
                 }
-                alt="What Katie Seas"
+                alt={settings.name}
                 className="h-12 w-auto"
               />
 
@@ -101,7 +103,7 @@ export function Header() {
                     : 'text-white'
                 }`}
               >
-                What Katie Seas
+                {settings.name}
               </span>
             </Link>
 

@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { Send, Check, Mail, MapPin, Instagram, Youtube } from 'lucide-react';
-import { siteConfig, partners } from '@/data';
+import { partners } from '@/data';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
 
 export function Contact() {
+  const settings = useSiteSettings();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -198,10 +200,10 @@ export function Contact() {
                     <div>
                       <span className="font-body text-sm text-black/50 block">Email</span>
                       <a
-                        href="mailto:whatkatieseas@gmail.com"
+                        href={`mailto:${settings.email}`}
                         className="font-body text-base hover:text-ocean transition-colors"
                       >
-                        whatkatieseas@gmail.com
+                        {settings.email}
                       </a>
                     </div>
                   </div>
@@ -223,9 +225,9 @@ export function Contact() {
                 <div>
                   <span className="font-body text-sm text-black/50 mb-4 block">Follow me</span>
                   <div className="flex gap-4">
-                    {siteConfig.social.instagram && (
+                    {settings.instagram && (
                       <a
-                        href={siteConfig.social.instagram}
+                        href={settings.instagram}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="w-10 h-10 bg-black/5 flex items-center justify-center hover:bg-ocean hover:text-white transition-colors"
@@ -233,9 +235,9 @@ export function Contact() {
                         <Instagram className="w-5 h-5" />
                       </a>
                     )}
-                    {siteConfig.social.youtube && (
+                    {settings.youtube && (
                       <a
-                        href={siteConfig.social.youtube}
+                        href={settings.youtube}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="w-10 h-10 bg-black/5 flex items-center justify-center hover:bg-ocean hover:text-white transition-colors"
@@ -243,9 +245,9 @@ export function Contact() {
                         <Youtube className="w-5 h-5" />
                       </a>
                     )}
-                    {siteConfig.social.pinterest && (
+                    {settings.pinterest && (
                       <a
-                        href={siteConfig.social.pinterest}
+                        href={settings.pinterest}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="w-10 h-10 bg-black/5 flex items-center justify-center hover:bg-ocean hover:text-white transition-colors"

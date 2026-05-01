@@ -1,10 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
-import { nextStops } from "@/data";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 export function NextStops() {
+  const settings = useSiteSettings();
   const sectionRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const nextStops = settings.homeNextStops
+    .split('\n')
+    .map((stop) => stop.trim())
+    .filter(Boolean);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -40,11 +45,11 @@ export function NextStops() {
                   : "opacity-0 translate-y-8"
               }`}
             >
-              Up Next
+              {settings.homeNextEyebrow}
             </h2>
             <div className="group relative rounded-3xl overflow-hidden shadow-xl">
               <img
-                src="/images/home/next_destinations.jpg"
+                src={settings.homeNextImage}
                 alt="Next destinations"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
@@ -64,13 +69,12 @@ export function NextStops() {
           >
             {/* Título */}
             <h2 className="font-display text-4xl lg:text-5xl text-black leading-tight">
-              Places on the horizon
+              {settings.homeNextTitle}
             </h2>
 
             {/* Descripción */}
             <p className="mt-4 text-black/60 text-lg max-w-md">
-              New oceans, new cultures, and places we’re excited to explore
-              soon.
+              {settings.homeNextSubtitle}
             </p>
 
             {/* Lista */}
@@ -88,7 +92,7 @@ export function NextStops() {
                   }}
                 >
                   <span className="font-body text-lg text-black/80 group-hover:text-terracotta transition-colors">
-                    {stop.country}
+                    {stop}
                   </span>
 
                   <ArrowRight className="w-5 h-5 text-terracotta transition-transform duration-300 group-hover:translate-x-2" />

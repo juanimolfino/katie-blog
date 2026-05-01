@@ -3,7 +3,7 @@ import { Search } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { geoMercator, geoPath } from 'd3-geo';
 import { feature } from 'topojson-client';
-import { siteConfig } from '@/data';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { fetchPublishedPosts } from '@/lib/publicPosts';
 import type { BlogPost, Continent } from '@/types';
 import type { ExtendedFeature, GeoPermissibleObjects } from 'd3-geo';
@@ -305,6 +305,7 @@ function DestinationPostCard({ post }: { post: BlogPost }) {
 }
 
 export function Destinations() {
+  const settings = useSiteSettings();
   const [activeContinent, setActiveContinent] = useState<Continent>('asia');
   const [continentVisibleCount, setContinentVisibleCount] = useState(CONTINENT_PAGE_SIZE);
   const [searchQuery, setSearchQuery] = useState('');
@@ -455,7 +456,7 @@ export function Destinations() {
 
         <div className="relative max-w-6xl mx-auto px-6 md:px-8 py-24 md:py-28 text-center text-white">
           <h1 className="font-logo text-5xl md:text-6xl lg:text-7xl leading-none mb-5">
-            {siteConfig.name}
+            {settings.name}
           </h1>
           <p className="font-body text-lg md:text-xl text-white/85 max-w-2xl mx-auto leading-relaxed">
             Explore stories by place, follow the journey continent by continent, and find the parts of the world that keep calling Katie back.

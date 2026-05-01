@@ -26,6 +26,14 @@ docs/supabase-admin-security.sql
 
 That script creates `public.admin_users` and limits database/storage writes to users whose email exists in that table.
 
+Editable site settings use the same admin allowlist. After running the admin security script, run:
+
+```text
+docs/supabase-site-settings.sql
+```
+
+That script makes `site_settings` publicly readable for the active site record, but only admins can create or update it.
+
 To add another admin:
 
 ```sql

@@ -11,4 +11,5 @@ export { AdminDashboard } from './AdminDashboard';
 export { AdminPosts } from './AdminPosts';
 export { AdminPostForm } from './AdminPostForm';
 export { AdminGallery } from './AdminGallery';
+export { AdminSettings } from './AdminSettings';
 export { ProtectedAdminRoute } from './ProtectedAdminRoute';

@@ -93,6 +93,7 @@ Operational note:
 - the active focus right now is completing the `About` page with final text and missing real images
 - the static blog archive, reusable static post template, destinations browsing structure, and gallery foundation have been created
 - the first admin/auth slice has started with Supabase Auth: `/admin/login` signs in with email/password, `/admin` is protected, `/admin/posts` has first-pass create/edit/delete screens backed by Supabase `posts` plus `post_blocks` tables, `/admin/gallery` manages Supabase `gallery_items`, `/blog` and `/destinations` show only published Supabase posts, `/gallery` shows only visible Supabase gallery items, and `/blog/:slug` can render published Supabase posts before falling back to static data for legacy/static posts
+- `/admin/settings` now manages editable site/page settings through Supabase `site_settings`: site name, tagline, description, public email, logo URLs/uploads, Home hero YouTube IDs or URLs, Home fallback image, Home about teaser, Home Up Next image/copy/destinations, About hero image/title, and Instagram/YouTube/Pinterest links. Public header/footer branding, selected Home sections, About hero, contact email/social links, and blog/destinations hero text should read through this settings layer with local defaults as fallback.
 - Home recent posts read from published Supabase posts rather than the legacy static post list.
 - Home destinations also read from published Supabase posts with destination/country metadata, linking visitors to the related blog post.
 - Admin access has two layers: a frontend email allowlist through `VITE_ADMIN_EMAILS`, and a required Supabase RLS hardening script in `docs/supabase-admin-security.sql` that limits database/storage writes to emails in `public.admin_users`.
@@ -101,8 +102,10 @@ Operational note:
 - Published Supabase posts should show related posts at the bottom, selected from other published posts with shared categories, tags, and continent.
 - Public social/contact details are whatkatieseas@gmail.com, Instagram `whatkatie.seas`, YouTube `@whatkatieseas`, and Pinterest `whatkatieseas`.
 - Recommended next build steps: run the admin security SQL in Supabase, optionally polish gallery batch ordering, add preview/draft messaging, and review production auth settings.
+- After adding site settings, run `docs/supabase-site-settings.sql` in Supabase SQL Editor after the admin security SQL so public reads and admin-only writes work.
 - `Destinations` should stay minimal and ocean/editorial in feel, using a world map with recognizable continent shapes
 - `Gallery` should be image-led, simple, and filterable by continent; the long-term source should be Katie-owned uploads, with Pinterest used primarily to drive traffic back to the site
+- Admin gallery ordering uses drag/drop in `/admin/gallery`. Dropping one photo card over another rewrites all visible admin list positions to normalized `sort_order` values of 10, 20, 30, and so on, then saves them to Supabase.
 - Global page UX should include a floating bottom-right back-to-top button on long pages.
 - Mobile navigation uses a dark fullscreen overlay, so menu text and branding should remain white/light for legibility.
 - while this phase is active, the best support is small, precise changes that help close the page cleanly
@@ -127,7 +130,7 @@ Current or planned sections:
   A space for photos, visual storytelling, selected products, or future creative work.
 
 - `Admin`
-  A private workflow for Katie to log in and eventually create, edit, delete, draft, and publish content. Supabase is the chosen backend direction for authentication, database storage, and media storage unless a later requirement proves Express/custom API logic is necessary.
+  A private workflow for Katie to log in and create, edit, delete, draft, and publish content. It also includes first-pass gallery and site settings management. Supabase is the chosen backend direction for authentication, database storage, and media storage unless a later requirement proves Express/custom API logic is necessary.
 
 Future sections may emerge as the editorial structure becomes clearer.
 

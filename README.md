@@ -39,6 +39,7 @@ Important current realities:
 - public posts for `Blog` and `Destinations` now come from Supabase
 - home recent posts and home destinations now come from published Supabase posts
 - public gallery photos now come from Supabase `gallery_items`
+- header/footer branding, homepage hero videos/fallback image/copy, homepage about teaser, homepage Up Next section, About hero image/title, blog/destinations hero labels, contact email, and public social links can now come from editable Supabase site settings
 - public contact/social details are `whatkatieseas@gmail.com`, Instagram `whatkatie.seas`, YouTube `@whatkatieseas`, and Pinterest `whatkatieseas`
 - some non-post content is still static and lives in source files
 - many images are already local assets in `public/images`
@@ -226,18 +227,22 @@ Practical workflow:
 - [src/pages/AdminDashboard.tsx](src/pages/AdminDashboard.tsx): protected admin dashboard entry point
 - [src/pages/AdminPosts.tsx](src/pages/AdminPosts.tsx): first Supabase-backed post list with delete action
 - [src/pages/AdminPostForm.tsx](src/pages/AdminPostForm.tsx): first create/edit form for database-backed post metadata and content blocks
-- [src/pages/AdminGallery.tsx](src/pages/AdminGallery.tsx): Supabase-backed gallery manager for uploaded photos, captions, continent filters, order, and visibility
+- [src/pages/AdminGallery.tsx](src/pages/AdminGallery.tsx): Supabase-backed gallery manager for uploaded photos, captions, continent filters, drag/drop ordering, and visibility
+- [src/pages/AdminSettings.tsx](src/pages/AdminSettings.tsx): Supabase-backed site settings editor for logo paths/uploads, Home hero videos/images, Home about teaser, Home Up Next, About hero, site copy, email, and social links
 - [src/pages/ProtectedAdminRoute.tsx](src/pages/ProtectedAdminRoute.tsx): session gate for admin routes
 - [src/lib/adminPosts.ts](src/lib/adminPosts.ts): Supabase CRUD helpers for the `posts` table
-- [src/lib/adminMedia.ts](src/lib/adminMedia.ts): Supabase Storage helper for uploading admin media files; JPG/PNG/WebP uploads are converted to optimized WebP derivatives before storage, targeting about 700 KB for covers and 600 KB for inline post images
+- [src/lib/adminMedia.ts](src/lib/adminMedia.ts): Supabase Storage helper for uploading admin media files; JPG/PNG/WebP uploads are converted to optimized WebP derivatives before storage, targeting about 900 KB for covers/gallery images and 800 KB for inline post images
 - [src/lib/galleryItems.ts](src/lib/galleryItems.ts): Supabase helpers for public and admin gallery item reads/writes
 - [src/lib/adminAccess.ts](src/lib/adminAccess.ts): frontend admin email allowlist using `VITE_ADMIN_EMAILS`
 - [src/lib/publicPosts.ts](src/lib/publicPosts.ts): public Supabase reader for published posts, archive cards, and ordered blocks
+- [src/lib/siteSettings.ts](src/lib/siteSettings.ts): Supabase helper and fallback defaults for editable site settings
+- [src/hooks/useSiteSettings.ts](src/hooks/useSiteSettings.ts): public hook for reading site settings with local fallback defaults
 - [src/lib/supabase.ts](src/lib/supabase.ts): browser Supabase client using `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`
 - [docs/supabase-posts.sql](docs/supabase-posts.sql): SQL to create the first admin `posts` and `post_blocks` tables and RLS policies
 - [docs/supabase-storage.sql](docs/supabase-storage.sql): SQL to create the public `media` bucket and authenticated upload policies
 - [docs/supabase-gallery.sql](docs/supabase-gallery.sql): SQL to create the `gallery_items` table and RLS policies
 - [docs/supabase-admin-security.sql](docs/supabase-admin-security.sql): SQL to add an admin email allowlist and replace broad authenticated write policies
+- [docs/supabase-site-settings.sql](docs/supabase-site-settings.sql): SQL to create editable public site settings with admin-only writes
 - [docs/admin-security-guide.md](docs/admin-security-guide.md): admin security notes, Supabase signup setting, and how to add/remove admins
 - [docs/supabase-post-block-link.sql](docs/supabase-post-block-link.sql): migration for existing databases to allow `link` content blocks
 - [src/components/ScrollToTopButton.tsx](src/components/ScrollToTopButton.tsx): global floating button that smoothly returns visitors to the top of the page
@@ -263,14 +268,15 @@ Current routes in the app:
 - `/admin/posts/new` -> create post form
 - `/admin/posts/:id/edit` -> edit post form
 - `/admin/gallery` -> Supabase-backed gallery manager
+- `/admin/settings` -> Supabase-backed site settings editor
 
 This is an intentional in-progress state, not a finished information architecture.
 
 ## Content Model Today
 
-Content is currently stored directly in code:
+Content is split between Supabase-managed records and a shrinking set of code-managed defaults:
 
-- site-level metadata in `src/data/site.ts`
+- editable site-level metadata and selected page content in Supabase `site_settings`, with fallback defaults in `src/data/site.ts` and `src/lib/siteSettings.ts`
 - legacy static blog posts in `src/data/content.ts` for individual post fallback only
 - static destination support in `src/data/content.ts` where still needed outside database-backed listings
 - page-specific editorial content directly inside some page files, especially `src/pages/About.tsx`

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
 
 /* ============================================================
    ABOUT ME PAGE - "What Katie Seas"
@@ -169,6 +170,7 @@ const whatYoullFind = [
    ============================================================ */
 
 export function About() {
+  const settings = useSiteSettings();
   const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
 
   useEffect(() => {
@@ -208,14 +210,14 @@ export function About() {
       <section className="w-full">
         <div className="relative w-full aspect-[16/9] md:aspect-[21/9] overflow-hidden bg-gray-200">
           <img
-            src="/images/about/about-hero.jpg"
+            src={settings.aboutHeroImage}
             alt="Katie diving underwater"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 flex items-center justify-center bg-black/15">
             <div className="px-6 text-center">
               <span className="font-display text-4xl md:text-6xl lg:text-7xl font-light tracking-wide text-white drop-shadow-[0_6px_24px_rgba(0,0,0,0.3)]">
-                My Story
+                {settings.aboutHeroTitle}
               </span>
             </div>
           </div>

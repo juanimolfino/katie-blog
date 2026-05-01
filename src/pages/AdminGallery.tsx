@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react';
-import { ArrowLeft, Edit, ImagePlus, Plus, Trash2, X } from 'lucide-react';
+import { ArrowLeft, Edit, GripVertical, ImagePlus, Plus, Trash2, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { uploadMediaFile } from '@/lib/adminMedia';
 import {
@@ -7,6 +7,7 @@ import {
   deleteGalleryItem,
   fetchAdminGalleryItems,
   updateGalleryItem,
+  updateGallerySortOrders,
   type GalleryItem,
   type GalleryItemInput,
   type GalleryItemOrientation,
@@ -53,6 +54,8 @@ export function AdminGallery() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [draggedItemId, setDraggedItemId] = useState<string | null>(null);
+  const [isReordering, setIsReordering] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [uploadError, setUploadError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
@@ -176,6 +179,40 @@ export function AdminGallery() {
     }
   };
 
+  const handleReorder = async (targetItemId: string) => {
+    if (!draggedItemId || draggedItemId === targetItemId) return;
+
+    const fromIndex = items.findIndex((item) => item.id === draggedItemId);
+    const toIndex = items.findIndex((item) => item.id === targetItemId);
+    if (fromIndex < 0 || toIndex < 0) return;
+
+    const reorderedItems = [...items];
+    const [movedItem] = reorderedItems.splice(fromIndex, 1);
+    reorderedItems.splice(toIndex, 0, movedItem);
+
+    const normalizedItems = reorderedItems.map((item, index) => ({
+      ...item,
+      sort_order: (index + 1) * 10,
+    }));
+
+    setItems(normalizedItems);
+    setDraggedItemId(null);
+    setIsReordering(true);
+    setErrorMessage('');
+
+    try {
+      await updateGallerySortOrders(
+        normalizedItems.map((item) => ({ id: item.id, sort_order: item.sort_order }))
+      );
+      setSuccessMessage('Gallery order saved.');
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : 'Unable to save gallery order.');
+      await loadItems();
+    } finally {
+      setIsReordering(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white pt-24">
       <section className="mx-auto max-w-6xl px-6 py-12 md:px-8 md:py-16">
@@ -206,6 +243,12 @@ export function AdminGallery() {
         {successMessage && (
           <div className="mb-6 border border-ocean/20 bg-sky-50 p-4 font-body text-sm text-ocean">
             {successMessage}
+          </div>
+        )}
+
+        {isReordering && (
+          <div className="mb-6 border border-black/10 bg-cream p-4 font-body text-sm text-black/55">
+            Saving gallery order...
           </div>
         )}
 
@@ -402,9 +445,27 @@ export function AdminGallery() {
             </p>
           </div>
         ) : (
-          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {items.map((item) => (
-              <article key={item.id} className="border border-black/10 bg-white">
+          <>
+            <div className="mb-5 border border-black/10 bg-cream p-4 font-body text-sm leading-relaxed text-black/55">
+              Drag a photo card and drop it over another photo to reorder the gallery. The order
+              saves automatically.
+            </div>
+
+            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+              {items.map((item) => (
+                <article
+                  key={item.id}
+                  draggable
+                  onDragStart={() => setDraggedItemId(item.id)}
+                  onDragEnd={() => setDraggedItemId(null)}
+                  onDragOver={(event) => event.preventDefault()}
+                  onDrop={() => void handleReorder(item.id)}
+                  className={`border bg-white transition-all ${
+                    draggedItemId === item.id
+                      ? 'border-ocean/60 opacity-55'
+                      : 'border-black/10 hover:border-ocean/35'
+                  }`}
+                >
                 <div className={`${imageAspectClass[item.orientation]} bg-gray-100`}>
                   <img
                     src={item.image_url}
@@ -419,15 +480,18 @@ export function AdminGallery() {
                       <h2 className="font-display text-2xl text-black">{item.title}</h2>
                       <p className="mt-1 font-body text-sm text-black/50">{item.location}</p>
                     </div>
-                    <span
-                      className={`shrink-0 px-3 py-1 font-body text-xs uppercase tracking-[0.14em] ${
-                        item.is_visible
-                          ? 'bg-ocean/10 text-ocean'
-                          : 'bg-black/5 text-black/45'
-                      }`}
-                    >
-                      {item.is_visible ? 'Visible' : 'Hidden'}
-                    </span>
+                    <div className="flex shrink-0 items-center gap-2">
+                      <GripVertical className="h-5 w-5 cursor-grab text-black/30" />
+                      <span
+                        className={`px-3 py-1 font-body text-xs uppercase tracking-[0.14em] ${
+                          item.is_visible
+                            ? 'bg-ocean/10 text-ocean'
+                            : 'bg-black/5 text-black/45'
+                        }`}
+                      >
+                        {item.is_visible ? 'Visible' : 'Hidden'}
+                      </span>
+                    </div>
                   </div>
 
                   <p className="mb-4 font-body text-xs uppercase tracking-[0.14em] text-black/40">
@@ -453,9 +517,10 @@ export function AdminGallery() {
                     </button>
                   </div>
                 </div>
-              </article>
-            ))}
-          </div>
+                </article>
+              ))}
+            </div>
+          </>
         )}
       </section>
     </div>

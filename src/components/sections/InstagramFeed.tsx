@@ -1,19 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
 import { Instagram } from 'lucide-react';
-import { siteConfig } from '@/data';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
 
-// Instagram posts estáticos
-const instagramPosts = [
-  { id: "1", imageUrl: "/images/destinations/gbr.jpg", link: siteConfig.social.instagram || "#" },
-  { id: "2", imageUrl: "/images/destinations/raja-ampat.jpg", link: siteConfig.social.instagram || "#" },
-  { id: "3", imageUrl: "/images/destinations/galapagos.jpg", link: siteConfig.social.instagram || "#" },
-  { id: "4", imageUrl: "/images/destinations/maldives.jpg", link: siteConfig.social.instagram || "#" },
-  { id: "5", imageUrl: "/images/destinations/similan.jpg", link: siteConfig.social.instagram || "#" },
+const INSTAGRAM_IMAGES = [
+  { id: '1', imageUrl: '/images/destinations/gbr.jpg' },
+  { id: '2', imageUrl: '/images/destinations/raja-ampat.jpg' },
+  { id: '3', imageUrl: '/images/destinations/galapagos.jpg' },
+  { id: '4', imageUrl: '/images/destinations/maldives.jpg' },
+  { id: '5', imageUrl: '/images/destinations/similan.jpg' },
 ];
 
 export function InstagramFeed() {
+  const settings = useSiteSettings();
   const sectionRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const instagramLink = settings.instagram || '#';
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -49,7 +50,7 @@ export function InstagramFeed() {
           </h2>
           
           <a
-            href={siteConfig.social.instagram}
+            href={instagramLink}
             target="_blank"
             rel="noopener noreferrer"
             className={`inline-flex items-center gap-2 font-body text-sm text-black/70 hover:text-ocean transition-all duration-300 mt-4 md:mt-0 group ${
@@ -62,10 +63,10 @@ export function InstagramFeed() {
 
         {/* Instagram Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          {instagramPosts.map((post: { id: string; imageUrl: string; link: string }, index: number) => (
+          {INSTAGRAM_IMAGES.map((post, index) => (
             <a
               key={post.id}
-              href={post.link}
+              href={instagramLink}
               target="_blank"
               rel="noopener noreferrer"
               className={`group relative aspect-square overflow-hidden transition-all duration-700 ${
