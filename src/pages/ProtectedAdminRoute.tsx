@@ -6,11 +6,12 @@ import { isAllowedAdminEmail } from '@/lib/adminAccess';
 type AuthStatus = 'loading' | 'authenticated' | 'guest' | 'not-configured' | 'unauthorized';
 
 export function ProtectedAdminRoute() {
-  const [authStatus, setAuthStatus] = useState<AuthStatus>('loading');
+  const [authStatus, setAuthStatus] = useState<AuthStatus>(
+    isSupabaseConfigured ? 'loading' : 'not-configured'
+  );
 
   useEffect(() => {
     if (!supabase) {
-      setAuthStatus('not-configured');
       return;
     }
 
@@ -38,6 +39,12 @@ export function ProtectedAdminRoute() {
 
     return () => data.subscription.unsubscribe();
   }, []);
+
+  const handleSignOut = async () => {
+    if (!supabase) return;
+    await supabase.auth.signOut();
+    setAuthStatus('guest');
+  };
 
   if (!isSupabaseConfigured || authStatus === 'not-configured') {
     return <Navigate to="/admin/login" replace />;
@@ -68,6 +75,13 @@ export function ProtectedAdminRoute() {
           <p className="font-body text-base leading-relaxed text-black/60">
             This account is signed in, but it is not approved for the admin panel.
           </p>
+          <button
+            type="button"
+            onClick={() => void handleSignOut()}
+            className="btn-ocean mt-6"
+          >
+            Sign out and try another account
+          </button>
         </div>
       </div>
     );

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { fetchPublicGalleryItems, type GalleryItem } from '@/lib/galleryItems';
 import type { Continent } from '@/types';
@@ -61,23 +61,23 @@ export function Gallery() {
     setActiveImageIndex(index);
   };
 
-  const closeImage = () => {
+  const closeImage = useCallback(() => {
     setActiveImageIndex(null);
-  };
+  }, []);
 
-  const showPreviousImage = () => {
+  const showPreviousImage = useCallback(() => {
     setActiveImageIndex((current) => {
       if (current === null) return current;
       return current === 0 ? visibleImages.length - 1 : current - 1;
     });
-  };
+  }, [visibleImages.length]);
 
-  const showNextImage = () => {
+  const showNextImage = useCallback(() => {
     setActiveImageIndex((current) => {
       if (current === null) return current;
       return current === visibleImages.length - 1 ? 0 : current + 1;
     });
-  };
+  }, [visibleImages.length]);
 
   useEffect(() => {
     if (!activeImage) return;
@@ -95,7 +95,7 @@ export function Gallery() {
       document.body.style.overflow = '';
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [activeImage, visibleImages.length]);
+  }, [activeImage, closeImage, showNextImage, showPreviousImage]);
 
   return (
     <div className="pt-20 bg-white min-h-screen">
@@ -198,7 +198,7 @@ export function Gallery() {
 
       {activeImage && (
         <div
-          className="fixed inset-0 z-[100] bg-white px-4 py-6 md:px-8 md:py-8"
+          className="fixed inset-0 z-[100] bg-white px-4 py-6 md:px-8 md:py-8 [@media_(orientation:landscape)_and_(max-height:500px)]:bg-black [@media_(orientation:landscape)_and_(max-height:500px)]:px-0 [@media_(orientation:landscape)_and_(max-height:500px)]:py-0"
           role="dialog"
           aria-modal="true"
           aria-label="Gallery image viewer"
@@ -207,7 +207,7 @@ export function Gallery() {
           <button
             type="button"
             onClick={closeImage}
-            className="fixed right-4 top-4 z-[120] flex h-11 w-11 items-center justify-center rounded-full bg-white text-black shadow-[0_8px_30px_rgba(0,0,0,0.18)] ring-1 ring-black/10 transition-colors hover:bg-black hover:text-white md:right-8 md:top-8"
+            className="fixed right-4 top-4 z-[120] flex h-11 w-11 items-center justify-center rounded-full bg-white text-black shadow-[0_8px_30px_rgba(0,0,0,0.18)] ring-1 ring-black/10 transition-colors hover:bg-black hover:text-white md:right-8 md:top-8 [@media_(orientation:landscape)_and_(max-height:500px)]:right-3 [@media_(orientation:landscape)_and_(max-height:500px)]:top-3 [@media_(orientation:landscape)_and_(max-height:500px)]:h-10 [@media_(orientation:landscape)_and_(max-height:500px)]:w-10"
             aria-label="Close gallery image"
           >
             <X className="w-7 h-7" />
@@ -219,7 +219,7 @@ export function Gallery() {
               event.stopPropagation();
               showPreviousImage();
             }}
-            className="fixed left-3 top-1/2 z-[120] flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white text-black shadow-[0_8px_30px_rgba(0,0,0,0.18)] ring-1 ring-black/10 transition-colors hover:bg-black hover:text-white md:left-8 md:h-14 md:w-14"
+            className="fixed left-3 top-1/2 z-[120] flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white text-black shadow-[0_8px_30px_rgba(0,0,0,0.18)] ring-1 ring-black/10 transition-colors hover:bg-black hover:text-white md:left-8 md:h-14 md:w-14 [@media_(orientation:landscape)_and_(max-height:500px)]:h-10 [@media_(orientation:landscape)_and_(max-height:500px)]:w-10"
             aria-label="Previous image"
           >
             <ChevronLeft className="w-8 h-8 md:w-9 md:h-9" />
@@ -231,25 +231,25 @@ export function Gallery() {
               event.stopPropagation();
               showNextImage();
             }}
-            className="fixed right-3 top-1/2 z-[120] flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white text-black shadow-[0_8px_30px_rgba(0,0,0,0.18)] ring-1 ring-black/10 transition-colors hover:bg-black hover:text-white md:right-8 md:h-14 md:w-14"
+            className="fixed right-3 top-1/2 z-[120] flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white text-black shadow-[0_8px_30px_rgba(0,0,0,0.18)] ring-1 ring-black/10 transition-colors hover:bg-black hover:text-white md:right-8 md:h-14 md:w-14 [@media_(orientation:landscape)_and_(max-height:500px)]:h-10 [@media_(orientation:landscape)_and_(max-height:500px)]:w-10"
             aria-label="Next image"
           >
             <ChevronRight className="w-8 h-8 md:w-9 md:h-9" />
           </button>
 
           <div
-            className="h-full max-w-6xl mx-auto flex flex-col items-center justify-center gap-5 px-10 md:px-16"
+            className="h-full max-w-6xl mx-auto flex flex-col items-center justify-center gap-5 px-10 md:px-16 [@media_(orientation:landscape)_and_(max-height:500px)]:max-w-none [@media_(orientation:landscape)_and_(max-height:500px)]:gap-0 [@media_(orientation:landscape)_and_(max-height:500px)]:px-14"
             onClick={(event) => event.stopPropagation()}
           >
-            <div className="min-h-0 w-full flex-1 flex items-center justify-center">
+            <div className="min-h-0 w-full flex-1 flex items-center justify-center [@media_(orientation:landscape)_and_(max-height:500px)]:h-[100dvh] [@media_(orientation:landscape)_and_(max-height:500px)]:flex-none">
               <img
                 src={activeImage.image_url}
                 alt={activeImage.alt_text || `${activeImage.title} in ${activeImage.location}`}
-                className="max-h-full max-w-full object-contain"
+                className="max-h-full max-w-full object-contain [@media_(orientation:landscape)_and_(max-height:500px)]:max-h-[100dvh] [@media_(orientation:landscape)_and_(max-height:500px)]:max-w-[calc(100vw-7rem)]"
               />
             </div>
 
-            <div className="text-center text-black">
+            <div className="text-center text-black [@media_(orientation:landscape)_and_(max-height:500px)]:hidden">
               <h2 className="font-display text-2xl md:text-3xl">
                 {activeImage.title}
               </h2>

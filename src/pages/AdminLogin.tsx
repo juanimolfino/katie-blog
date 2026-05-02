@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import { isAllowedAdminEmail } from '@/lib/adminAccess';
 
 export function AdminLogin() {
   const navigate = useNavigate();
@@ -14,7 +15,9 @@ export function AdminLogin() {
     if (!supabase) return;
 
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate('/admin', { replace: true });
+      if (data.session && isAllowedAdminEmail(data.session.user.email)) {
+        navigate('/admin', { replace: true });
+      }
     });
   }, [navigate]);
 
