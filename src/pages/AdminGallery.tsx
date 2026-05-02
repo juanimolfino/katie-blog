@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent, type PointerEvent } from 'react';
 import { ArrowLeft, Edit, GripVertical, ImagePlus, Plus, Trash2, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { uploadMediaFile } from '@/lib/adminMedia';
@@ -55,10 +55,16 @@ export function AdminGallery() {
   const [isSaving, setIsSaving] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [draggedItemId, setDraggedItemId] = useState<string | null>(null);
+  const [touchTargetItemId, setTouchTargetItemId] = useState<string | null>(null);
   const [isReordering, setIsReordering] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [uploadError, setUploadError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const touchDragRef = useRef<{
+    itemId: string;
+    pointerId: number;
+    targetItemId: string | null;
+  } | null>(null);
 
   const loadItems = async () => {
     setIsLoading(true);
@@ -142,7 +148,11 @@ export function AdminGallery() {
         location: form.location.trim(),
         image_url: form.image_url.trim(),
         alt_text: form.alt_text.trim(),
-        sort_order: Number.isFinite(form.sort_order) ? form.sort_order : 0,
+        sort_order: editingId
+          ? Number.isFinite(form.sort_order)
+            ? form.sort_order
+            : 0
+          : getNextSortOrder(),
       };
 
       if (!input.title || !input.image_url) {
@@ -179,10 +189,15 @@ export function AdminGallery() {
     }
   };
 
-  const handleReorder = async (targetItemId: string) => {
-    if (!draggedItemId || draggedItemId === targetItemId) return;
+  const getNextSortOrder = () => {
+    if (items.length === 0) return 10;
+    return Math.max(...items.map((item) => item.sort_order)) + 10;
+  };
 
-    const fromIndex = items.findIndex((item) => item.id === draggedItemId);
+  const reorderItems = async (sourceItemId: string, targetItemId: string) => {
+    if (sourceItemId === targetItemId) return;
+
+    const fromIndex = items.findIndex((item) => item.id === sourceItemId);
     const toIndex = items.findIndex((item) => item.id === targetItemId);
     if (fromIndex < 0 || toIndex < 0) return;
 
@@ -197,6 +212,7 @@ export function AdminGallery() {
 
     setItems(normalizedItems);
     setDraggedItemId(null);
+    setTouchTargetItemId(null);
     setIsReordering(true);
     setErrorMessage('');
 
@@ -210,6 +226,59 @@ export function AdminGallery() {
       await loadItems();
     } finally {
       setIsReordering(false);
+    }
+  };
+
+  const handleDesktopDrop = async (targetItemId: string) => {
+    if (!draggedItemId) return;
+    await reorderItems(draggedItemId, targetItemId);
+  };
+
+  const handleTouchReorderStart = (
+    itemId: string,
+    event: PointerEvent<HTMLButtonElement>
+  ) => {
+    if (event.pointerType === 'mouse') return;
+
+    event.preventDefault();
+    event.currentTarget.setPointerCapture(event.pointerId);
+    touchDragRef.current = {
+      itemId,
+      pointerId: event.pointerId,
+      targetItemId: itemId,
+    };
+    setDraggedItemId(itemId);
+    setTouchTargetItemId(itemId);
+  };
+
+  const handleTouchReorderMove = (event: PointerEvent<HTMLButtonElement>) => {
+    const currentDrag = touchDragRef.current;
+    if (!currentDrag || currentDrag.pointerId !== event.pointerId) return;
+
+    event.preventDefault();
+    const target = document
+      .elementFromPoint(event.clientX, event.clientY)
+      ?.closest<HTMLElement>('[data-gallery-item-id]');
+    const targetItemId = target?.dataset.galleryItemId ?? currentDrag.itemId;
+
+    if (targetItemId !== currentDrag.targetItemId) {
+      touchDragRef.current = { ...currentDrag, targetItemId };
+      setTouchTargetItemId(targetItemId);
+    }
+  };
+
+  const handleTouchReorderEnd = async (event: PointerEvent<HTMLButtonElement>) => {
+    const currentDrag = touchDragRef.current;
+    if (!currentDrag || currentDrag.pointerId !== event.pointerId) return;
+
+    event.preventDefault();
+    event.currentTarget.releasePointerCapture(event.pointerId);
+    touchDragRef.current = null;
+    setDraggedItemId(null);
+    setTouchTargetItemId(null);
+
+    if (currentDrag.targetItemId && currentDrag.targetItemId !== currentDrag.itemId) {
+      await reorderItems(currentDrag.itemId, currentDrag.targetItemId);
     }
   };
 
@@ -335,17 +404,10 @@ export function AdminGallery() {
               </select>
             </label>
 
-            <label className="block">
-              <span className="mb-2 block font-body text-sm text-black/60">Sort order</span>
-              <input
-                type="number"
-                value={form.sort_order}
-                onChange={(event) =>
-                  setForm((current) => ({ ...current, sort_order: Number(event.target.value) }))
-                }
-                className="h-12 w-full border border-black/10 bg-white px-4 font-body text-base outline-none focus:border-ocean"
-              />
-            </label>
+            <div className="border border-black/10 bg-white px-4 py-3 font-body text-sm leading-relaxed text-black/55">
+              New photos are added to the end automatically. Use the drag handle on each photo to
+              change the gallery order.
+            </div>
 
             <label className="flex items-center gap-3 pt-8 font-body text-sm text-black/65">
               <input
@@ -447,22 +509,25 @@ export function AdminGallery() {
         ) : (
           <>
             <div className="mb-5 border border-black/10 bg-cream p-4 font-body text-sm leading-relaxed text-black/55">
-              Drag a photo card and drop it over another photo to reorder the gallery. The order
-              saves automatically.
+              Drag a photo card on desktop, or press and hold the handle on touch devices, then
+              move it over another photo. The order saves automatically.
             </div>
 
             <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
               {items.map((item) => (
                 <article
                   key={item.id}
+                  data-gallery-item-id={item.id}
                   draggable
                   onDragStart={() => setDraggedItemId(item.id)}
                   onDragEnd={() => setDraggedItemId(null)}
                   onDragOver={(event) => event.preventDefault()}
-                  onDrop={() => void handleReorder(item.id)}
+                  onDrop={() => void handleDesktopDrop(item.id)}
                   className={`border bg-white transition-all ${
                     draggedItemId === item.id
                       ? 'border-ocean/60 opacity-55'
+                      : touchTargetItemId === item.id
+                        ? 'border-ocean/60 bg-sky-50'
                       : 'border-black/10 hover:border-ocean/35'
                   }`}
                 >
@@ -481,7 +546,17 @@ export function AdminGallery() {
                       <p className="mt-1 font-body text-sm text-black/50">{item.location}</p>
                     </div>
                     <div className="flex shrink-0 items-center gap-2">
-                      <GripVertical className="h-5 w-5 cursor-grab text-black/30" />
+                      <button
+                        type="button"
+                        onPointerDown={(event) => handleTouchReorderStart(item.id, event)}
+                        onPointerMove={handleTouchReorderMove}
+                        onPointerUp={(event) => void handleTouchReorderEnd(event)}
+                        onPointerCancel={(event) => void handleTouchReorderEnd(event)}
+                        className="touch-none text-black/30 transition-colors hover:text-ocean"
+                        aria-label={`Reorder ${item.title}`}
+                      >
+                        <GripVertical className="h-5 w-5 cursor-grab" />
+                      </button>
                       <span
                         className={`px-3 py-1 font-body text-xs uppercase tracking-[0.14em] ${
                           item.is_visible

@@ -12,18 +12,18 @@ Current product phase:
 
 Supabase admin setup:
   The browser client lives in src/lib/supabase.ts and reads VITE_SUPABASE_URL plus VITE_SUPABASE_ANON_KEY. Keep service role keys and user passwords out of the frontend and out of committed example files. Local public project config belongs in .env.local, using .env.example as the template.
-  The first posts schema is stored in docs/supabase-posts.sql and should be run in Supabase SQL Editor before testing post CRUD. Re-run it when post_blocks or public read policies change; it is written to be safe/idempotent for the current development phase. Public read policies allow anon users to read only published posts and blocks for published posts.
-  Admin access uses frontend VITE_ADMIN_EMAILS plus database/storage RLS hardening in docs/supabase-admin-security.sql. Run that SQL after posts/gallery/storage SQL. The real protection is Supabase RLS; the frontend allowlist is only UX. docs/admin-security-guide.md explains how to add/remove admins and which Supabase signup setting to disable.
-  Site settings use docs/supabase-site-settings.sql. Run it after docs/supabase-admin-security.sql so it can use public.is_admin() for admin-only writes. If /admin/settings shows a missing-table or permission error, this SQL probably has not been run yet.
+  All currently needed Supabase SQL has been run and tested: posts, post block link support, storage, gallery, admin security, and site settings. Re-run the relevant SQL only when schemas, RLS policies, storage rules, or public read/write behavior change. Public read policies allow anon users to read only published posts and blocks for published posts.
+  Admin access uses frontend VITE_ADMIN_EMAILS plus database/storage RLS hardening in docs/supabase-admin-security.sql. The real protection is Supabase RLS; the frontend allowlist is only UX. docs/admin-security-guide.md explains how to add/remove admins and which Supabase signup setting to disable.
+  Site settings use docs/supabase-site-settings.sql and are confirmed working. /admin/settings can edit the About page settings that are currently exposed through the settings form, including the About hero image/title.
   Home hero video has been reverted exactly to the GitHub/Vercel version that is known to autoplay correctly. src/components/sections/Hero.tsx currently uses local constants: desktop c9dRw1KIfDk, mobile y-B9ReggOfM, fallback /images/home/hero-bg.jpg, siteConfig text, and the original direct iframe embed pattern without Supabase settings, origin, or referrerPolicy. Do not reconnect hero video/fallback/text to site_settings until this is retested carefully.
-  Media uploads use a public Supabase Storage bucket named media. Run docs/supabase-storage.sql in SQL Editor before testing uploads. Authenticated users can upload/update/delete media; anyone can read media files. Run docs/supabase-gallery.sql to enable /admin/gallery and public /gallery database reads.
+  Media uploads use a public Supabase Storage bucket named media. Authenticated admin users can upload/update/delete media; anyone can read media files.
   Admin uploads automatically optimize JPG/PNG/WebP images in the browser before upload and now target web-size files rather than only fixed dimensions. Non-GIF uploads are always converted to a WebP derivative before being stored, so Lightroom/camera originals are not saved directly. Covers/gallery images start at max width 1600 / ~0.78 WebP quality and iterate down toward about 900 KB, with a 1200px width floor. Inline block images start at max width 1400 / ~0.76 quality and target about 800 KB, with a 1100px width floor. The optimizer may reduce quality further to about 0.58-0.60 if the file remains too heavy. GIFs are uploaded as-is if under 10 MB. HEIC/iPhone photos should be exported as JPG first because browsers usually cannot decode them.
 
 Recommended next steps:
-  1. Run docs/supabase-site-settings.sql in Supabase, then test /admin/settings by changing one harmless text field and saving.
-  2. Disable public signups before production if it has not already been done.
-  3. Add gallery editor polish if Katie needs batch reordering or bulk visibility changes.
-  4. Add clearer draft/preview messaging in the post editor if Katie finds preview confusing.
+  1. Create and publish the first real Supabase blog posts with cover images and blocks, then review /blog, /blog/:slug, Home recent posts, and related posts.
+  2. Populate /admin/gallery with Katie-owned images and review the public gallery filtering/lightbox experience.
+  3. Add clearer draft/preview messaging in the post editor if Katie finds preview confusing.
+  4. Disable public signups before production if it has not already been done.
   5. Consider code-splitting admin routes later to reduce the production bundle warning.
 
 Recent polish decisions:
@@ -38,6 +38,7 @@ Destinations map:
 
 Gallery:
   The static Gallery page uses a slim hero, continent filters, a masonry-style image grid, and a click-to-open lightbox carousel. Placeholder images can use local assets, but the long-term plan is Katie-owned uploaded photos. Pinterest should be treated as a traffic/distribution channel rather than the source of images embedded on the site.
+  New admin gallery items are added to the end automatically by assigning the next sort_order value. Manual sort_order entry is no longer part of the create flow; admins should reorder gallery cards with drag/drop after creation.
 
 Image card style:
   For image-led cards, avoid always-visible title/location text below the image. Reveal metadata on hover/focus with a dark ocean overlay and light blue accent text, so the photo stays visually clean by default.

@@ -90,7 +90,8 @@ Current priority is to replace placeholder content with real content.
 Operational note:
 
 - Juani is currently working with Katie in real time on content refinement
-- the active focus right now is completing the `About` page with final text and missing real images
+- the `About` page can now be edited through the available admin/settings flow for the fields currently exposed there, and the required Supabase SQL setup has been tested
+- the active focus is moving from setup into real content population, editorial polish, and production readiness
 - the static blog archive, reusable static post template, destinations browsing structure, and gallery foundation have been created
 - the first admin/auth slice has started with Supabase Auth: `/admin/login` signs in with email/password, `/admin` is protected, `/admin/posts` has first-pass create/edit/delete screens backed by Supabase `posts` plus `post_blocks` tables, `/admin/gallery` manages Supabase `gallery_items`, `/blog` and `/destinations` show only published Supabase posts, `/gallery` shows only visible Supabase gallery items, and `/blog/:slug` can render published Supabase posts before falling back to static data for legacy/static posts
 - `/admin/settings` now manages editable site/page settings through Supabase `site_settings`: site name, tagline, description, public email, logo URLs/uploads, Home hero YouTube IDs or URLs, Home fallback image, Home about teaser, Home Up Next image/copy/destinations, About hero image/title, and Instagram/YouTube/Pinterest links. Public header/footer branding, selected Home sections, About hero, contact email/social links, and blog/destinations hero text should read through this settings layer with local defaults as fallback.
@@ -101,11 +102,10 @@ Operational note:
 - Admin image uploads should be optimized for web performance, not stored at original camera size. Non-GIF uploads are always converted to a WebP derivative before storage. Current targets are cover/gallery images around 900 KB and inline post images around 800 KB, using iterative WebP compression with sensible width/quality floors.
 - Published Supabase posts should show related posts at the bottom, selected from other published posts with shared categories, tags, and continent.
 - Public social/contact details are whatkatieseas@gmail.com, Instagram `whatkatie.seas`, YouTube `@whatkatieseas`, and Pinterest `whatkatieseas`.
-- Recommended next build steps: run the admin security SQL in Supabase, optionally polish gallery batch ordering, add preview/draft messaging, and review production auth settings.
-- After adding site settings, run `docs/supabase-site-settings.sql` in Supabase SQL Editor after the admin security SQL so public reads and admin-only writes work.
+- Recommended next build steps: create real Supabase posts, populate the gallery with Katie-owned images, add preview/draft messaging if needed, and review production auth settings.
 - `Destinations` should stay minimal and ocean/editorial in feel, using a world map with recognizable continent shapes
 - `Gallery` should be image-led, simple, and filterable by continent; the long-term source should be Katie-owned uploads, with Pinterest used primarily to drive traffic back to the site
-- Admin gallery ordering uses drag/drop in `/admin/gallery`. Dropping one photo card over another rewrites all visible admin list positions to normalized `sort_order` values of 10, 20, 30, and so on, then saves them to Supabase.
+- Admin gallery ordering uses drag/drop in `/admin/gallery`. New photos are added to the end automatically, and dropping one photo card over another rewrites all visible admin list positions to normalized `sort_order` values of 10, 20, 30, and so on, then saves them to Supabase. Touch devices use pointer events from the card handle because native HTML drag/drop is unreliable on phones and tablets.
 - Global page UX should include a floating bottom-right back-to-top button on long pages.
 - Mobile navigation uses a dark fullscreen overlay, so menu text and branding should remain white/light for legibility.
 - while this phase is active, the best support is small, precise changes that help close the page cleanly

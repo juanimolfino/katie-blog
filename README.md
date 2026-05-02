@@ -227,7 +227,7 @@ Practical workflow:
 - [src/pages/AdminDashboard.tsx](src/pages/AdminDashboard.tsx): protected admin dashboard entry point
 - [src/pages/AdminPosts.tsx](src/pages/AdminPosts.tsx): first Supabase-backed post list with delete action
 - [src/pages/AdminPostForm.tsx](src/pages/AdminPostForm.tsx): first create/edit form for database-backed post metadata and content blocks
-- [src/pages/AdminGallery.tsx](src/pages/AdminGallery.tsx): Supabase-backed gallery manager for uploaded photos, captions, continent filters, drag/drop ordering, and visibility
+- [src/pages/AdminGallery.tsx](src/pages/AdminGallery.tsx): Supabase-backed gallery manager for uploaded photos, captions, continent filters, automatic append-to-end creation, touch/desktop drag ordering, and visibility
 - [src/pages/AdminSettings.tsx](src/pages/AdminSettings.tsx): Supabase-backed site settings editor for logo paths/uploads, Home hero videos/images, Home about teaser, Home Up Next, About hero, site copy, email, and social links
 - [src/pages/ProtectedAdminRoute.tsx](src/pages/ProtectedAdminRoute.tsx): session gate for admin routes
 - [src/lib/adminPosts.ts](src/lib/adminPosts.ts): Supabase CRUD helpers for the `posts` table
@@ -330,12 +330,13 @@ Keep the brand grounded in ocean, travel, nature, and authenticity.
 
 Current collaboration context:
 
-- Juani is working with Katie directly on content, missing images, and text corrections
-- the `About` page is currently in an active refinement pass
+- Juani is working with Katie directly on content, images, and editorial polish
+- the required Supabase SQL setup has been run and tested; re-run specific SQL files only when schemas, RLS policies, storage rules, or public read/write behavior change
+- the `About` page can now be edited through the available admin/settings flow for the fields currently exposed there
 - the static `Blog`, `BlogPostPage`, `Destinations`, and `Gallery` foundations are in place
 - `Destinations` uses `d3-geo` and `topojson-client` with `world-atlas` country geometry mapped into the project's continent slugs
 - `Gallery` should eventually use Katie-owned images uploaded into the app/storage; Pinterest is better treated as a traffic channel, not as the primary image source for the site
-- after the static site is approved with Katie, the next major phase is app/admin mode
+- the project is now in a hybrid content/admin phase: use the admin tools to populate real posts, gallery items, and editable settings while continuing editorial polish
 - while a page is being refined, keep changes scoped and avoid unnecessary structural churn
 - future implementation choices should assume the site will later become a real app with auth, database, and admin tooling
 - whenever product, architecture, taxonomy, or workflow decisions are made, update `README.md`, `docs/project-brief.md`, `docs/post-model-guide.md`, or `info.md` as needed so context survives future chat loss

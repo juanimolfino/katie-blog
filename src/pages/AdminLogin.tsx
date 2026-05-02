@@ -61,7 +61,9 @@ export function AdminLogin() {
           <div className="bg-white p-6 shadow-sm md:p-8">
             {!isSupabaseConfigured && (
               <div className="mb-6 border border-ocean/20 bg-sky-50 p-4 font-body text-sm leading-relaxed text-black/70">
-                Supabase is ready in the code, but the local environment variables still need to be added in <span className="font-medium">.env.local</span>.
+                Supabase is ready in the code, but the environment variables are missing. Add
+                <span className="font-medium"> VITE_SUPABASE_URL</span> and
+                <span className="font-medium"> VITE_SUPABASE_ANON_KEY</span> in this environment.
               </div>
             )}
 
