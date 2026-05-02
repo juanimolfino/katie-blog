@@ -2,7 +2,16 @@ import { supabase } from '@/lib/supabase';
 import type { BlogCategorySlug, Continent } from '@/types';
 
 export type AdminPostStatus = 'draft' | 'published';
-export type AdminPostBlockType = 'heading' | 'paragraph' | 'image' | 'quote' | 'link';
+export type AdminPostBlockType =
+  | 'heading'
+  | 'paragraph'
+  | 'image'
+  | 'image-pair'
+  | 'divider'
+  | 'youtube'
+  | 'quote'
+  | 'link'
+  | 'list';
 
 export type AdminPostBlockContent = {
   text?: string;
@@ -12,6 +21,14 @@ export type AdminPostBlockContent = {
   attribution?: string;
   href?: string;
   label?: string;
+  items?: string[];
+  srcSecondary?: string;
+  altSecondary?: string;
+  captionSecondary?: string;
+  orientation?: 'landscape' | 'portrait';
+  youtubeUrl?: string;
+  youtubeUrlMobile?: string;
+  videoTitle?: string;
 };
 
 export type AdminPost = {

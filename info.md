@@ -12,7 +12,7 @@ Current product phase:
 
 Supabase admin setup:
   The browser client lives in src/lib/supabase.ts and reads VITE_SUPABASE_URL plus VITE_SUPABASE_ANON_KEY. Keep service role keys and user passwords out of the frontend and out of committed example files. Local public project config belongs in .env.local, using .env.example as the template.
-  All currently needed Supabase SQL has been run and tested: posts, post block link support, storage, gallery, admin security, and site settings. Re-run the relevant SQL only when schemas, RLS policies, storage rules, or public read/write behavior change. Public read policies allow anon users to read only published posts and blocks for published posts.
+  All core Supabase SQL has been run and tested: posts, post block link support, storage, gallery, admin security, and site settings. Newer list, image-pair, divider, and youtube block types were added after that setup; run docs/supabase-post-block-list.sql, docs/supabase-post-block-image-pair.sql, docs/supabase-post-block-divider.sql, and docs/supabase-post-block-youtube.sql before saving those blocks in an existing Supabase project. Re-run the relevant SQL only when schemas, RLS policies, storage rules, or public read/write behavior change. Public read policies allow anon users to read only published posts and blocks for published posts.
   Admin access uses frontend VITE_ADMIN_EMAILS plus database/storage RLS hardening in docs/supabase-admin-security.sql. The real protection is Supabase RLS; the frontend allowlist is only UX. docs/admin-security-guide.md explains how to add/remove admins and which Supabase signup setting to disable.
   Site settings use docs/supabase-site-settings.sql and are confirmed working. /admin/settings can edit the About page settings that are currently exposed through the settings form, including the About hero image/title.
   Home hero video has been reverted exactly to the GitHub/Vercel version that is known to autoplay correctly. src/components/sections/Hero.tsx currently uses local constants: desktop c9dRw1KIfDk, mobile y-B9ReggOfM, fallback /images/home/hero-bg.jpg, siteConfig text, and the original direct iframe embed pattern without Supabase settings, origin, or referrerPolicy. Do not reconnect hero video/fallback/text to site_settings until this is retested carefully.
@@ -27,11 +27,12 @@ Recommended next steps:
   5. Consider code-splitting admin routes later to reduce the production bundle warning.
 
 Recent polish decisions:
-  Dynamic Supabase blog posts should show related posts at the bottom, chosen from other published posts by shared categories, tags, and continent. Gallery hover should keep the image visually unchanged and reveal only title/location text over the photo. Home travel teaser copy uses "Up Next" as the main heading, without repeating it as an eyebrow. Admin list/edit surfaces should include clear back navigation to the dashboard or parent admin screen. Public contact details are whatkatieseas@gmail.com, Instagram https://www.instagram.com/whatkatie.seas, YouTube https://www.youtube.com/@whatkatieseas, and Pinterest https://www.pinterest.com/whatkatieseas.
+  Dynamic Supabase blog posts should show related posts at the bottom, chosen from other published posts by shared categories, tags, and continent. Paragraph and link intro blocks should preserve intentional line breaks from the admin textarea when rendered publicly. The admin post editor supports list blocks with an optional title and as many bullet items as Katie wants, image-pair blocks with two smaller images side by side on desktop and stacked on mobile, divider blocks for thin editorial separator lines, and youtube blocks that show a thumbnail/play button before embedding. YouTube blocks can have a main horizontal URL and an optional vertical mobile URL. Gallery hover should keep the image visually unchanged and reveal only title/location text over the photo. Home travel teaser copy uses "Up Next" as the main heading, without repeating it as an eyebrow. Admin list/edit surfaces should include clear back navigation to the dashboard or parent admin screen. Public contact details are whatkatieseas@gmail.com, Instagram https://www.instagram.com/whatkatie.seas, YouTube https://www.youtube.com/@whatkatieseas, and Pinterest https://www.pinterest.com/whatkatieseas.
   Home Destinations should use a simple even grid of up to 6 published destination posts, all with the same 4:3 card ratio, instead of a large featured-card layout. This keeps the section more forgiving for Katie's uploaded post covers and avoids requiring special vertical crops.
 
 Destinations taxonomy:
   Use English continent groups: Asia, Europe, Oceania, North America, Central America, South America, and Africa.
+  Destination country filters should be deduplicated by a normalized country key, trimming whitespace, collapsing repeated spaces, lowercasing, and ignoring accents. This prevents duplicate visible country buttons such as two "Ecuador" filters when multiple posts have slightly different country string formatting.
 
 Destinations map:
   The interactive world map uses d3-geo and topojson-client with https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json. Countries are mapped by numeric ISO IDs into the project's continent slugs. Avoid react-simple-maps because it introduced a React 19 peer conflict and vulnerable d3-zoom chain.
@@ -41,7 +42,8 @@ Gallery:
   New admin gallery items are added to the end automatically by assigning the next sort_order value. Manual sort_order entry is no longer part of the create flow; admins should reorder gallery cards with drag/drop after creation.
 
 Image card style:
-  For image-led cards, avoid always-visible title/location text below the image. Reveal metadata on hover/focus with a dark ocean overlay and light blue accent text, so the photo stays visually clean by default.
+  For image-led gallery cards, avoid always-visible title/location text below the image. Reveal metadata on hover/focus with a dark ocean overlay and light blue accent text, so the photo stays visually clean by default.
+  For post cards, titles should always be visible over the image card, not only on hover, because readers need to understand what each story is without discovering it by interaction. Hover may still deepen the overlay or add motion, but the post title must remain readable by default.
 
 About image captions:
   About page photos support per-image hover captions in src/pages/About.tsx. Use these for personal context such as age, place, memory, or a short story from Katie, without adding permanent text below the image.
@@ -51,7 +53,7 @@ Global navigation helpers:
   All pages include a floating bottom-right back-to-top button via src/components/ScrollToTopButton.tsx. The mobile fullscreen menu uses a black overlay, so its logo and navigation labels must stay white/light for contrast.
 
 Home hero video:
-  The homepage hero uses Katie's selected YouTube background videos: desktop c9dRw1KIfDk and mobile y-B9ReggOfM. It keeps /images/home/hero-bg.jpg underneath as a visual fallback while the embed loads or if the embed cannot render.
+  The homepage hero uses Katie's selected YouTube background videos: desktop c9dRw1KIfDk and mobile portrait y-B9ReggOfM. Phones use the vertical/mobile video only in portrait orientation; when a phone is rotated landscape, the hero switches to the horizontal desktop video. It keeps /images/home/hero-bg.jpg underneath as a visual fallback while the embed loads or if the embed cannot render.
 
 Components (40+):
   accordion, alert-dialog, alert, aspect-ratio, avatar, badge, breadcrumb,

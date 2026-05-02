@@ -38,8 +38,12 @@ const blockTypeOptions: { value: AdminPostBlockType; label: string }[] = [
   { value: 'heading', label: 'Heading' },
   { value: 'paragraph', label: 'Paragraph' },
   { value: 'image', label: 'Image' },
+  { value: 'image-pair', label: 'Two images' },
+  { value: 'youtube', label: 'YouTube video' },
+  { value: 'divider', label: 'Divider line' },
   { value: 'quote', label: 'Quote' },
   { value: 'link', label: 'Link' },
+  { value: 'list', label: 'Title + list' },
 ];
 
 type EditableBlock = {
@@ -70,8 +74,30 @@ function createEmptyBlock(type: AdminPostBlockType): EditableBlock {
     content:
       type === 'image'
         ? { src: '', alt: '', caption: '' }
+        : type === 'image-pair'
+          ? {
+              src: '',
+              alt: '',
+              caption: '',
+              srcSecondary: '',
+              altSecondary: '',
+              captionSecondary: '',
+              orientation: 'landscape',
+            }
+        : type === 'youtube'
+          ? {
+              youtubeUrl: '',
+              youtubeUrlMobile: '',
+              orientation: 'landscape',
+              videoTitle: '',
+              caption: '',
+            }
+        : type === 'divider'
+          ? {}
         : type === 'link'
           ? { text: '', href: '', label: 'Read more' }
+        : type === 'list'
+          ? { text: '', items: [''] }
         : type === 'quote'
           ? { text: '', attribution: '' }
           : { text: '' },
@@ -236,14 +262,19 @@ export function AdminPostForm() {
     }
   };
 
-  const handleBlockImageUpload = async (localId: string, file: File | undefined) => {
+  const handleBlockImageUpload = async (
+    localId: string,
+    file: File | undefined,
+    field: 'src' | 'srcSecondary' = 'src'
+  ) => {
     if (!file) return;
 
     setBlockErrorMessage('');
     setBlockSaveMessage('');
-    setBlockUploadErrors((current) => ({ ...current, [localId]: '' }));
-    setBlockUploadMessages((current) => ({ ...current, [localId]: '' }));
-    setUploadingField(`block-${localId}`);
+    const uploadKey = `${localId}-${field}`;
+    setBlockUploadErrors((current) => ({ ...current, [uploadKey]: '' }));
+    setBlockUploadMessages((current) => ({ ...current, [uploadKey]: '' }));
+    setUploadingField(`block-${uploadKey}`);
 
     try {
       const publicUrl = await uploadMediaFile(file, 'posts/blocks', {
@@ -253,15 +284,15 @@ export function AdminPostForm() {
         minWidth: 1100,
         minQuality: 0.58,
       });
-      updateBlockContent(localId, 'src', publicUrl);
+      updateBlockContent(localId, field, publicUrl);
       setBlockUploadMessages((current) => ({
         ...current,
-        [localId]: 'Image uploaded and optimized. Save blocks to publish this image.',
+        [uploadKey]: 'Image uploaded and optimized. Save blocks to publish this image.',
       }));
     } catch (error) {
       setBlockUploadErrors((current) => ({
         ...current,
-        [localId]: error instanceof Error ? error.message : 'Unable to upload block image.',
+        [uploadKey]: error instanceof Error ? error.message : 'Unable to upload block image.',
       }));
     } finally {
       setUploadingField(null);
@@ -293,6 +324,54 @@ export function AdminPostForm() {
           ? { ...block, content: { ...block.content, [field]: value } }
           : block
       )
+    );
+  };
+
+  const updateListItem = (localId: string, itemIndex: number, value: string) => {
+    setBlockSaveMessage('');
+    setBlocks((current) =>
+      current.map((block) => {
+        if (block.localId !== localId) return block;
+
+        const items = [...(block.content.items ?? [''])];
+        items[itemIndex] = value;
+        return { ...block, content: { ...block.content, items } };
+      })
+    );
+  };
+
+  const addListItem = (localId: string) => {
+    setBlockSaveMessage('');
+    setBlocks((current) =>
+      current.map((block) =>
+        block.localId === localId
+          ? {
+              ...block,
+              content: {
+                ...block.content,
+                items: [...(block.content.items ?? []), ''],
+              },
+            }
+          : block
+      )
+    );
+  };
+
+  const removeListItem = (localId: string, itemIndex: number) => {
+    setBlockSaveMessage('');
+    setBlocks((current) =>
+      current.map((block) => {
+        if (block.localId !== localId) return block;
+
+        const nextItems = (block.content.items ?? []).filter((_, index) => index !== itemIndex);
+        return {
+          ...block,
+          content: {
+            ...block.content,
+            items: nextItems.length > 0 ? nextItems : [''],
+          },
+        };
+      })
     );
   };
 
@@ -800,7 +879,7 @@ export function AdminPostForm() {
                                       }
                                       className="font-body text-sm text-black/55 file:mr-4 file:border-0 file:bg-ocean file:px-4 file:py-2 file:font-body file:text-sm file:text-white hover:file:bg-ocean-light"
                                     />
-                                    {uploadingField === `block-${block.localId}` && (
+                                    {uploadingField === `block-${block.localId}-src` && (
                                       <span className="font-body text-sm text-black/45">
                                         Uploading image...
                                       </span>
@@ -809,14 +888,14 @@ export function AdminPostForm() {
                                   <p className="font-body text-xs leading-relaxed text-black/45">
                                     JPG, PNG, WebP, or GIF. Large JPG/PNG/WebP files are automatically optimized.
                                   </p>
-                                  {blockUploadErrors[block.localId] && (
+                                  {blockUploadErrors[`${block.localId}-src`] && (
                                     <p className="font-body text-sm leading-relaxed text-red-700">
-                                      {blockUploadErrors[block.localId]}
+                                      {blockUploadErrors[`${block.localId}-src`]}
                                     </p>
                                   )}
-                                  {blockUploadMessages[block.localId] && (
+                                  {blockUploadMessages[`${block.localId}-src`] && (
                                     <p className="font-body text-sm leading-relaxed text-ocean">
-                                      {blockUploadMessages[block.localId]}
+                                      {blockUploadMessages[`${block.localId}-src`]}
                                     </p>
                                   )}
                                   {block.content.src && (
@@ -858,6 +937,247 @@ export function AdminPostForm() {
                                   className="h-12 w-full border border-black/10 bg-white px-4 font-body text-base outline-none focus:border-ocean"
                                 />
                               </label>
+                            </div>
+                          ) : block.type === 'image-pair' ? (
+                            <div className="grid gap-5">
+                              <label className="block">
+                                <span className="mb-2 block font-body text-sm text-black/60">
+                                  Image orientation
+                                </span>
+                                <select
+                                  value={block.content.orientation ?? 'landscape'}
+                                  onChange={(event) =>
+                                    updateBlockContent(
+                                      block.localId,
+                                      'orientation',
+                                      event.target.value
+                                    )
+                                  }
+                                  className="h-12 w-full border border-black/10 bg-white px-4 font-body text-base outline-none focus:border-ocean"
+                                >
+                                  <option value="landscape">Horizontal photos</option>
+                                  <option value="portrait">Vertical photos</option>
+                                </select>
+                              </label>
+
+                              <div className="grid gap-5 md:grid-cols-2">
+                                {[
+                                  {
+                                    label: 'First image',
+                                    srcField: 'src' as const,
+                                    altField: 'alt' as const,
+                                    captionField: 'caption' as const,
+                                  },
+                                  {
+                                    label: 'Second image',
+                                    srcField: 'srcSecondary' as const,
+                                    altField: 'altSecondary' as const,
+                                    captionField: 'captionSecondary' as const,
+                                  },
+                                ].map((imageField) => {
+                                  const uploadKey = `${block.localId}-${imageField.srcField}`;
+                                  const imageUrl = block.content[imageField.srcField] ?? '';
+
+                                  return (
+                                    <div
+                                      key={imageField.srcField}
+                                      className="grid gap-4 border border-black/10 bg-white/55 p-4"
+                                    >
+                                      <label className="block">
+                                        <span className="mb-2 block font-body text-sm text-black/60">
+                                          {imageField.label} URL
+                                        </span>
+                                        <input
+                                          value={imageUrl}
+                                          onChange={(event) =>
+                                            updateBlockContent(
+                                              block.localId,
+                                              imageField.srcField,
+                                              event.target.value
+                                            )
+                                          }
+                                          className="h-12 w-full border border-black/10 bg-white px-4 font-body text-base outline-none focus:border-ocean"
+                                        />
+                                      </label>
+
+                                      <div className="grid gap-3">
+                                        <input
+                                          type="file"
+                                          accept="image/jpeg,image/png,image/webp,image/gif"
+                                          onChange={(event) =>
+                                            void handleBlockImageUpload(
+                                              block.localId,
+                                              event.target.files?.[0],
+                                              imageField.srcField
+                                            )
+                                          }
+                                          className="font-body text-sm text-black/55 file:mr-4 file:border-0 file:bg-ocean file:px-4 file:py-2 file:font-body file:text-sm file:text-white hover:file:bg-ocean-light"
+                                        />
+                                        {uploadingField === `block-${uploadKey}` && (
+                                          <span className="font-body text-sm text-black/45">
+                                            Uploading image...
+                                          </span>
+                                        )}
+                                        {blockUploadErrors[uploadKey] && (
+                                          <p className="font-body text-sm leading-relaxed text-red-700">
+                                            {blockUploadErrors[uploadKey]}
+                                          </p>
+                                        )}
+                                        {blockUploadMessages[uploadKey] && (
+                                          <p className="font-body text-sm leading-relaxed text-ocean">
+                                            {blockUploadMessages[uploadKey]}
+                                          </p>
+                                        )}
+                                      </div>
+
+                                      {imageUrl && (
+                                        <div
+                                          className={`relative overflow-hidden bg-gray-100 ${
+                                            block.content.orientation === 'portrait'
+                                              ? 'aspect-[3/4]'
+                                              : 'aspect-[4/3]'
+                                          }`}
+                                        >
+                                          <img
+                                            src={imageUrl}
+                                            alt=""
+                                            className="h-full w-full object-cover"
+                                          />
+                                        </div>
+                                      )}
+
+                                      <label className="block">
+                                        <span className="mb-2 block font-body text-sm text-black/60">
+                                          Alt text
+                                        </span>
+                                        <input
+                                          value={block.content[imageField.altField] ?? ''}
+                                          onChange={(event) =>
+                                            updateBlockContent(
+                                              block.localId,
+                                              imageField.altField,
+                                              event.target.value
+                                            )
+                                          }
+                                          className="h-12 w-full border border-black/10 bg-white px-4 font-body text-base outline-none focus:border-ocean"
+                                        />
+                                      </label>
+
+                                      <label className="block">
+                                        <span className="mb-2 block font-body text-sm text-black/60">
+                                          Caption
+                                        </span>
+                                        <input
+                                          value={block.content[imageField.captionField] ?? ''}
+                                          onChange={(event) =>
+                                            updateBlockContent(
+                                              block.localId,
+                                              imageField.captionField,
+                                              event.target.value
+                                            )
+                                          }
+                                          className="h-12 w-full border border-black/10 bg-white px-4 font-body text-base outline-none focus:border-ocean"
+                                        />
+                                      </label>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          ) : block.type === 'youtube' ? (
+                            <div className="grid gap-4">
+                              <label className="block">
+                                <span className="mb-2 block font-body text-sm text-black/60">
+                                  Desktop or main YouTube URL
+                                </span>
+                                <input
+                                  value={block.content.youtubeUrl ?? ''}
+                                  onChange={(event) =>
+                                    updateBlockContent(
+                                      block.localId,
+                                      'youtubeUrl',
+                                      event.target.value
+                                    )
+                                  }
+                                  placeholder="https://www.youtube.com/watch?v=..."
+                                  className="h-12 w-full border border-black/10 bg-white px-4 font-body text-base outline-none focus:border-ocean"
+                                />
+                              </label>
+
+                              <label className="block">
+                                <span className="mb-2 block font-body text-sm text-black/60">
+                                  Optional vertical mobile YouTube URL
+                                </span>
+                                <input
+                                  value={block.content.youtubeUrlMobile ?? ''}
+                                  onChange={(event) =>
+                                    updateBlockContent(
+                                      block.localId,
+                                      'youtubeUrlMobile',
+                                      event.target.value
+                                    )
+                                  }
+                                  placeholder="Use only if Katie has a vertical version"
+                                  className="h-12 w-full border border-black/10 bg-white px-4 font-body text-base outline-none focus:border-ocean"
+                                />
+                              </label>
+
+                              <label className="block">
+                                <span className="mb-2 block font-body text-sm text-black/60">
+                                  Single-video orientation
+                                </span>
+                                <select
+                                  value={block.content.orientation ?? 'landscape'}
+                                  onChange={(event) =>
+                                    updateBlockContent(
+                                      block.localId,
+                                      'orientation',
+                                      event.target.value
+                                    )
+                                  }
+                                  className="h-12 w-full border border-black/10 bg-white px-4 font-body text-base outline-none focus:border-ocean"
+                                >
+                                  <option value="landscape">Horizontal video</option>
+                                  <option value="portrait">Vertical video</option>
+                                </select>
+                              </label>
+
+                              <label className="block">
+                                <span className="mb-2 block font-body text-sm text-black/60">
+                                  Optional video title
+                                </span>
+                                <input
+                                  value={block.content.videoTitle ?? ''}
+                                  onChange={(event) =>
+                                    updateBlockContent(
+                                      block.localId,
+                                      'videoTitle',
+                                      event.target.value
+                                    )
+                                  }
+                                  className="h-12 w-full border border-black/10 bg-white px-4 font-body text-base outline-none focus:border-ocean"
+                                />
+                              </label>
+
+                              <label className="block">
+                                <span className="mb-2 block font-body text-sm text-black/60">
+                                  Optional caption
+                                </span>
+                                <input
+                                  value={block.content.caption ?? ''}
+                                  onChange={(event) =>
+                                    updateBlockContent(block.localId, 'caption', event.target.value)
+                                  }
+                                  className="h-12 w-full border border-black/10 bg-white px-4 font-body text-base outline-none focus:border-ocean"
+                                />
+                              </label>
+                            </div>
+                          ) : block.type === 'divider' ? (
+                            <div className="border border-black/10 bg-white/60 p-4">
+                              <p className="font-body text-sm leading-relaxed text-black/55">
+                                This block adds a thin divider line to the post. There is nothing
+                                else to fill in.
+                              </p>
                             </div>
                           ) : block.type === 'link' ? (
                             <div className="grid gap-4">
@@ -933,6 +1253,63 @@ export function AdminPostForm() {
                                   className="h-12 w-full border border-black/10 bg-white px-4 font-body text-base outline-none focus:border-ocean"
                                 />
                               </label>
+                            </div>
+                          ) : block.type === 'list' ? (
+                            <div className="grid gap-4">
+                              <label className="block">
+                                <span className="mb-2 block font-body text-sm text-black/60">
+                                  Optional title
+                                </span>
+                                <input
+                                  value={block.content.text ?? ''}
+                                  onChange={(event) =>
+                                    updateBlockContent(block.localId, 'text', event.target.value)
+                                  }
+                                  placeholder="Things to pack, dive notes, where to stay..."
+                                  className="h-12 w-full border border-black/10 bg-white px-4 font-body text-base outline-none focus:border-ocean"
+                                />
+                              </label>
+
+                              <div>
+                                <span className="mb-2 block font-body text-sm text-black/60">
+                                  List items
+                                </span>
+                                <div className="grid gap-3">
+                                  {(block.content.items ?? ['']).map((item, itemIndex) => (
+                                    <div
+                                      key={`${block.localId}-item-${itemIndex}`}
+                                      className="grid gap-2 sm:grid-cols-[1fr_auto]"
+                                    >
+                                      <input
+                                        value={item}
+                                        onChange={(event) =>
+                                          updateListItem(
+                                            block.localId,
+                                            itemIndex,
+                                            event.target.value
+                                          )
+                                        }
+                                        placeholder={`Item ${itemIndex + 1}`}
+                                        className="h-12 w-full border border-black/10 bg-white px-4 font-body text-base outline-none focus:border-ocean"
+                                      />
+                                      <button
+                                        type="button"
+                                        onClick={() => removeListItem(block.localId, itemIndex)}
+                                        className="border border-black/10 px-4 font-body text-sm uppercase tracking-[0.12em] text-black/50 transition-colors hover:border-red-700 hover:text-red-700"
+                                      >
+                                        Remove
+                                      </button>
+                                    </div>
+                                  ))}
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={() => addListItem(block.localId)}
+                                  className="mt-3 border border-black/10 px-4 py-2 font-body text-sm uppercase tracking-[0.12em] text-black/60 transition-colors hover:border-ocean hover:text-ocean"
+                                >
+                                  Add item
+                                </button>
+                              </div>
                             </div>
                           ) : (
                             <label className="block">

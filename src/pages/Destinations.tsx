@@ -272,6 +272,15 @@ function formatPostDate(date: string) {
   });
 }
 
+function normalizeCountryName(country: string) {
+  return country
+    .trim()
+    .replace(/\s+/g, ' ')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+}
+
 function DestinationPostCard({ post }: { post: BlogPost }) {
   return (
     <Link to={`/blog/${post.slug}`} className="group block">
@@ -281,8 +290,8 @@ function DestinationPostCard({ post }: { post: BlogPost }) {
           alt={post.title}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-ocean-dark/0 transition-colors duration-300 group-hover:bg-ocean-dark/58" />
-        <div className="absolute inset-x-0 bottom-0 translate-y-3 p-5 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+        <div className="absolute inset-0 bg-gradient-to-t from-ocean-dark/72 via-ocean-dark/20 to-transparent transition-colors duration-300 group-hover:from-ocean-dark/82 group-hover:via-ocean-dark/35" />
+        <div className="absolute inset-x-0 bottom-0 p-5 transition-all duration-300 group-hover:translate-y-0">
           <div className="mb-2 flex flex-wrap gap-x-3 gap-y-2 font-body text-[11px] uppercase tracking-[0.16em] text-sky-200">
             {post.destination && <span>{post.destination}</span>}
             {post.country && <span>{post.country}</span>}
@@ -395,10 +404,20 @@ export function Destinations() {
     const map = new Map<Continent, string[]>();
 
     CONTINENTS.forEach((continent) => {
-      const countries = sortedPosts
+      const countriesByKey = new Map<string, string>();
+
+      sortedPosts
         .filter((post) => post.continent === continent.slug && post.country)
-        .map((post) => post.country as string);
-      map.set(continent.slug, [...new Set(countries)].sort());
+        .forEach((post) => {
+          const country = (post.country as string).trim().replace(/\s+/g, ' ');
+          const key = normalizeCountryName(country);
+
+          if (country && !countriesByKey.has(key)) {
+            countriesByKey.set(key, country);
+          }
+        });
+
+      map.set(continent.slug, [...countriesByKey.values()].sort());
     });
 
     return map;
@@ -410,7 +429,10 @@ export function Destinations() {
     return sortedPosts.filter((post) => {
       const matchesContinent =
         searchContinent === 'all' ? true : post.continent === searchContinent;
-      const matchesCountry = searchCountry === 'all' ? true : post.country === searchCountry;
+      const matchesCountry =
+        searchCountry === 'all'
+          ? true
+          : Boolean(post.country && normalizeCountryName(post.country) === searchCountry);
       const haystack = [
         post.title,
         post.subtitle,
@@ -687,12 +709,12 @@ export function Destinations() {
                 {availableCountries.map((country) => (
                   <button
                     key={country}
-                    onClick={() => {
-                      setSearchCountry(country);
+                  onClick={() => {
+                      setSearchCountry(normalizeCountryName(country));
                       setSearchVisibleCount(SEARCH_PAGE_SIZE);
                     }}
                     className={`px-4 py-2 border text-sm font-body uppercase tracking-[0.14em] transition-colors ${
-                      searchCountry === country
+                      searchCountry === normalizeCountryName(country)
                         ? 'bg-ocean text-white border-ocean'
                         : 'border-black/10 text-black/65 hover:border-ocean hover:text-ocean'
                     }`}

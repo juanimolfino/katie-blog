@@ -9,8 +9,22 @@ The first block types are:
 - `heading`
 - `paragraph`
 - `image`
+- `image-pair`
+- `divider`
+- `youtube`
 - `quote`
 - `link`
+- `list`
+
+Paragraph blocks preserve intentional line breaks from the admin textarea on the public post page. Katie can write several short paragraphs or line breaks inside one paragraph block, and those line breaks should render visibly without needing separate blocks for every paragraph.
+
+`list` blocks are for a short optional title plus as many bullet items as Katie wants. They are useful for packing notes, quick tips, practical details, dive conditions, itinerary points, or any section where a scannable list reads better than a paragraph.
+
+`image-pair` blocks are for two smaller images shown side by side on desktop and stacked on mobile. Katie can choose whether the pair uses horizontal or vertical image crops, and each image has its own URL/upload, alt text, and caption.
+
+`divider` blocks render a thin editorial separator line. They have no editable fields; Katie adds one wherever she wants a visual break between story sections.
+
+`youtube` blocks render an embedded YouTube video as a thumbnail with a play button until the reader chooses to play it. The editor supports a main/desktop YouTube URL and an optional vertical mobile YouTube URL. If the mobile URL exists, phones in portrait use it; otherwise the main URL is used everywhere with the selected horizontal or vertical orientation.
 
 The admin editor supports saving metadata and blocks separately, plus a combined Save all action for existing posts. Blocks can be moved, duplicated, or deleted. Preview opens `/blog/:slug`, so a post must be published to be visible through the public Supabase read policy.
 
@@ -517,8 +531,12 @@ Likely block types:
 
 - Text section
 - Image
+- Two-image pair
+- Divider line
+- YouTube video
 - Image gallery
 - Quote
+- Title + list
 - Video
 - Practical info
 - Location/destination note

@@ -203,6 +203,7 @@ Design guidance:
 - Visual storytelling is central
 - Large, confident imagery
 - Image cards should avoid permanent text beneath the image when the image is the main object; reveal title/location metadata on hover/focus with a dark ocean-toned overlay and light blue accent text
+- Post cards should always show the post title over the image by default; hover can deepen the overlay, but the title should not be hidden until interaction
 - Clean typography
 - Strong spacing and rhythm
 - Real content should lead the design

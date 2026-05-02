@@ -8,11 +8,11 @@ const HERO_FALLBACK_IMAGE = '/images/home/hero-bg.jpg';
 export function Hero() {
   const heroRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const [isMobile, setIsMobile] = useState(false);
+  const [useMobileVideo, setUseMobileVideo] = useState(false);
 
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+    const checkVideoLayout = () => {
+      setUseMobileVideo(window.innerWidth < 768 && window.innerHeight >= window.innerWidth);
     };
 
     const handleScroll = () => {
@@ -26,17 +26,19 @@ export function Hero() {
       contentRef.current.style.transform = `translateY(${-scrollY * 0.2}px)`;
     };
 
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
+    checkVideoLayout();
+    window.addEventListener('resize', checkVideoLayout);
+    window.addEventListener('orientationchange', checkVideoLayout);
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     return () => {
-      window.removeEventListener('resize', checkMobile);
+      window.removeEventListener('resize', checkVideoLayout);
+      window.removeEventListener('orientationchange', checkVideoLayout);
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
-  const videoId = isMobile ? VIDEO_MOBILE : VIDEO_DESKTOP;
+  const videoId = useMobileVideo ? VIDEO_MOBILE : VIDEO_DESKTOP;
 
   return (
     <section

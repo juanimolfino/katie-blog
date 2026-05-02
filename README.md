@@ -239,6 +239,10 @@ Practical workflow:
 - [src/hooks/useSiteSettings.ts](src/hooks/useSiteSettings.ts): public hook for reading site settings with local fallback defaults
 - [src/lib/supabase.ts](src/lib/supabase.ts): browser Supabase client using `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`
 - [docs/supabase-posts.sql](docs/supabase-posts.sql): SQL to create the first admin `posts` and `post_blocks` tables and RLS policies
+- [docs/supabase-post-block-list.sql](docs/supabase-post-block-list.sql): SQL migration to allow `list` content blocks in existing Supabase projects
+- [docs/supabase-post-block-image-pair.sql](docs/supabase-post-block-image-pair.sql): SQL migration to allow two-image `image-pair` content blocks in existing Supabase projects
+- [docs/supabase-post-block-divider.sql](docs/supabase-post-block-divider.sql): SQL migration to allow thin editorial `divider` content blocks in existing Supabase projects
+- [docs/supabase-post-block-youtube.sql](docs/supabase-post-block-youtube.sql): SQL migration to allow embedded `youtube` content blocks in existing Supabase projects
 - [docs/supabase-storage.sql](docs/supabase-storage.sql): SQL to create the public `media` bucket and authenticated upload policies
 - [docs/supabase-gallery.sql](docs/supabase-gallery.sql): SQL to create the `gallery_items` table and RLS policies
 - [docs/supabase-admin-security.sql](docs/supabase-admin-security.sql): SQL to add an admin email allowlist and replace broad authenticated write policies

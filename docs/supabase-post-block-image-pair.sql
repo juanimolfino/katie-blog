@@ -1,5 +1,5 @@
--- What Katie Seas: allow link blocks in existing post_blocks table
--- Run this only if docs/supabase-posts.sql was already run before link blocks existed.
+-- What Katie Seas: allow two-image blocks in existing post_blocks table
+-- Run this if docs/supabase-posts.sql was already run before image-pair blocks existed.
 
 alter table public.post_blocks
 drop constraint if exists post_blocks_type_check;

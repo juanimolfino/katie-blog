@@ -93,7 +93,7 @@ using (true);
 create table if not exists public.post_blocks (
   id uuid primary key default gen_random_uuid(),
   post_id uuid not null references public.posts(id) on delete cascade,
-  type text not null check (type in ('heading', 'paragraph', 'image', 'quote', 'link')),
+  type text not null check (type in ('heading', 'paragraph', 'image', 'image-pair', 'divider', 'youtube', 'quote', 'link', 'list')),
   position integer not null default 0 check (position >= 0),
   content jsonb not null default '{}'::jsonb,
   created_at timestamptz not null default now(),

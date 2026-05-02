@@ -21,6 +21,101 @@ function categoryLabel(category: BlogCategorySlug | string) {
   return blogCategoryLabels[category as BlogCategorySlug] ?? category;
 }
 
+function getYouTubeId(url: string | undefined) {
+  if (!url) return '';
+
+  const trimmedUrl = url.trim();
+  const directId = /^[a-zA-Z0-9_-]{11}$/.test(trimmedUrl) ? trimmedUrl : '';
+  if (directId) return directId;
+
+  try {
+    const parsedUrl = new URL(trimmedUrl);
+    if (parsedUrl.hostname.includes('youtu.be')) {
+      return parsedUrl.pathname.replace('/', '').slice(0, 11);
+    }
+
+    if (parsedUrl.pathname.includes('/shorts/')) {
+      return parsedUrl.pathname.split('/shorts/')[1]?.split('/')[0] ?? '';
+    }
+
+    if (parsedUrl.pathname.includes('/embed/')) {
+      return parsedUrl.pathname.split('/embed/')[1]?.split('/')[0] ?? '';
+    }
+
+    return parsedUrl.searchParams.get('v') ?? '';
+  } catch {
+    return '';
+  }
+}
+
+function YouTubeBlock({ block }: { block: PublicPostBlock }) {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [useMobileVideo, setUseMobileVideo] = useState(false);
+
+  useEffect(() => {
+    const checkVideoLayout = () => {
+      setUseMobileVideo(window.innerWidth < 768 && window.innerHeight >= window.innerWidth);
+    };
+
+    checkVideoLayout();
+    window.addEventListener('resize', checkVideoLayout);
+    window.addEventListener('orientationchange', checkVideoLayout);
+
+    return () => {
+      window.removeEventListener('resize', checkVideoLayout);
+      window.removeEventListener('orientationchange', checkVideoLayout);
+    };
+  }, []);
+
+  const primaryId = getYouTubeId(block.content.youtubeUrl);
+  const mobileId = getYouTubeId(block.content.youtubeUrlMobile);
+  const videoId = useMobileVideo && mobileId ? mobileId : primaryId || mobileId;
+  const isPortrait = useMobileVideo && mobileId ? true : block.content.orientation === 'portrait';
+  const aspectClass = isPortrait ? 'aspect-[9/16] max-w-sm' : 'aspect-video max-w-5xl';
+
+  if (!videoId) return null;
+
+  const title = block.content.videoTitle || 'Katie video';
+
+  return (
+    <figure className={`${aspectClass} mx-auto space-y-3`}>
+      <div className="relative h-full w-full overflow-hidden bg-black">
+        {isPlaying ? (
+          <iframe
+            src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`}
+            title={title}
+            className="h-full w-full"
+            allow="autoplay; encrypted-media; picture-in-picture"
+            allowFullScreen
+          />
+        ) : (
+          <button
+            type="button"
+            onClick={() => setIsPlaying(true)}
+            className="group relative h-full w-full"
+            aria-label={`Play ${title}`}
+          >
+            <img
+              src={`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`}
+              alt={title}
+              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-black/25 transition-colors group-hover:bg-black/35" />
+            <span className="absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white/92 text-black shadow-[0_10px_40px_rgba(0,0,0,0.28)] transition-transform group-hover:scale-105">
+              <span className="ml-1 h-0 w-0 border-y-[11px] border-l-[17px] border-y-transparent border-l-ocean" />
+            </span>
+          </button>
+        )}
+      </div>
+      {block.content.caption && (
+        <figcaption className="font-body text-sm text-black/55">
+          {block.content.caption}
+        </figcaption>
+      )}
+    </figure>
+  );
+}
+
 function PostNotFound() {
   return (
     <div className="pt-32 pb-24 bg-white min-h-screen">
@@ -68,7 +163,7 @@ function DynamicBlock({ block }: { block: PublicPostBlock }) {
   if (block.type === 'paragraph') {
     return (
       <div className="max-w-3xl mx-auto">
-        <p className="font-body text-lg leading-relaxed text-black/78">
+        <p className="whitespace-pre-line font-body text-lg leading-relaxed text-black/78">
           {block.content.text}
         </p>
       </div>
@@ -90,6 +185,18 @@ function DynamicBlock({ block }: { block: PublicPostBlock }) {
     );
   }
 
+  if (block.type === 'divider') {
+    return (
+      <div className="max-w-3xl mx-auto py-3">
+        <div className="h-px w-full bg-black/10" />
+      </div>
+    );
+  }
+
+  if (block.type === 'youtube') {
+    return <YouTubeBlock block={block} />;
+  }
+
   if (block.type === 'link') {
     const href = block.content.href ?? '';
     const isInternal = href.startsWith('/');
@@ -98,7 +205,7 @@ function DynamicBlock({ block }: { block: PublicPostBlock }) {
     return (
       <div className="max-w-3xl mx-auto border border-ocean/15 bg-sky-50 p-6 md:p-7">
         {block.content.text && (
-          <p className="mb-5 font-body text-lg leading-relaxed text-black/72">
+          <p className="mb-5 whitespace-pre-line font-body text-lg leading-relaxed text-black/72">
             {block.content.text}
           </p>
         )}
@@ -113,6 +220,72 @@ function DynamicBlock({ block }: { block: PublicPostBlock }) {
             </a>
           )
         )}
+      </div>
+    );
+  }
+
+  if (block.type === 'list') {
+    const items = (block.content.items ?? []).map((item) => item.trim()).filter(Boolean);
+
+    if (!block.content.text && items.length === 0) return null;
+
+    return (
+      <div className="max-w-3xl mx-auto border-l border-ocean/25 pl-6 md:pl-8">
+        {block.content.text && (
+          <h2 className="mb-5 font-display text-3xl md:text-4xl text-black">
+            {block.content.text}
+          </h2>
+        )}
+        {items.length > 0 && (
+          <ul className="space-y-3 font-body text-lg leading-relaxed text-black/78">
+            {items.map((item, index) => (
+              <li key={`${block.id}-item-${index}`} className="flex gap-3">
+                <span className="mt-[0.65em] h-1.5 w-1.5 shrink-0 rounded-full bg-ocean" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    );
+  }
+
+  if (block.type === 'image-pair') {
+    const images = [
+      {
+        src: block.content.src,
+        alt: block.content.alt,
+        caption: block.content.caption,
+      },
+      {
+        src: block.content.srcSecondary,
+        alt: block.content.altSecondary,
+        caption: block.content.captionSecondary,
+      },
+    ].filter((image) => image.src);
+    const aspectClass =
+      block.content.orientation === 'portrait' ? 'aspect-[3/4]' : 'aspect-[4/3]';
+
+    if (images.length === 0) return null;
+
+    return (
+      <div className="max-w-5xl mx-auto grid gap-5 md:grid-cols-2">
+        {images.map((image, index) => (
+          <figure key={`${block.id}-image-${index}`} className="space-y-3">
+            <div className={`${aspectClass} overflow-hidden bg-gray-100`}>
+              <img
+                src={image.src}
+                alt={image.alt || ''}
+                className="h-full w-full object-cover"
+              />
+            </div>
+            {image.caption && (
+              <figcaption className="font-body text-sm text-black/55">
+                {image.caption}
+              </figcaption>
+            )}
+          </figure>
+        ))}
       </div>
     );
   }
